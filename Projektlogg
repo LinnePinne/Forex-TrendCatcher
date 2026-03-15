@@ -1,0 +1,83 @@
+Strategin är trendföljande och baserar regim på asia session range samt average true range. Longs när candle close är över asia high samtidigt som ATR14 
+är över rullande medelvärdet(50) av ATR14. Shorts när candle close är under asia low samtidigt som ATR14 är över rullande medelvärdet(50) av ATR14. Exits 
+för både longs och shorts när ATR14 går under det rullande medelvärdet. Asia session definieras som 00:00 - 07:59 stockholms tid och vi tillåter 
+entrysignaler mellan 08:00 - 12:00, entries kan alltså ske efter 12:00 om föregående bar gav en entrysignal. exits kan ske när som under dagen. Detta är 
+inte en crossover strategi, entrysignaler kan uppstå långt efter att pris brytit asia range om ATR14 är över medelvärdet. Vi börar med in sample test 
+på USDJPY 2012 - 2020: 
+Market: USDJPY
+Trades: 447
+Total PnL (points): 14.7753
+Gross Profit: 90.9846
+Gross Loss: -76.2093
+Profit Factor: 1.1939
+Winrate: 0.4787
+Avg Win: 0.4252
+Avg Loss: -0.3271
+Expectancy (avg/trade): 0.0331
+Max Drawdown (points): 7.5058
+Max Losing Streak (trades): 11
+Sharpe (trade-level): 1.1468
+Vi testar att minimera sessionsfönstret eftersom tanken är att vi ska följa trend continuations efter att asia range har brytits. Strategin köper bullish 
+continuation när marknaden stänger ovanför Asia range under förhöjd volatilitet, och håller positionen så länge volatilitetsregimen består. Ju längre fram 
+på dagen vi då tillåter entries, desto mindre hålls strategin till denna logiken. Testar vi 08:00 - 10:00 får vi: 
+Market: USDJPY
+Trades: 325
+Total PnL (points): 9.1295
+Gross Profit: 65.8312
+Gross Loss: -56.7017
+Profit Factor: 1.1610
+Winrate: 0.4554
+Avg Win: 0.4448
+Avg Loss: -0.3203
+Expectancy (avg/trade): 0.0281
+Max Drawdown (points): 7.3619
+Max Losing Streak (trades): 10
+Sharpe (trade-level): 0.8644
+Det förstörde edge, vi testar ännu mindre fönster 08:00 - 09:00:
+Market: USDJPY
+Trades: 176
+Total PnL (points): 16.0774
+Gross Profit: 42.1517
+Gross Loss: -26.0743
+Profit Factor: 1.6166
+Winrate: 0.4716
+Avg Win: 0.5079
+Avg Loss: -0.2804
+Expectancy (avg/trade): 0.0913
+Max Drawdown (points): 4.2021
+Max Losing Streak (trades): 7
+Sharpe (trade-level): 1.9921
+Detta säger oss att edgen främst sitter i den första timmen av London session. Detta blir väldigt snyggt logiskt, 00:00 - 07:00 bygger asia - rangen och
+08:00 är första candlen där marknaden kan börja visa acceptence i rangen eller om den brtyer utanför, om continuation sker så sker det oftast direkt. 
+Ju senare entries vi tillåter, desto mer blandar vi in sämre continuations, sena breakouts och chop. USDJPY uppvisar edge i bullish/bearish continuation 
+när marknaden under första timmen efter Asia-sessionens slut stänger utanför Asia-rangen under förhöjd volatilitet. Vi separerar longs och shorts för att
+se om edgen ligger på ena sidan. Longs:
+Market: USDJPY
+Trades: 102
+Total PnL (points): 11.2798
+Gross Profit: 24.7720
+Gross Loss: -13.4922
+Profit Factor: 1.8360
+Winrate: 0.4902
+Avg Win: 0.4954
+Avg Loss: -0.2595
+Expectancy (avg/trade): 0.1106
+Max Drawdown (points): 2.9661
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 1.7741
+Shorts:
+Market: USDJPY
+Trades: 83
+Total PnL (points): 3.7727
+Gross Profit: 18.8114
+Gross Loss: -15.0387
+Profit Factor: 1.2509
+Winrate: 0.4337
+Avg Win: 0.5225
+Avg Loss: -0.3200
+Expectancy (avg/trade): 0.0455
+Max Drawdown (points): 3.5925
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 0.6853
+Det finns mer edge i longs här. Nu kollar vi på väldigt få trades så statistiken är inte super trovärdig. Det finns fortfarande edge i shorts och handlar
+vi båda sidorna får vi bättre diversifiering så vi behåller både longs och shorts. 
