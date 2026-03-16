@@ -80,4 +80,1046 @@ Max Drawdown (points): 3.5925
 Max Losing Streak (trades): 6
 Sharpe (trade-level): 0.6853
 Det finns mer edge i longs här. Nu kollar vi på väldigt få trades så statistiken är inte super trovärdig. Det finns fortfarande edge i shorts och handlar
-vi båda sidorna får vi bättre diversifiering så vi behåller både longs och shorts. 
+vi båda sidorna får vi bättre diversifiering så vi behåller både longs och shorts. Strategin har redan tillräckligt med filter, tanken är att optimera
+strategin men lägger vi till fler parametrar blir strategin för komplex samtidigt som det troligtvis filtreras ut fler trades och med tanke på att det
+redan blir få trades vill vi inte göra detta. Det vi borde göra nu är att robusthetstesta våra parametrar. Vi testar andra ATR14 moving average värden. 
+Vi testar först 30:
+Market: USDJPY
+Trades: 174
+Total PnL (points): 7.4046
+Gross Profit: 34.4248
+Gross Loss: -27.0202
+Profit Factor: 1.2740
+Winrate: 0.4713
+Avg Win: 0.4198
+Avg Loss: -0.2937
+Expectancy (avg/trade): 0.0426
+Max Drawdown (points): 4.3813
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 0.9322
+70:
+Market: USDJPY
+Trades: 177
+Total PnL (points): 18.5873
+Gross Profit: 48.0941
+Gross Loss: -29.5068
+Profit Factor: 1.6299
+Winrate: 0.5028
+Avg Win: 0.5404
+Avg Loss: -0.3353
+Expectancy (avg/trade): 0.1050
+Max Drawdown (points): 5.3466
+Max Losing Streak (trades): 8
+Sharpe (trade-level): 2.0243
+Det blir högre sharpe och expectancy ju högre värde så vi fortsätter att testa högre, 80:
+Market: USDJPY
+Trades: 175
+Total PnL (points): 19.9195
+Gross Profit: 51.8565
+Gross Loss: -31.9370
+Profit Factor: 1.6237
+Winrate: 0.4857
+Avg Win: 0.6101
+Avg Loss: -0.3549
+Expectancy (avg/trade): 0.1138
+Max Drawdown (points): 6.3376
+Max Losing Streak (trades): 7
+Sharpe (trade-level): 1.9988
+75:
+Market: USDJPY
+Trades: 178
+Total PnL (points): 19.3032
+Gross Profit: 49.4853
+Gross Loss: -30.1821
+Profit Factor: 1.6396
+Winrate: 0.4888
+Avg Win: 0.5688
+Avg Loss: -0.3317
+Expectancy (avg/trade): 0.1084
+Max Drawdown (points): 4.8756
+Max Losing Streak (trades): 7
+Sharpe (trade-level): 2.0357
+Alla värden har edge vilket visar robusthet, 75 är sweet spot så vi låser in det. Vi testar nu att lägga in en liten buffer i exit och entry där
+entry sker om atr > 1.05 * atr_ma och exit om atr < 0.95 * atr_ma:
+Market: USDJPY
+Trades: 141
+Total PnL (points): 14.2979
+Gross Profit: 46.2439
+Gross Loss: -31.9460
+Profit Factor: 1.4476
+Winrate: 0.5035
+Avg Win: 0.6513
+Avg Loss: -0.4564
+Expectancy (avg/trade): 0.1014
+Max Drawdown (points): 6.3466
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 1.5431
+Vi testar också 1.10 för entries och 0.9 för exits:
+Market: USDJPY
+Trades: 112
+Total PnL (points): 10.4098
+Gross Profit: 38.0467
+Gross Loss: -27.6369
+Profit Factor: 1.3767
+Winrate: 0.5625
+Avg Win: 0.6039
+Avg Loss: -0.5640
+Expectancy (avg/trade): 0.0929
+Max Drawdown (points): 4.5725
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 1.2167
+Edgen håller men försämras lite, det blir färre trades. Vi behåller originalet. Eftersom strategin är regim continuation kan vi testa att lägga in ett
+filter som gör att vi inte går in i trades när pris redan stuckit iväg mycket från asia range. Vi kan definiera detta som avståndet från asia range måste
+vara mindre än k * ATR14. Så för longs måste (close_price - asia high) < k * atr14. Vi testar k = 0.75:
+Market: USDJPY
+Trades: 130
+Total PnL (points): 7.0940
+Gross Profit: 32.4839
+Gross Loss: -25.3899
+Profit Factor: 1.2794
+Winrate: 0.4692
+Avg Win: 0.5325
+Avg Loss: -0.3680
+Expectancy (avg/trade): 0.0546
+Max Drawdown (points): 6.1607
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 0.8409
+Vi testar k = 0.25:
+Market: USDJPY
+Trades: 61
+Total PnL (points): 6.6249
+Gross Profit: 18.6153
+Gross Loss: -11.9904
+Profit Factor: 1.5525
+Winrate: 0.4426
+Avg Win: 0.6895
+Avg Loss: -0.3527
+Expectancy (avg/trade): 0.1086
+Max Drawdown (points): 3.1316
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 0.9755
+Detta filtrerar bort för många trades och därmed eroderas edgen. Vi bör även testa olika ATR perioder utan att ändra på ma75. Vi testar atr10:
+Market: USDJPY
+Trades: 180
+Total PnL (points): 17.8450
+Gross Profit: 46.6613
+Gross Loss: -28.8163
+Profit Factor: 1.6193
+Winrate: 0.4833
+Avg Win: 0.5363
+Avg Loss: -0.3099
+Expectancy (avg/trade): 0.0991
+Max Drawdown (points): 4.6516
+Max Losing Streak (trades): 9
+Sharpe (trade-level): 1.9319
+atr20:
+Market: USDJPY
+Trades: 172
+Total PnL (points): 11.0398
+Gross Profit: 46.9801
+Gross Loss: -35.9403
+Profit Factor: 1.3072
+Winrate: 0.4593
+Avg Win: 0.5947
+Avg Loss: -0.3865
+Expectancy (avg/trade): 0.0642
+Max Drawdown (points): 6.2766
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 1.0883
+Ddge överlever så det är robust. Vi behåller atr14 eftersom det fingerar bäst, det är också den period som är institutionellt accepterat. Vi har nu en 
+version som ser ut såhär: 
+Data: 1H
+Asia range: 00:00–07:00
+Entry-fönster: 08:00–09:00
+Long: close > asia_high
+Short: close < asia_low
+Volfilter entry: ATR14 > ATR14_MA75
+Exit: ATR14 < ATR14_MA75
+Båda sidor
+Ingen buffer
+Inget distance-filter
+Nu kan vi köra out of sample test på USDJPY 2020 - 2026. Om edge överlever där kan vi börja testa andra valutapar och välja kandidater till portföljen.
+Out of sample:
+Market: USDJPY
+Trades: 117
+Total PnL (points): 5.4603
+Gross Profit: 33.7572
+Gross Loss: -28.2969
+Profit Factor: 1.1930
+Winrate: 0.4957
+Avg Win: 0.5820
+Avg Loss: -0.4796
+Expectancy (avg/trade): 0.0467
+Max Drawdown (points): 4.8481
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 0.6388
+Det finns edge här men det är helt klart sämre än in sample vilket är förväntat. Vi testar hela perioden 2012 - 2026 tillsammans för att få helhetsbild, 
+alltså in sample med out of sample. Vi kollar också på stats per år:
+Market: USDJPY
+Trades: 297
+Total PnL (points): 24.2753
+Gross Profit: 83.2425
+Gross Loss: -58.9672
+Profit Factor: 1.4117
+Winrate: 0.4882
+Avg Win: 0.5741
+Avg Loss: -0.3879
+Expectancy (avg/trade): 0.0817
+Max Drawdown (points): 7.1842
+Max Losing Streak (trades): 7
+Sharpe (trade-level): 1.9015
+--- PER-ÅR STATS ---
+USDJPY - 2012:
+Trades: 29
+Total PnL (points): 4.9071
+Gross Profit: 7.7013
+Gross Loss: -2.7942
+Profit Factor: 2.7562
+Winrate: 0.5862
+Avg Win: 0.4530
+Avg Loss: -0.2328
+Expectancy (avg/trade): 0.1692
+Max Drawdown (points): 0.7341
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 1.9571
+USDJPY - 2013:
+Trades: 31
+Total PnL (points): 1.5729
+Gross Profit: 11.8423
+Gross Loss: -10.2694
+Profit Factor: 1.1532
+Winrate: 0.5484
+Avg Win: 0.6966
+Avg Loss: -0.7335
+Expectancy (avg/trade): 0.0507
+Max Drawdown (points): 4.8756
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 0.2844
+USDJPY - 2014:
+Trades: 23
+Total PnL (points): 3.7067
+Gross Profit: 8.2581
+Gross Loss: -4.5514
+Profit Factor: 1.8144
+Winrate: 0.3913
+Avg Win: 0.9176
+Avg Loss: -0.3251
+Expectancy (avg/trade): 0.1612
+Max Drawdown (points): 2.6559
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 0.7196
+USDJPY - 2015:
+Trades: 21
+Total PnL (points): 0.8989
+Gross Profit: 4.1101
+Gross Loss: -3.2112
+Profit Factor: 1.2799
+Winrate: 0.4286
+Avg Win: 0.4567
+Avg Loss: -0.2676
+Expectancy (avg/trade): 0.0428
+Max Drawdown (points): 1.4008
+Max Losing Streak (trades): 5
+Sharpe (Trade-level): 0.4155
+USDJPY - 2016:
+Trades: 21
+Total PnL (points): 7.5859
+Gross Profit: 10.4417
+Gross Loss: -2.8558
+Profit Factor: 3.6563
+Winrate: 0.6190
+Avg Win: 0.8032
+Avg Loss: -0.3570
+Expectancy (avg/trade): 0.3612
+Max Drawdown (points): 1.4034
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 2.0452
+USDJPY - 2017:
+Trades: 20
+Total PnL (points): 1.4050
+Gross Profit: 3.1233
+Gross Loss: -1.7183
+Profit Factor: 1.8177
+Winrate: 0.3500
+Avg Win: 0.4462
+Avg Loss: -0.1322
+Expectancy (avg/trade): 0.0703
+Max Drawdown (points): 0.6554
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 0.9048
+USDJPY - 2018:
+Trades: 22
+Total PnL (points): 2.4088
+Gross Profit: 3.9527
+Gross Loss: -1.5439
+Profit Factor: 2.5602
+Winrate: 0.5909
+Avg Win: 0.3041
+Avg Loss: -0.1715
+Expectancy (avg/trade): 0.1095
+Max Drawdown (points): 1.2456
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 1.5454
+USDJPY - 2019:
+Trades: 11
+Total PnL (points): -3.1821
+Gross Profit: 0.0558
+Gross Loss: -3.2379
+Profit Factor: 0.0172
+Winrate: 0.1818
+Avg Win: 0.0279
+Avg Loss: -0.3598
+Expectancy (avg/trade): -0.2893
+Max Drawdown (points): 3.1390
+Max Losing Streak (trades): 7
+Sharpe (trade-level): -1.8408
+USDJPY - 2020:
+Trades: 20
+Total PnL (points): -0.4410
+Gross Profit: 3.3202
+Gross Loss: -3.7612
+Profit Factor: 0.8828
+Winrate: 0.4000
+Avg Win: 0.4150
+Avg Loss: -0.3134
+Expectancy (avg/trade): -0.0220
+Max Drawdown (points): 1.9323
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.1754
+USDJPY - 2021:
+Trades: 20
+Total PnL (points): -0.6330
+Gross Profit: 2.9579
+Gross Loss: -3.5909
+Profit Factor: 0.8237
+Winrate: 0.5500
+Avg Win: 0.2689
+Avg Loss: -0.3990
+Expectancy (avg/trade): -0.0316
+Max Drawdown (points): 1.8618
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.3575
+USDJPY - 2022:
+Trades: 21
+Total PnL (points): 0.0949
+Gross Profit: 5.7371
+Gross Loss: -5.6422
+Profit Factor: 1.0168
+Winrate: 0.4286
+Avg Win: 0.6375
+Avg Loss: -0.4702
+Expectancy (avg/trade): 0.0045
+Max Drawdown (points): 2.6277
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 0.0256
+USDJPY - 2023:
+Trades: 18
+Total PnL (points): -0.6568
+Gross Profit: 6.9911
+Gross Loss: -7.6479
+Profit Factor: 0.9141
+Winrate: 0.5000
+Avg Win: 0.7768
+Avg Loss: -0.8498
+Expectancy (avg/trade): -0.0365
+Max Drawdown (points): 3.6943
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.1342
+USDJPY - 2024:
+Trades: 19
+Total PnL (points): 6.8741
+Gross Profit: 10.4730
+Gross Loss: -3.5989
+Profit Factor: 2.9101
+Winrate: 0.5263
+Avg Win: 1.0473
+Avg Loss: -0.3999
+Expectancy (avg/trade): 0.3618
+Max Drawdown (points): 0.9952
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 1.5149
+USDJPY - 2025:
+Trades: 21
+Total PnL (points): -0.2661
+Gross Profit: 4.2779
+Gross Loss: -4.5440
+Profit Factor: 0.9414
+Winrate: 0.5238
+Avg Win: 0.3889
+Avg Loss: -0.4544
+Expectancy (avg/trade): -0.0127
+Max Drawdown (points): 1.9865
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.1039
+I helhet ser det lovande ut men edgen är väldigt ojämn över tid. Det finns flera klart tydliga negativa år, 2015, 2017, 2019, 2020 och 2023 samtidigt 
+som det finns väldigt fina år, 2012, 2014, 2016, och 2024. Detta säger att vi hittat en icke universiell USDJPY-breakout utan en strategi som fungerar 
+i vissa typer av intradags/volregimer. När mikrostrukturen förändras tappar vi edge. Det behöver inte vara ett problem, det är rätt vanligt men det 
+viktiga här är att kombinera flera marknader för att diviersifiera strategin. Nu har vi fler trades och kan därför seperare på longs och shorts och
+få mer trovärdig data, så vi testar båda sidorna individuellt, endast shorts:
+Market: USDJPY
+Trades: 148
+Total PnL (points): 6.9352
+Gross Profit: 41.4312
+Gross Loss: -34.4960
+Profit Factor: 1.2010
+Winrate: 0.4595
+Avg Win: 0.6093
+Avg Loss: -0.4312
+Expectancy (avg/trade): 0.0469
+Max Drawdown (points): 6.2734
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 0.7277
+--- PER-ÅR STATS ---
+USDJPY - 2012:
+Trades: 13
+Total PnL (points): 1.5337
+Gross Profit: 2.7093
+Gross Loss: -1.1756
+Profit Factor: 2.3046
+Winrate: 0.5385
+Avg Win: 0.3870
+Avg Loss: -0.1959
+Expectancy (avg/trade): 0.1180
+Max Drawdown (points): 0.6294
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.0302
+USDJPY - 2013:
+Trades: 18
+Total PnL (points): -5.0998
+Gross Profit: 4.1892
+Gross Loss: -9.2890
+Profit Factor: 0.4510
+Winrate: 0.4444
+Avg Win: 0.5237
+Avg Loss: -0.9289
+Expectancy (avg/trade): -0.2833
+Max Drawdown (points): 5.2516
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -1.2216
+USDJPY - 2014:
+Trades: 12
+Total PnL (points): 0.8288
+Gross Profit: 3.4916
+Gross Loss: -2.6628
+Profit Factor: 1.3113
+Winrate: 0.3333
+Avg Win: 0.8729
+Avg Loss: -0.3328
+Expectancy (avg/trade): 0.0691
+Max Drawdown (points): 1.8077
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 0.3313
+USDJPY - 2015:
+Trades: 11
+Total PnL (points): 0.1949
+Gross Profit: 1.9415
+Gross Loss: -1.7466
+Profit Factor: 1.1116
+Winrate: 0.4545
+Avg Win: 0.3883
+Avg Loss: -0.2911
+Expectancy (avg/trade): 0.0177
+Max Drawdown (points): 0.7953
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 0.1377
+USDJPY - 2016:
+Trades: 9
+Total PnL (points): 5.0751
+Gross Profit: 6.3224
+Gross Loss: -1.2473
+Profit Factor: 5.0689
+Winrate: 0.6667
+Avg Win: 1.0537
+Avg Loss: -0.4158
+Expectancy (avg/trade): 0.5639
+Max Drawdown (points): 0.8992
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.6154
+USDJPY - 2017:
+Trades: 6
+Total PnL (points): 0.3524
+Gross Profit: 0.9069
+Gross Loss: -0.5545
+Profit Factor: 1.6355
+Winrate: 0.1667
+Avg Win: 0.9069
+Avg Loss: -0.1109
+Expectancy (avg/trade): 0.0587
+Max Drawdown (points): 0.3974
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 0.3418
+USDJPY - 2018:
+Trades: 10
+Total PnL (points): 2.0120
+Gross Profit: 2.5924
+Gross Loss: -0.5804
+Profit Factor: 4.4666
+Winrate: 0.6000
+Avg Win: 0.4321
+Avg Loss: -0.1451
+Expectancy (avg/trade): 0.2012
+Max Drawdown (points): 0.4781
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.5071
+USDJPY - 2019:
+Trades: 6
+Total PnL (points): -1.1086
+Gross Profit: 0.0049
+Gross Loss: -1.1135
+Profit Factor: 0.0044
+Winrate: 0.1667
+Avg Win: 0.0049
+Avg Loss: -0.2227
+Expectancy (avg/trade): -0.1848
+Max Drawdown (points): 1.0655
+Max Losing Streak (trades): 4
+Sharpe (trade-level): -2.4744
+USDJPY - 2020:
+Trades: 11
+Total PnL (points): -0.8951
+Gross Profit: 1.5065
+Gross Loss: -2.4016
+Profit Factor: 0.6273
+Winrate: 0.4545
+Avg Win: 0.3013
+Avg Loss: -0.4003
+Expectancy (avg/trade): -0.0814
+Max Drawdown (points): 1.1803
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.4748
+USDJPY - 2021:
+Trades: 10
+Total PnL (points): -0.0240
+Gross Profit: 1.2105
+Gross Loss: -1.2345
+Profit Factor: 0.9806
+Winrate: 0.5000
+Avg Win: 0.2421
+Avg Loss: -0.2469
+Expectancy (avg/trade): -0.0024
+Max Drawdown (points): 0.8064
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.0250
+USDJPY - 2022:
+Trades: 8
+Total PnL (points): 1.6652
+Gross Profit: 2.4757
+Gross Loss: -0.8105
+Profit Factor: 3.0545
+Winrate: 0.3750
+Avg Win: 0.8252
+Avg Loss: -0.1621
+Expectancy (avg/trade): 0.2081
+Max Drawdown (points): 0.4173
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 1.1032
+USDJPY - 2023:
+Trades: 9
+Total PnL (points): -1.9269
+Gross Profit: 4.1596
+Gross Loss: -6.0865
+Profit Factor: 0.6834
+Winrate: 0.4444
+Avg Win: 1.0399
+Avg Loss: -1.2173
+Expectancy (avg/trade): -0.2141
+Max Drawdown (points): 4.0444
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.4201
+USDJPY - 2024:
+Trades: 12
+Total PnL (points): 5.1728
+Gross Profit: 7.9723
+Gross Loss: -2.7995
+Profit Factor: 2.8478
+Winrate: 0.5833
+Avg Win: 1.1389
+Avg Loss: -0.5599
+Expectancy (avg/trade): 0.4311
+Max Drawdown (points): 0.9952
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 1.1985
+USDJPY - 2025:
+Trades: 13
+Total PnL (points): -0.8453
+Gross Profit: 1.9484
+Gross Loss: -2.7937
+Profit Factor: 0.6974
+Winrate: 0.4615
+Avg Win: 0.3247
+Avg Loss: -0.3991
+Expectancy (avg/trade): -0.0650
+Max Drawdown (points): 1.1602
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.4756
+
+Endast longs:
+Market: USDJPY
+Trades: 168
+Total PnL (points): 13.5762
+Gross Profit: 45.0943
+Gross Loss: -31.5181
+Profit Factor: 1.4307
+Winrate: 0.5179
+Avg Win: 0.5183
+Avg Loss: -0.3891
+Expectancy (avg/trade): 0.0808
+Max Drawdown (points): 5.6100
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 1.4444
+--- PER-ÅR STATS ---
+USDJPY - 2012:
+Trades: 17
+Total PnL (points): 3.4693
+Gross Profit: 5.0879
+Gross Loss: -1.6186
+Profit Factor: 3.1434
+Winrate: 0.6471
+Avg Win: 0.4625
+Avg Loss: -0.2698
+Expectancy (avg/trade): 0.2041
+Max Drawdown (points): 0.7341
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.6883
+USDJPY - 2013:
+Trades: 21
+Total PnL (points): 2.7479
+Gross Profit: 9.3428
+Gross Loss: -6.5949
+Profit Factor: 1.4167
+Winrate: 0.5714
+Avg Win: 0.7786
+Avg Loss: -0.7328
+Expectancy (avg/trade): 0.1309
+Max Drawdown (points): 3.0854
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 0.5423
+USDJPY - 2014:
+Trades: 12
+Total PnL (points): 3.2908
+Gross Profit: 5.1794
+Gross Loss: -1.8886
+Profit Factor: 2.7425
+Winrate: 0.5000
+Avg Win: 0.8632
+Avg Loss: -0.3148
+Expectancy (avg/trade): 0.2742
+Max Drawdown (points): 1.4764
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 0.7144
+USDJPY - 2015:
+Trades: 11
+Total PnL (points): 0.7779
+Gross Profit: 2.2425
+Gross Loss: -1.4646
+Profit Factor: 1.5311
+Winrate: 0.4545
+Avg Win: 0.4485
+Avg Loss: -0.2441
+Expectancy (avg/trade): 0.0707
+Max Drawdown (points): 0.9432
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.4580
+USDJPY - 2016:
+Trades: 12
+Total PnL (points): 2.5108
+Gross Profit: 4.1193
+Gross Loss: -1.6085
+Profit Factor: 2.5610
+Winrate: 0.5833
+Avg Win: 0.5885
+Avg Loss: -0.3217
+Expectancy (avg/trade): 0.2092
+Max Drawdown (points): 1.0553
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 1.2528
+USDJPY - 2017:
+Trades: 15
+Total PnL (points): -0.1205
+Gross Profit: 2.2164
+Gross Loss: -2.3369
+Profit Factor: 0.9484
+Winrate: 0.4000
+Avg Win: 0.3694
+Avg Loss: -0.2597
+Expectancy (avg/trade): -0.0080
+Max Drawdown (points): 1.5965
+Max Losing Streak (trades): 5
+Sharpe (trade-level): -0.0689
+USDJPY - 2018:
+Trades: 13
+Total PnL (points): 0.3417
+Gross Profit: 1.3603
+Gross Loss: -1.0186
+Profit Factor: 1.3355
+Winrate: 0.5385
+Avg Win: 0.1943
+Avg Loss: -0.1698
+Expectancy (avg/trade): 0.0263
+Max Drawdown (points): 0.8226
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 0.4356
+USDJPY - 2019:
+Trades: 5
+Total PnL (points): -2.0735
+Gross Profit: 0.0509
+Gross Loss: -2.1244
+Profit Factor: 0.0240
+Winrate: 0.2000
+Avg Win: 0.0509
+Avg Loss: -0.5311
+Expectancy (avg/trade): -0.4147
+Max Drawdown (points): 2.0272
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -1.1959
+USDJPY - 2020:
+Trades: 10
+Total PnL (points): 0.6100
+Gross Profit: 1.9696
+Gross Loss: -1.3596
+Profit Factor: 1.4487
+Winrate: 0.4000
+Avg Win: 0.4924
+Avg Loss: -0.2266
+Expectancy (avg/trade): 0.0610
+Max Drawdown (points): 0.8457
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.3524
+USDJPY - 2021:
+Trades: 11
+Total PnL (points): -0.6091
+Gross Profit: 1.7474
+Gross Loss: -2.3565
+Profit Factor: 0.7415
+Winrate: 0.5455
+Avg Win: 0.2912
+Avg Loss: -0.4713
+Expectancy (avg/trade): -0.0554
+Max Drawdown (points): 1.8837
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.3977
+USDJPY - 2022:
+Trades: 13
+Total PnL (points): -1.5703
+Gross Profit: 3.2614
+Gross Loss: -4.8317
+Profit Factor: 0.6750
+Winrate: 0.4615
+Avg Win: 0.5436
+Avg Loss: -0.6902
+Expectancy (avg/trade): -0.1208
+Max Drawdown (points): 2.5092
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.4654
+USDJPY - 2023:
+Trades: 9
+Total PnL (points): 1.2701
+Gross Profit: 2.8315
+Gross Loss: -1.5614
+Profit Factor: 1.8134
+Winrate: 0.5556
+Avg Win: 0.5663
+Avg Loss: -0.3904
+Expectancy (avg/trade): 0.1411
+Max Drawdown (points): 1.5155
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 0.6555
+USDJPY - 2024:
+Trades: 11
+Total PnL (points): 2.3519
+Gross Profit: 3.3554
+Gross Loss: -1.0035
+Profit Factor: 3.3437
+Winrate: 0.5455
+Avg Win: 0.5592
+Avg Loss: -0.2007
+Expectancy (avg/trade): 0.2138
+Max Drawdown (points): 0.6763
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 1.3925
+USDJPY - 2025:
+Trades: 8
+Total PnL (points): 0.5792
+Gross Profit: 2.3295
+Gross Loss: -1.7503
+Profit Factor: 1.3309
+Winrate: 0.6250
+Avg Win: 0.4659
+Avg Loss: -0.5834
+Expectancy (avg/trade): 0.0724
+Max Drawdown (points): 0.9771
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.3013
+
+Det där är en ganska stor skillnad. Longs har högre edge, lägre drawdown, bättre riskjusterad avkastning och jämnare profil totalt. Shorts är fortfarande
+inte värdelösa, PF på 1.2 är fortfarande mer en 1, problemet är att shorts har flera riktigt svaga år vilket bidrar mer till drawdown än total edge. 
+Det är ganska vanligt. Marknader är ofta inte symmetriska över lång tid, särskilt inte när centralbanksmiljöer skiljer sig och risk sentiment driver
+JPY-flöden ojämnt vilket kan göra att uppåtgående continuation har “renare” follow-through än nedåtgående. Det är för tidigt att dra slutsatsen att shorts 
+ska bort permanent om samplet ligger i en lång period där /JPY haft en strukturell bullish bias. Åren 2012 - 2026 har varit bullish för /JPY par och därför
+är longs bättre i vårat sample. Vi har två hypoteser: Hypotes A är att strategin är genuint bättre på longs än shorts, oavsett regim. Hypotes B är att 
+strategin är ungefär symmetrisk i grunden, men 2012–2026 gav fler eller bättre bullish möjligheter i /JPY. Vi väljer därför inte bort shorts på grund av 
+makroskäl ännu, om vi ska göra det måste vi förtst och främst bevisa att Longs är fundamentalt bättre i alla strukturer. Vi kan faktiskt få tag på data 
+från 2003/05 och framåt vilket kan erbjuda mer insikt eftersom USDJPY var mer bearish i början av 2000-talet. Vi testar endast shorts för 2003/05 - 2012:
+Market: USDJPY
+Trades: 101
+Total PnL (points): -13.8881
+Gross Profit: 19.2868
+Gross Loss: -33.1749
+Profit Factor: 0.5814
+Winrate: 0.3168
+Avg Win: 0.6027
+Avg Loss: -0.4808
+Expectancy (avg/trade): -0.1375
+Max Drawdown (points): 17.9502
+Max Losing Streak (trades): 11
+Sharpe (trade-level): -1.9269
+--- PER-ÅR STATS ---
+USDJPY - 2003:
+Trades: 4
+Total PnL (points): 0.5486
+Gross Profit: 0.7658
+Gross Loss: -0.2172
+Profit Factor: 3.5258
+Winrate: 0.5000
+Avg Win: 0.3829
+Avg Loss: -0.1086
+Expectancy (avg/trade): 0.1372
+Max Drawdown (points): 0.0681
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 0.6945
+USDJPY - 2004:
+Trades: 10
+Total PnL (points): 2.0870
+Gross Profit: 2.8485
+Gross Loss: -0.7615
+Profit Factor: 3.7406
+Winrate: 0.5000
+Avg Win: 0.5697
+Avg Loss: -0.1523
+Expectancy (avg/trade): 0.2087
+Max Drawdown (points): 0.6434
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 1.2583
+USDJPY - 2005:
+Trades: 8
+Total PnL (points): -2.1628
+Gross Profit: 0.9796
+Gross Loss: -3.1424
+Profit Factor: 0.3117
+Winrate: 0.5000
+Avg Win: 0.2449
+Avg Loss: -0.7856
+Expectancy (avg/trade): -0.2703
+Max Drawdown (points): 2.8614
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -1.0046
+USDJPY - 2006:
+Trades: 10
+Total PnL (points): 0.6250
+Gross Profit: 2.4528
+Gross Loss: -1.8278
+Profit Factor: 1.3419
+Winrate: 0.2000
+Avg Win: 1.2264
+Avg Loss: -0.2285
+Expectancy (avg/trade): 0.0625
+Max Drawdown (points): 1.0913
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 0.2788
+USDJPY - 2007:
+Trades: 7
+Total PnL (points): -1.7897
+Gross Profit: 2.5728
+Gross Loss: -4.3625
+Profit Factor: 0.5898
+Winrate: 0.2857
+Avg Win: 1.2864
+Avg Loss: -0.8725
+Expectancy (avg/trade): -0.2557
+Max Drawdown (points): 4.0656
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.5506
+USDJPY - 2008:
+Trades: 14
+Total PnL (points): -2.5574
+Gross Profit: 4.1957
+Gross Loss: -6.7531
+Profit Factor: 0.6213
+Winrate: 0.2143
+Avg Win: 1.3986
+Avg Loss: -0.6139
+Expectancy (avg/trade): -0.1827
+Max Drawdown (points): 4.9438
+Max Losing Streak (trades): 8
+Sharpe (trade-level): -0.7171
+USDJPY - 2009:
+Trades: 14
+Total PnL (points): -7.8024
+Gross Profit: 1.4768
+Gross Loss: -9.2792
+Profit Factor: 0.1592
+Winrate: 0.1429
+Avg Win: 0.7384
+Avg Loss: -0.7733
+Expectancy (avg/trade): -0.5573
+Max Drawdown (points): 8.5811
+Max Losing Streak (trades): 11
+Sharpe (trade-level): -2.6654
+USDJPY - 2010:
+Trades: 8
+Total PnL (points): -0.8728
+Gross Profit: 1.4287
+Gross Loss: -2.3015
+Profit Factor: 0.6208
+Winrate: 0.3750
+Avg Win: 0.4762
+Avg Loss: -0.4603
+Expectancy (avg/trade): -0.1091
+Max Drawdown (points): 2.2884
+Max Losing Streak (trades): 4
+Sharpe (trade-level): -0.5322
+USDJPY - 2011:
+Trades: 26
+Total PnL (points): -1.9636
+Gross Profit: 2.5661
+Gross Loss: -4.5297
+Profit Factor: 0.5665
+Winrate: 0.3462
+Avg Win: 0.2851
+Avg Loss: -0.2665
+Expectancy (avg/trade): -0.0755
+Max Drawdown (points): 2.4869
+Max Losing Streak (trades): 6
+Sharpe (trade-level): -0.9636
+
+Och endast longs: 
+Market: USDJPY
+Trades: 54
+Total PnL (points): 1.8926
+Gross Profit: 13.7974
+Gross Loss: -11.9048
+Profit Factor: 1.1590
+Winrate: 0.4815
+Avg Win: 0.5307
+Avg Loss: -0.4252
+Expectancy (avg/trade): 0.0350
+Max Drawdown (points): 2.9945
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 0.4270
+--- PER-ÅR STATS ---
+USDJPY - 2003:
+Trades: 4
+Total PnL (points): -1.9184
+Gross Profit: 0.0000
+Gross Loss: -1.9184
+Profit Factor: 0.0000
+Winrate: 0.0000
+Avg Win: nan
+Avg Loss: -0.4796
+Expectancy (avg/trade): -0.4796
+Max Drawdown (points): 1.5863
+Max Losing Streak (trades): 4
+Sharpe (trade-level): -4.0792
+USDJPY - 2004:
+Trades: 7
+Total PnL (points): 3.3963
+Gross Profit: 3.8735
+Gross Loss: -0.4772
+Profit Factor: 8.1171
+Winrate: 0.7143
+Avg Win: 0.7747
+Avg Loss: -0.2386
+Expectancy (avg/trade): 0.4852
+Max Drawdown (points): 0.4772
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.6839
+USDJPY - 2005:
+Trades: 6
+Total PnL (points): 1.5624
+Gross Profit: 2.1645
+Gross Loss: -0.6021
+Profit Factor: 3.5949
+Winrate: 0.8333
+Avg Win: 0.4329
+Avg Loss: -0.6021
+Expectancy (avg/trade): 0.2604
+Max Drawdown (points): 0.0000
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 1.3272
+USDJPY - 2006:
+Trades: 5
+Total PnL (points): -0.8425
+Gross Profit: 0.5888
+Gross Loss: -1.4313
+Profit Factor: 0.4114
+Winrate: 0.4000
+Avg Win: 0.2944
+Avg Loss: -0.4771
+Expectancy (avg/trade): -0.1685
+Max Drawdown (points): 1.0002
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.7636
+USDJPY - 2007:
+Trades: 7
+Total PnL (points): 1.3553
+Gross Profit: 2.4015
+Gross Loss: -1.0462
+Profit Factor: 2.2955
+Winrate: 0.7143
+Avg Win: 0.4803
+Avg Loss: -0.5231
+Expectancy (avg/trade): 0.1936
+Max Drawdown (points): 1.0462
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.7672
+USDJPY - 2008:
+Trades: 7
+Total PnL (points): 0.8033
+Gross Profit: 1.4945
+Gross Loss: -0.6912
+Profit Factor: 2.1622
+Winrate: 0.7143
+Avg Win: 0.2989
+Avg Loss: -0.3456
+Expectancy (avg/trade): 0.1148
+Max Drawdown (points): 0.5981
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 0.8348
+USDJPY - 2009:
+Trades: 6
+Total PnL (points): -0.6326
+Gross Profit: 1.2669
+Gross Loss: -1.8995
+Profit Factor: 0.6670
+Winrate: 0.1667
+Avg Win: 1.2669
+Avg Loss: -0.3799
+Expectancy (avg/trade): -0.1054
+Max Drawdown (points): 1.1633
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.3608
+USDJPY - 2011:
+Trades: 12
+Total PnL (points): -1.8312
+Gross Profit: 2.0077
+Gross Loss: -3.8389
+Profit Factor: 0.5230
+Winrate: 0.2500
+Avg Win: 0.6692
+Avg Loss: -0.4265
+Expectancy (avg/trade): -0.1526
+Max Drawdown (points): 2.8261
+Max Losing Streak (trades): 4
+Sharpe (trade-level): -0.9090
+Shorts är även svaga under bearish struktur vilket skjuter hål på hypotesen att shorts bara ser sämre ut för att 2012 - 2026 var bullish. När vi ändrade 
+makrostruktur fick shorts negativ expectancy och stor drawdown, longs var svaga men hade fortfarande en positiv expectancy. Sanning lutar mot Hypotes A,
+alltså att strategin är fundamentalt bättre på longs än shorts. Det intressanta när vi kollar på per år stats är att 2008 - 2009 peridoen var extremt
+sårbar för shorts. Åren innan och åren efter är i helhet acceptabla. 2003 - 2007 är det blandade resultat med några bra och några dåliga år men edge
+finns fortfarande. 2008 - 2009 är helt detrimental. Åren efter 2010 - 2025 är ojämnt men mycket mer balanserat och faktiskt tradeable. Detta faktum 
+ändrar frågan från “är shorts fundamentalt sämre än longs?” till “är shorts en edge som fungerar i normala/trendande intradagsmiljöer men kollapsar 
+i vissa stress- eller dislokationsregimer som finanskrisen 2008?". Om 2008 - 2009 är den riktiga boven så kanske vi inte borde kasta bort shorts, utan
+istället lägga till ett regimfilter. 2008-2009 var inte bara bearish eller volatilt, det var också extrem marknadstruktur med explosiva, nyhetsdrivande,
+stökiga prisrörelser vilket kan innebära att shorts dör under krisregimer med dålig continuation kvalité. Longs är fortfarande den starkare och mer 
+robusta sidan, men shorts verkar inte vara generellt obrukbara. Deras historiska svaghet verkar delvis drivas av specifika stressregimer — särskilt 
+2008–2009 — där bearish breakout continuation i USDJPY blir mycket sämre matchad med strategins logik. Utanför sådana extrema perioder ser short-sidan 
+mer balanserad och stundtals fullt acceptabel ut.
