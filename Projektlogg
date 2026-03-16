@@ -1122,4 +1122,16 @@ istället lägga till ett regimfilter. 2008-2009 var inte bara bearish eller vol
 stökiga prisrörelser vilket kan innebära att shorts dör under krisregimer med dålig continuation kvalité. Longs är fortfarande den starkare och mer 
 robusta sidan, men shorts verkar inte vara generellt obrukbara. Deras historiska svaghet verkar delvis drivas av specifika stressregimer — särskilt 
 2008–2009 — där bearish breakout continuation i USDJPY blir mycket sämre matchad med strategins logik. Utanför sådana extrema perioder ser short-sidan 
-mer balanserad och stundtals fullt acceptabel ut.
+mer balanserad och stundtals fullt acceptabel ut. Exkluderar vi 2008 och 2009 från datan hela perioden 2003(05) - 2025 blir resultaten för shorts:
+{'Trades': 221, 
+'Total PnL (points)': 3.406900000001296, 
+'Gross Profit': 55.045500000000395, 
+'Gross Loss': -51.63859999999913, 
+'Profit Factor': 1.0659758397787957, 
+'Winrate': 0.4298642533936652, 
+'Avg Win': 0.5794263157894778, 
+'Avg Loss': -0.40983015873015183, 
+'Expectancy (avg/trade)': 0.015415837104078263, 
+'Max Drawdown (points)': 11.012299999999184, 
+'Max Losing Streak (trades)': 6, 
+'Sharpe (trade-level)': 0.3112757813085133}
