@@ -1135,4 +1135,1092 @@ mer balanserad och stundtals fullt acceptabel ut. Exkluderar vi 2008 och 2009 fr
 'Max Drawdown (points)': 11.012299999999184, 
 'Max Losing Streak (trades)': 6, 
 'Sharpe (trade-level)': 0.3112757813085133}
+Vi skulle kunna testa att mäta marknadsmiljön och stänga på/av shorts. Vi kan t.ex. testa att mäta Asia range percentil, daily ATR percentil, intraday 
+expansion. Vi börjar kolla på asia range-percentil. Vi vill mäta om asia range för den dagen är ovanligt liten, stor eller normal. Detta kan säga oss
+hur "redan utsträckt" marknaden är. Så vi jämför asia_range = asia_high - asia_low mot historiska ranges. Sen rankar vi de olika percentil dagarna,
+vi vill ta reda på om våra dåliga short-trades är koncentrerade till dagar där Asia-rangen redan är extrem relativt historiken. 
+SHORTS > 80th percentile Asia range:
+{'Trades': 77, 'Total PnL (points)': 10.694300000000515, 'Gross Profit': 28.10100000000019, 'Gross Loss': -17.40669999999967, 
+'Profit Factor': 1.61437837154663, 'Winrate': 0.5194805194805194, 'Avg Win': 0.7025250000000047, 'Avg Loss': -0.4704513513513424, 
+'Expectancy (avg/trade)': 0.1388870129870197, 'Max Drawdown (points)': 3.87589999999983, 'Max Losing Streak (trades)': 4, 
+'Sharpe (trade-level)': 1.5285798050192805}
+SHORTS <= 80th percentile Asia range:
+{'Trades': 172, 'Total PnL (points)': -17.64719999999896, 'Gross Profit': 32.61700000000027, 'Gross Loss': -50.264199999999235, 
+'Profit Factor': 0.6489111534651056, 'Winrate': 0.3488372093023256, 'Avg Win': 0.5436166666666711, 'Avg Loss': -0.4487874999999932, 
+'Expectancy (avg/trade)': -0.10259999999999396, 'Max Drawdown (points)': 22.77179999999866, 'Max Losing Streak (trades)': 18, 
+'Sharpe (trade-level)': -1.8317272030973417}
+Det här är extremt starkt resultat och lite motsatsen till vad man intuitivt hade förväntat sig. Shorts är asia range är stor, större än 80% av 
+historiken är det en väldigt bra strategi, men under 80% är den i rent destruktiv. Shorts är alltså extremt beroende på att asia range är stor. Detta 
+säger en del om strukturen, när asia range är stor och marknaden rört sig mycket under natten finns det ofta makrodriv, trend och positionering därför
+fungerar breakout continuation. När asia range är liten är det ofta chop, fake moves och liquidity grabs. strategin flippar från negativ till stark 
+edge beroende på en enda variabel. Vi kollar på longs också bara för informationens skull: 
+LONGS > 80th percentile Asia range:
+{'Trades': 68, 'Total PnL (points)': 14.1372000000002, 'Gross Profit': 28.01890000000009, 'Gross Loss': -13.881699999999894, 
+'Profit Factor': 2.018405526700642, 'Winrate': 0.6029411764705882, 'Avg Win': 0.683387804878051, 'Avg Loss': -0.5141370370370331, 
+'Expectancy (avg/trade)': 0.20790000000000294, 'Max Drawdown (points)': 3.082899999999885, 'Max Losing Streak (trades)': 4, 
+'Sharpe (trade-level)': 1.878183387297637}
+LONGS <= 80th percentile Asia range:
+{'Trades': 141, 'Total PnL (points)': 3.597900000000949, 'Gross Profit': 28.96640000000037, 'Gross Loss': -25.36849999999941, 
+'Profit Factor': 1.1418254922443598, 'Winrate': 0.46808510638297873, 'Avg Win': 0.4388848484848541, 'Avg Loss': -0.3382466666666588, 
+'Expectancy (avg/trade)': 0.025517021276602474, 'Max Drawdown (points)': 4.0970999999994575, 'Max Losing Streak (trades)': 6, 
+'Sharpe (trade-level)': 0.5505190685713137}
+Detta är väldigt värdefullt och ändrar insikten helt och hållet, det är inte longs vs shorts längre, utan vi vet nu att strategin funkar när asia range 
+är stor. Det är en regim-driven strategi, inte en direktionel strategi. Strategin blir nu en high-volatility continuation model med asia range som
+regimdetektor där riktningen long/short är sekundär. Vi testar nu att köra om hela backtesten 2003(05) - 2025 och tillåter endast trades när asia
+range är över 80% av historikens (252 dagars) asia range:
+Market: USDJPY
+Trades: 150
+Total PnL (points): 26.4610
+Gross Profit: 57.9954
+Gross Loss: -31.5344
+Profit Factor: 1.8391
+Winrate: 0.5733
+Avg Win: 0.6744
+Avg Loss: -0.4927
+Expectancy (avg/trade): 0.1764
+Max Drawdown (points): 5.3630
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 2.5648
+--- PER-ÅR STATS ---
+USDJPY - 2003:
+Trades: 5
+Total PnL (points): -0.8555
+Gross Profit: 0.7169
+Gross Loss: -1.5724
+Profit Factor: 0.4559
+Winrate: 0.2000
+Avg Win: 0.7169
+Avg Loss: -0.3931
+Expectancy (avg/trade): -0.1711
+Max Drawdown (points): 1.4233
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.6668
+USDJPY - 2004:
+Trades: 8
+Total PnL (points): 4.3682
+Gross Profit: 4.8454
+Gross Loss: -0.4772
+Profit Factor: 10.1538
+Winrate: 0.7500
+Avg Win: 0.8076
+Avg Loss: -0.2386
+Expectancy (avg/trade): 0.5460
+Max Drawdown (points): 0.4772
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 2.1627
+USDJPY - 2005:
+Trades: 4
+Total PnL (points): 0.4626
+Gross Profit: 0.7088
+Gross Loss: -0.2462
+Profit Factor: 2.8790
+Winrate: 0.5000
+Avg Win: 0.3544
+Avg Loss: -0.1231
+Expectancy (avg/trade): 0.1157
+Max Drawdown (points): 0.0181
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.6850
+USDJPY - 2006:
+Trades: 3
+Total PnL (points): -0.6833
+Gross Profit: 0.0429
+Gross Loss: -0.7262
+Profit Factor: 0.0591
+Winrate: 0.3333
+Avg Win: 0.0429
+Avg Loss: -0.3631
+Expectancy (avg/trade): -0.2278
+Max Drawdown (points): 0.4311
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -1.6164
+USDJPY - 2007:
+Trades: 7
+Total PnL (points): 0.5253
+Gross Profit: 2.9547
+Gross Loss: -2.4294
+Profit Factor: 1.2162
+Winrate: 0.4286
+Avg Win: 0.9849
+Avg Loss: -0.6073
+Expectancy (avg/trade): 0.0750
+Max Drawdown (points): 1.7995
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 0.1764
+USDJPY - 2008:
+Trades: 6
+Total PnL (points): 2.5594
+Gross Profit: 4.3876
+Gross Loss: -1.8282
+Profit Factor: 2.4000
+Winrate: 0.6667
+Avg Win: 1.0969
+Avg Loss: -0.9141
+Expectancy (avg/trade): 0.4266
+Max Drawdown (points): 1.3901
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 0.8184
+USDJPY - 2009:
+Trades: 7
+Total PnL (points): -2.3537
+Gross Profit: 1.8298
+Gross Loss: -4.1835
+Profit Factor: 0.4374
+Winrate: 0.2857
+Avg Win: 0.9149
+Avg Loss: -0.8367
+Expectancy (avg/trade): -0.3362
+Max Drawdown (points): 4.1835
+Max Losing Streak (trades): 5
+Sharpe (trade-level): -0.8264
+USDJPY - 2011:
+Trades: 5
+Total PnL (points): -1.1795
+Gross Profit: 0.6968
+Gross Loss: -1.8763
+Profit Factor: 0.3714
+Winrate: 0.4000
+Avg Win: 0.3484
+Avg Loss: -0.6254
+Expectancy (avg/trade): -0.2359
+Max Drawdown (points): 1.8763
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.8113
+USDJPY - 2012:
+Trades: 12
+Total PnL (points): 3.6058
+Gross Profit: 3.9932
+Gross Loss: -0.3874
+Profit Factor: 10.3077
+Winrate: 0.6667
+Avg Win: 0.4992
+Avg Loss: -0.0968
+Expectancy (avg/trade): 0.3005
+Max Drawdown (points): 0.1331
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 2.1888
+USDJPY - 2013:
+Trades: 13
+Total PnL (points): 1.9727
+Gross Profit: 5.4701
+Gross Loss: -3.4974
+Profit Factor: 1.5640
+Winrate: 0.6923
+Avg Win: 0.6078
+Avg Loss: -0.8743
+Expectancy (avg/trade): 0.1517
+Max Drawdown (points): 2.1814
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.5972
+USDJPY - 2014:
+Trades: 7
+Total PnL (points): 5.1473
+Gross Profit: 5.4725
+Gross Loss: -0.3252
+Profit Factor: 16.8281
+Winrate: 0.7143
+Avg Win: 1.0945
+Avg Loss: -0.1626
+Expectancy (avg/trade): 0.7353
+Max Drawdown (points): 0.2111
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 1.1789
+USDJPY - 2015:
+Trades: 3
+Total PnL (points): 0.0667
+Gross Profit: 0.7768
+Gross Loss: -0.7101
+Profit Factor: 1.0939
+Winrate: 0.6667
+Avg Win: 0.3884
+Avg Loss: -0.7101
+Expectancy (avg/trade): 0.0222
+Max Drawdown (points): 0.7101
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 0.0607
+USDJPY - 2016:
+Trades: 11
+Total PnL (points): 4.3059
+Gross Profit: 5.4552
+Gross Loss: -1.1493
+Profit Factor: 4.7465
+Winrate: 0.7273
+Avg Win: 0.6819
+Avg Loss: -0.3831
+Expectancy (avg/trade): 0.3914
+Max Drawdown (points): 0.6241
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.9482
+USDJPY - 2017:
+Trades: 4
+Total PnL (points): 1.1176
+Gross Profit: 1.3868
+Gross Loss: -0.2692
+Profit Factor: 5.1516
+Winrate: 0.5000
+Avg Win: 0.6934
+Avg Loss: -0.1346
+Expectancy (avg/trade): 0.2794
+Max Drawdown (points): 0.0081
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 1.0785
+USDJPY - 2018:
+Trades: 6
+Total PnL (points): 2.5324
+Gross Profit: 2.5865
+Gross Loss: -0.0541
+Profit Factor: 47.8096
+Winrate: 0.8333
+Avg Win: 0.5173
+Avg Loss: -0.0541
+Expectancy (avg/trade): 0.4221
+Max Drawdown (points): 0.0541
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 2.7398
+USDJPY - 2020:
+Trades: 7
+Total PnL (points): -1.5577
+Gross Profit: 1.2359
+Gross Loss: -2.7936
+Profit Factor: 0.4424
+Winrate: 0.1429
+Avg Win: 1.2359
+Avg Loss: -0.4656
+Expectancy (avg/trade): -0.2225
+Max Drawdown (points): 2.0594
+Max Losing Streak (trades): 5
+Sharpe (trade-level): -0.8161
+USDJPY - 2021:
+Trades: 7
+Total PnL (points): -0.4447
+Gross Profit: 0.7297
+Gross Loss: -1.1744
+Profit Factor: 0.6213
+Winrate: 0.4286
+Avg Win: 0.2432
+Avg Loss: -0.2936
+Expectancy (avg/trade): -0.0635
+Max Drawdown (points): 0.4511
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.4491
+USDJPY - 2022:
+Trades: 15
+Total PnL (points): 1.3825
+Gross Profit: 5.7371
+Gross Loss: -4.3546
+Profit Factor: 1.3175
+Winrate: 0.6000
+Avg Win: 0.6375
+Avg Loss: -0.7258
+Expectancy (avg/trade): 0.0922
+Max Drawdown (points): 2.2921
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.3780
+USDJPY - 2023:
+Trades: 6
+Total PnL (points): 1.8664
+Gross Profit: 2.3656
+Gross Loss: -0.4992
+Profit Factor: 4.7388
+Winrate: 0.6667
+Avg Win: 0.5914
+Avg Loss: -0.2496
+Expectancy (avg/trade): 0.3111
+Max Drawdown (points): 0.4992
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.2635
+USDJPY - 2024:
+Trades: 12
+Total PnL (points): 5.3258
+Gross Profit: 6.6031
+Gross Loss: -1.2773
+Profit Factor: 5.1696
+Winrate: 0.7500
+Avg Win: 0.7337
+Avg Loss: -0.4258
+Expectancy (avg/trade): 0.4438
+Max Drawdown (points): 0.6362
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.7354
+USDJPY - 2025:
+Trades: 2
+Total PnL (points): -1.7032
+Gross Profit: 0.0000
+Gross Loss: -1.7032
+Profit Factor: 0.0000
+Winrate: 0.0000
+Avg Win: nan
+Avg Loss: -0.8516
+Expectancy (avg/trade): -0.8516
+Max Drawdown (points): 0.7421
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -7.7772
+Detta är otroligt starkt, drawdown kollapsar, losing streak halveras, sharpe exploderar och 2008-2009 är inte längre katastrof. 2009 är fortfarande lite
+svagt men dödar inte systemet, strategin överlever alltså krisregim. Det enda negativa är att vi får färre trades och vissa år med väldigt få trades 2-7. 
+Men det behöver inte vara ett problem om vi kombinerar flera marknader. Vi kan nu optimera tröskel och därmed kanske släppa in fler trades om det gynnar
+strategin. Vi testar volatility_filter = asia_range_pct_rank > 0.7:
+Market: USDJPY
+Trades: 213
+Total PnL (points): 33.6827
+Gross Profit: 76.5415
+Gross Loss: -42.8588
+Profit Factor: 1.7859
+Winrate: 0.5399
+Avg Win: 0.6656
+Avg Loss: -0.4373
+Expectancy (avg/trade): 0.1581
+Max Drawdown (points): 4.3175
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 2.8175
+0.6:
+Market: USDJPY
+Trades: 251
+Total PnL (points): 31.6779
+Gross Profit: 82.7199
+Gross Loss: -51.0420
+Profit Factor: 1.6206
+Winrate: 0.5219
+Avg Win: 0.6314
+Avg Loss: -0.4253
+Expectancy (avg/trade): 0.1262
+Max Drawdown (points): 5.7038
+Max Losing Streak (trades): 8
+Sharpe (trade-level): 2.5533
+0.7 är en bra balans där vi får fler trades än 0.8 samtidigt som edgen blir starkare. Vi vet nu att strategin fungerar som bäst på USDJPY när Asia range 
+är tydligt över genomsnittet, men inte nödvändigtvis extrem. Nu har vi byggt en robust strategi som överlever krisregimer på USDJPY. Nu är nästa steg
+att börja testa andra marknader. Vi testar andra /jpy par. Vi har data från 2003(05) - 2025 för GBPJPY men med ett uppehåll från 2005 - 2010. Vi testar
+GBPJPY med 0.5 slippage_pips och 1.2 fixed_spread_pips:
+Market: GBPJPY
+Trades: 199
+Total PnL (points): -4.5210
+Gross Profit: 98.4080
+Gross Loss: -102.9290
+Profit Factor: 0.9561
+Winrate: 0.4874
+Avg Win: 1.0145
+Avg Loss: -1.0091
+Expectancy (avg/trade): -0.0227
+Max Drawdown (points): 13.5940
+Max Losing Streak (trades): 7
+Sharpe (trade-level): -0.2154
+EURJPY med 0.35 slippage_pips och 0.9 fixed_spread_pips hela perioden 2003(05) - 2026:
+Market: EURJPY
+Trades: 224
+Total PnL (points): 24.1960
+Gross Profit: 94.4490
+Gross Loss: -70.2530
+Profit Factor: 1.3444
+Winrate: 0.5402
+Avg Win: 0.7806
+Avg Loss: -0.6821
+Expectancy (avg/trade): 0.1080
+Max Drawdown (points): 9.5120
+Max Losing Streak (trades): 11
+Sharpe (trade-level): 1.5078
+EURUSD med 0.2 slipapge och 0.6 spread:
+Market: EURUSD
+Trades: 193
+Total PnL (points): -0.1899
+Gross Profit: 0.5038
+Gross Loss: -0.6937
+Profit Factor: 0.7262
+Winrate: 0.5026
+Avg Win: 0.0052
+Avg Loss: -0.0072
+Expectancy (avg/trade): -0.0010
+Max Drawdown (points): 0.2528
+Max Losing Streak (trades): 7
+Sharpe (trade-level): -1.5541
+GBPUSD med 0.3 slippage och 0.8 spread:
+Market: GBPUSD
+Trades: 185
+Total PnL (points): 0.0211
+Gross Profit: 0.7081
+Gross Loss: -0.6869
+Profit Factor: 1.0307
+Winrate: 0.4757
+Avg Win: 0.0080
+Avg Loss: -0.0071
+Expectancy (avg/trade): 0.0001
+Max Drawdown (points): 0.1802
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 0.1238
+AUDUSD med 0.25 slippage och 0.7 spread:
+Market: AUDUSD
+Trades: 235
+Total PnL (points): -0.1420
+Gross Profit: 0.5787
+Gross Loss: -0.7207
+Profit Factor: 0.8029
+Winrate: 0.4553
+Avg Win: 0.0054
+Avg Loss: -0.0056
+Expectancy (avg/trade): -0.0006
+Max Drawdown (points): 0.2000
+Max Losing Streak (trades): 7
+Sharpe (trade-level): -1.1095
+Strategin är inte forex generell, den fungerar på JPY-specifik struktur men inte alla JPY-par. Det är USDJPY och EURJPY som strategin har stark edge på,
+de andra marknaderna har antingen ingen edge eller viss noise edge. Det är en väldigt specifik struktur som fungerar, JPY + ren makrodrivning + jämn
+intradags continuation. Att strategin fungerar bäst på USDJYP och EURJPY kan förklaras genom makrodrivning som räntedifferens, GBPJPY är troligtvis för
+volatil och explosiv. Därför kan det vara så att volatility_filter > 0.7 kan förstöra GBPJPY. Testar vi utan det filtret blir resultatet plötsligt 
+extremt mycket positivare:
+Market: GBPJPY
+Trades: 407
+Total PnL (points): 42.0930
+Gross Profit: 208.8270
+Gross Loss: -166.7340
+Profit Factor: 1.2525
+Winrate: 0.4963
+Avg Win: 1.0338
+Avg Loss: -0.8133
+Expectancy (avg/trade): 0.1034
+Max Drawdown (points): 13.8890
+Max Losing Streak (trades): 7
+Sharpe (trade-level): 1.2884
+SHORTS > 70th percentile Asia range
+{'Trades': 98, 'Total PnL (points)': -6.516999999999144, 'Gross Profit': 41.24100000000045, 'Gross Loss': -47.75799999999961, 
+'Profit Factor': 0.8635411868168847, 'Winrate': 0.4489795918367347, 'Avg Win': 0.9372954545454647, 'Avg Loss': -0.8844074074074002, 
+'Expectancy (avg/trade)': -0.06649999999999126, 'Max Drawdown (points)': 18.685999999999552, 'Max Losing Streak (trades)': 7, 
+'Sharpe (trade-level)': -0.49349503531065114}
+SHORTS <= 70th percentile Asia range
+{'Trades': 115, 'Total PnL (points)': 28.626000000000975, 'Gross Profit': 71.49100000000044, 'Gross Loss': -42.86499999999948, 
+'Profit Factor': 1.6678175667794541, 'Winrate': 0.48695652173913045, 'Avg Win': 1.276625000000008, 'Avg Loss': -0.7265254237288048, 
+'Expectancy (avg/trade)': 0.24892173913044327, 'Max Drawdown (points)': 5.826999999999855, 'Max Losing Streak (trades)': 5, 
+'Sharpe (trade-level)': 1.1910107013399682}
 
+LONGS > 70th percentile Asia range
+{'Trades': 85, 'Total PnL (points)': 15.894000000000506, 'Gross Profit': 54.05500000000022, 'Gross Loss': -38.160999999999724, 
+'Profit Factor': 1.4164985194308486, 'Winrate': 0.5647058823529412, 'Avg Win': 1.1261458333333378, 'Avg Loss': -1.031378378378371, 
+'Expectancy (avg/trade)': 0.18698823529412362, 'Max Drawdown (points)': 6.701999999999899, 'Max Losing Streak (trades)': 3, 
+'Sharpe (trade-level)': 1.1387239375013953}
+LONGS <= 70th percentile Asia range
+{'Trades': 106, 'Total PnL (points)': 0.6400000000009436, 'Gross Profit': 38.578000000000515, 'Gross Loss': -37.93799999999959, 
+'Profit Factor': 1.0168696293953539, 'Winrate': 0.49056603773584906, 'Avg Win': 0.7418846153846252, 'Avg Loss': -0.7025555555555479, 
+'Expectancy (avg/trade)': 0.006037735849065505, 'Max Drawdown (points)': 8.849999999999827, 'Max Losing Streak (trades)': 8, 
+'Sharpe (trade-level)': 0.05961373667998998}
+Kollar vi på trade kvalitén i de olika asia range percentilerna visar det att GBPJPY normalt sätt är alldeles för volatilt, så den volatilitet som vi
+söker i USDJPY och EURJPY över 0.7 blir för extrem för att strategin ska fungera på GBPJPY. Testar vi istället att begräns volatilitet för GBPJPY så 
+att volatility_filter = asia_range_pct_rank < 0.7:
+Market: GBPJPY
+Trades: 231
+Total PnL (points): 30.9190
+Gross Profit: 114.9350
+Gross Loss: -84.0160
+Profit Factor: 1.3680
+Winrate: 0.4935
+Avg Win: 1.0082
+Avg Loss: -0.7181
+Expectancy (avg/trade): 0.1338
+Max Drawdown (points): 8.5910
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 1.1639
+SHORTS > 70th percentile Asia range
+{}
+SHORTS <= 70th percentile Asia range
+{'Trades': 122, 'Total PnL (points)': 28.618000000001036, 'Gross Profit': 74.6960000000005, 'Gross Loss': -46.07799999999947, 
+'Profit Factor': 1.621077303702447, 'Winrate': 0.48360655737704916, 'Avg Win': 1.2660338983050932, 'Avg Loss': -0.7313968253968169, 
+'Expectancy (avg/trade)': 0.23457377049181177, 'Max Drawdown (points)': 5.826999999999852, 'Max Losing Streak (trades)': 5, 
+'Sharpe (trade-level)': 1.1787343548097406}
+
+LONGS > 70th percentile Asia range
+{}
+LONGS <= 70th percentile Asia range
+{'Trades': 109, 'Total PnL (points)': 2.3010000000009834, 'Gross Profit': 40.23900000000055, 'Gross Loss': -37.93799999999959, 
+'Profit Factor': 1.0606515894354205, 'Winrate': 0.5045871559633027, 'Avg Win': 0.7316181818181918, 'Avg Loss': -0.7025555555555479, 
+'Expectancy (avg/trade)': 0.02111009174312829, 'Max Drawdown (points)': 8.849999999999827, 'Max Losing Streak (trades)': 8, 
+'Sharpe (trade-level)': 0.21326238376836315}
+Detta gynnar alltså short men förstör longs. GBPJPY är alltså asymmetrisk, där shorts är starkare i låg vol och longs är starkare i hög vol. Bearish 
+rörelser är mer strukturerade och bullish rörelser är mer kaotiska. Baserat på denna information kan vi dra slutsatsen att volatiliteten inte är edgen, 
+utan rätt volatilitet för rätt marknad och riktning är edgen. Vi kan anpassa strategin till riktning i GBPJPY, att vi tar longs i högre vol och shorts 
+i lägre vol, men vi måste vara försiktiga att vi inte överanpassar här när vi går in och optimerar riktning på enskild marknad. Det är därför extremt 
+viktigt att tolka datan på rätt sätt och att dra rätt slutsatser. Vi avgör om detta funkar på bästa sätt genom att kolla om det är stabilt för high vol
+longs och low vol shorts i flera olika år. Om det är kluster finns det en risk. Vi vill också se en klar skillnad, inte bara att det ska vara marginellt
+bättre. Vi backtestar detta nu: 
+--- STATS ---
+Market: GBPJPY
+Trades: 220
+Total PnL (points): 38.6470
+Gross Profit: 129.5800
+Gross Loss: -90.9330
+Profit Factor: 1.4250
+Winrate: 0.5045
+Avg Win: 1.1674
+Avg Loss: -0.8342
+Expectancy (avg/trade): 0.1757
+Max Drawdown (points): 8.6970
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 1.3773
+--- PER-ÅR STATS ---
+GBPJPY - 2003:
+Trades: 1
+Total PnL (points): -2.2010
+Gross Profit: 0.0000
+Gross Loss: -2.2010
+Profit Factor: 0.0000
+Winrate: 0.0000
+Avg Win: nan
+Avg Loss: -2.2010
+Expectancy (avg/trade): -2.2010
+Max Drawdown (points): 0.0000
+Max Losing Streak (trades): 1
+Sharpe (trade-level): nan
+GBPJPY - 2004:
+Trades: 7
+Total PnL (points): -0.1980
+Gross Profit: 3.1300
+Gross Loss: -3.3280
+Profit Factor: 0.9405
+Winrate: 0.2857
+Avg Win: 1.5650
+Avg Loss: -0.6656
+Expectancy (avg/trade): -0.0283
+Max Drawdown (points): 2.3670
+Max Losing Streak (trades): 4
+Sharpe (trade-level): -0.0591
+GBPJPY - 2010:
+Trades: 17
+Total PnL (points): -1.8660
+Gross Profit: 9.8030
+Gross Loss: -11.6690
+Profit Factor: 0.8401
+Winrate: 0.5882
+Avg Win: 0.9803
+Avg Loss: -1.6670
+Expectancy (avg/trade): -0.1098
+Max Drawdown (points): 4.9430
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.2948
+GBPJPY - 2011:
+Trades: 23
+Total PnL (points): 1.4300
+Gross Profit: 11.9160
+Gross Loss: -10.4860
+Profit Factor: 1.1364
+Winrate: 0.4348
+Avg Win: 1.1916
+Avg Loss: -0.8066
+Expectancy (avg/trade): 0.0622
+Max Drawdown (points): 6.4750
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 0.2305
+GBPJPY - 2012:
+Trades: 22
+Total PnL (points): 4.1050
+Gross Profit: 10.7940
+Gross Loss: -6.6890
+Profit Factor: 1.6137
+Winrate: 0.5909
+Avg Win: 0.8303
+Avg Loss: -0.7432
+Expectancy (avg/trade): 0.1866
+Max Drawdown (points): 1.7590
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.9643
+GBPJPY - 2013:
+Trades: 18
+Total PnL (points): 4.6560
+Gross Profit: 13.9460
+Gross Loss: -9.2900
+Profit Factor: 1.5012
+Winrate: 0.6111
+Avg Win: 1.2678
+Avg Loss: -1.3271
+Expectancy (avg/trade): 0.2587
+Max Drawdown (points): 4.2490
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.5699
+GBPJPY - 2014:
+Trades: 22
+Total PnL (points): -2.2510
+Gross Profit: 10.2570
+Gross Loss: -12.5080
+Profit Factor: 0.8200
+Winrate: 0.3636
+Avg Win: 1.2821
+Avg Loss: -0.8934
+Expectancy (avg/trade): -0.1023
+Max Drawdown (points): 5.1180
+Max Losing Streak (trades): 4
+Sharpe (trade-level): -0.3077
+GBPJPY - 2015:
+Trades: 5
+Total PnL (points): -0.2150
+Gross Profit: 0.9780
+Gross Loss: -1.1930
+Profit Factor: 0.8198
+Winrate: 0.6000
+Avg Win: 0.3260
+Avg Loss: -0.5965
+Expectancy (avg/trade): -0.0430
+Max Drawdown (points): 1.1930
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.1638
+GBPJPY - 2016:
+Trades: 6
+Total PnL (points): 29.1760
+Gross Profit: 29.3400
+Gross Loss: -0.1640
+Profit Factor: 178.9024
+Winrate: 0.8333
+Avg Win: 5.8680
+Avg Loss: -0.1640
+Expectancy (avg/trade): 4.8627
+Max Drawdown (points): 0.1640
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 1.5233
+GBPJPY - 2017:
+Trades: 7
+Total PnL (points): 2.4730
+Gross Profit: 4.3770
+Gross Loss: -1.9040
+Profit Factor: 2.2988
+Winrate: 0.5714
+Avg Win: 1.0943
+Avg Loss: -0.6347
+Expectancy (avg/trade): 0.3533
+Max Drawdown (points): 1.6390
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.7860
+GBPJPY - 2018:
+Trades: 10
+Total PnL (points): -3.6440
+Gross Profit: 1.5600
+Gross Loss: -5.2040
+Profit Factor: 0.2998
+Winrate: 0.5000
+Avg Win: 0.3120
+Avg Loss: -1.0408
+Expectancy (avg/trade): -0.3644
+Max Drawdown (points): 2.1050
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -1.2182
+GBPJPY - 2019:
+Trades: 9
+Total PnL (points): 1.0700
+Gross Profit: 2.3990
+Gross Loss: -1.3290
+Profit Factor: 1.8051
+Winrate: 0.5556
+Avg Win: 0.4798
+Avg Loss: -0.3322
+Expectancy (avg/trade): 0.1189
+Max Drawdown (points): 0.7860
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 0.6883
+GBPJPY - 2020:
+Trades: 12
+Total PnL (points): -1.5500
+Gross Profit: 2.1510
+Gross Loss: -3.7010
+Profit Factor: 0.5812
+Winrate: 0.5000
+Avg Win: 0.3585
+Avg Loss: -0.6168
+Expectancy (avg/trade): -0.1292
+Max Drawdown (points): 2.5830
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.7476
+GBPJPY - 2021:
+Trades: 9
+Total PnL (points): 0.1940
+Gross Profit: 3.3120
+Gross Loss: -3.1180
+Profit Factor: 1.0622
+Winrate: 0.5556
+Avg Win: 0.6624
+Avg Loss: -0.7795
+Expectancy (avg/trade): 0.0216
+Max Drawdown (points): 1.8100
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.0696
+GBPJPY - 2022:
+Trades: 8
+Total PnL (points): 7.0830
+Gross Profit: 10.4520
+Gross Loss: -3.3690
+Profit Factor: 3.1024
+Winrate: 0.6250
+Avg Win: 2.0904
+Avg Loss: -1.1230
+Expectancy (avg/trade): 0.8854
+Max Drawdown (points): 2.3940
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.9504
+GBPJPY - 2023:
+Trades: 16
+Total PnL (points): 2.8430
+Gross Profit: 8.0400
+Gross Loss: -5.1970
+Profit Factor: 1.5470
+Winrate: 0.6250
+Avg Win: 0.8040
+Avg Loss: -0.8662
+Expectancy (avg/trade): 0.1777
+Max Drawdown (points): 2.9190
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 0.6849
+GBPJPY - 2024:
+Trades: 14
+Total PnL (points): -0.6940
+Gross Profit: 4.3190
+Gross Loss: -5.0130
+Profit Factor: 0.8616
+Winrate: 0.4286
+Avg Win: 0.7198
+Avg Loss: -0.6266
+Expectancy (avg/trade): -0.0496
+Max Drawdown (points): 2.5050
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.2199
+GBPJPY - 2025:
+Trades: 14
+Total PnL (points): -1.7640
+Gross Profit: 2.8060
+Gross Loss: -4.5700
+Profit Factor: 0.6140
+Winrate: 0.2143
+Avg Win: 0.9353
+Avg Loss: -0.4155
+Expectancy (avg/trade): -0.1260
+Max Drawdown (points): 2.9310
+Max Losing Streak (trades): 6
+Sharpe (trade-level): -0.7172
+Det är en förbättring i helhets edge men den är väldigt ojämn. 2016, när brexit skedde och pundet föll är en extrem outlier med +29 points på 6 trades.
+Detta är en varning. Tar vi bort 2016 från datan får vi:
+{'Trades': 214, 'Total PnL (points)': 9.471000000001727, 'Gross Profit': 100.24000000000078, 'Gross Loss': -90.76899999999905, 
+'Profit Factor': 1.104341790699488, 'Winrate': 0.4953271028037383, 'Avg Win': 0.9456603773584978, 'Avg Loss': -0.840453703703695, 
+'Expectancy (avg/trade)': 0.04425700934580246, 'Max Drawdown (points)': 9.494999999999346, 'Max Losing Streak (trades)': 6, 
+'Sharpe (trade-level)': 0.5104995654117898}
+Och separerar vi longs och shorts:
+
+SHORTS < 70th percentile Asia range
+{'Trades': 129, 'Total PnL (points)': 23.44900000000114, 'Gross Profit': 74.28800000000052, 'Gross Loss': -50.838999999999395, 
+'Profit Factor': 1.4612403863176184, 'Winrate': 0.46511627906976744, 'Avg Win': 1.238133333333342, 'Avg Loss': -0.7367971014492666, 
+'Expectancy (avg/trade)': 0.18177519379845844, 'Max Drawdown (points)': 7.168999999999862, 'Max Losing Streak (trades)': 5, 
+'Sharpe (trade-level)': 0.9629692336253519}
+
+LONGS > 70th percentile Asia range
+{'Trades': 91, 'Total PnL (points)': 15.198000000000594, 'Gross Profit': 55.29200000000025, 'Gross Loss': -40.09399999999966, 
+'Profit Factor': 1.3790592108545099, 'Winrate': 0.5604395604395604, 'Avg Win': 1.084156862745103, 'Avg Loss': -1.0023499999999914, 
+'Expectancy (avg/trade)': 0.16701098901099554, 'Max Drawdown (points)': 6.230999999999844, 'Max Losing Streak (trades)': 3, 
+'Sharpe (trade-level)': 1.081237798539953}
+Utan 2016 finns fortfarande viss edge, men detta visar att det är en väldigt konvec strategi som tjänar extremt mycket i extrem fall. För att minska 
+brus och göra regime definitionen lite mer stabil kan vi testa att lägga in en buffer zone, att våran tröksel för longs är 75 och 65 för shorts. På
+så sätt kan vi definiera regim mer exakt. Vi testar detta:
+Market: GBPJPY
+Trades: 191
+Total PnL (points): 49.7380
+Gross Profit: 122.1810
+Gross Loss: -72.4430
+Profit Factor: 1.6866
+Winrate: 0.5183
+Avg Win: 1.2342
+Avg Loss: -0.7874
+Expectancy (avg/trade): 0.2604
+Max Drawdown (points): 9.0060
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 1.8214
+GBPJPY - 2004:
+Trades: 5
+Total PnL (points): 1.5360
+Gross Profit: 3.1300
+Gross Loss: -1.5940
+Profit Factor: 1.9636
+Winrate: 0.4000
+Avg Win: 1.5650
+Avg Loss: -0.5313
+Expectancy (avg/trade): 0.3072
+Max Drawdown (points): 1.5940
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 0.4978
+GBPJPY - 2010:
+Trades: 13
+Total PnL (points): 2.5380
+Gross Profit: 8.9550
+Gross Loss: -6.4170
+Profit Factor: 1.3955
+Winrate: 0.6923
+Avg Win: 0.9950
+Avg Loss: -1.6042
+Expectancy (avg/trade): 0.1952
+Max Drawdown (points): 2.9260
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.4686
+GBPJPY - 2011:
+Trades: 21
+Total PnL (points): 3.0220
+Gross Profit: 11.9160
+Gross Loss: -8.8940
+Profit Factor: 1.3398
+Winrate: 0.4762
+Avg Win: 1.1916
+Avg Loss: -0.8085
+Expectancy (avg/trade): 0.1439
+Max Drawdown (points): 4.9070
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 0.5058
+GBPJPY - 2012:
+Trades: 20
+Total PnL (points): 5.4220
+Gross Profit: 11.0430
+Gross Loss: -5.6210
+Profit Factor: 1.9646
+Winrate: 0.6500
+Avg Win: 0.8495
+Avg Loss: -0.8030
+Expectancy (avg/trade): 0.2711
+Max Drawdown (points): 1.4120
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 1.3130
+GBPJPY - 2013:
+Trades: 12
+Total PnL (points): 4.1060
+Gross Profit: 10.1570
+Gross Loss: -6.0510
+Profit Factor: 1.6786
+Winrate: 0.5833
+Avg Win: 1.4510
+Avg Loss: -1.2102
+Expectancy (avg/trade): 0.3422
+Max Drawdown (points): 4.5580
+Max Losing Streak (trades): 3
+Sharpe (trade-level): 0.5486
+GBPJPY - 2014:
+Trades: 21
+Total PnL (points): -2.5860
+Gross Profit: 9.9220
+Gross Loss: -12.5080
+Profit Factor: 0.7933
+Winrate: 0.3333
+Avg Win: 1.4174
+Avg Loss: -0.8934
+Expectancy (avg/trade): -0.1231
+Max Drawdown (points): 5.1180
+Max Losing Streak (trades): 4
+Sharpe (trade-level): -0.3538
+GBPJPY - 2015:
+Trades: 4
+Total PnL (points): -0.8440
+Gross Profit: 0.3490
+Gross Loss: -1.1930
+Profit Factor: 0.2925
+Winrate: 0.5000
+Avg Win: 0.1745
+Avg Loss: -0.5965
+Expectancy (avg/trade): -0.2110
+Max Drawdown (points): 1.1930
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.8103
+GBPJPY - 2016:
+Trades: 6
+Total PnL (points): 29.1760
+Gross Profit: 29.3400
+Gross Loss: -0.1640
+Profit Factor: 178.9024
+Winrate: 0.8333
+Avg Win: 5.8680
+Avg Loss: -0.1640
+Expectancy (avg/trade): 4.8627
+Max Drawdown (points): 0.1640
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 1.5233
+GBPJPY - 2017:
+Trades: 4
+Total PnL (points): 2.8740
+Gross Profit: 3.4070
+Gross Loss: -0.5330
+Profit Factor: 6.3921
+Winrate: 0.5000
+Avg Win: 1.7035
+Avg Loss: -0.2665
+Expectancy (avg/trade): 0.7185
+Max Drawdown (points): 0.2680
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 1.1466
+GBPJPY - 2018:
+Trades: 9
+Total PnL (points): -3.7100
+Gross Profit: 1.4940
+Gross Loss: -5.2040
+Profit Factor: 0.2871
+Winrate: 0.4444
+Avg Win: 0.3735
+Avg Loss: -1.0408
+Expectancy (avg/trade): -0.4122
+Max Drawdown (points): 2.1050
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -1.2486
+GBPJPY - 2019:
+Trades: 9
+Total PnL (points): 1.0700
+Gross Profit: 2.3990
+Gross Loss: -1.3290
+Profit Factor: 1.8051
+Winrate: 0.5556
+Avg Win: 0.4798
+Avg Loss: -0.3322
+Expectancy (avg/trade): 0.1189
+Max Drawdown (points): 0.7860
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 0.6883
+GBPJPY - 2020:
+Trades: 11
+Total PnL (points): -1.8100
+Gross Profit: 1.8910
+Gross Loss: -3.7010
+Profit Factor: 0.5109
+Winrate: 0.4545
+Avg Win: 0.3782
+Avg Loss: -0.6168
+Expectancy (avg/trade): -0.1645
+Max Drawdown (points): 2.8430
+Max Losing Streak (trades): 3
+Sharpe (trade-level): -0.8882
+GBPJPY - 2021:
+Trades: 8
+Total PnL (points): -0.5570
+Gross Profit: 2.5610
+Gross Loss: -3.1180
+Profit Factor: 0.8214
+Winrate: 0.5000
+Avg Win: 0.6403
+Avg Loss: -0.7795
+Expectancy (avg/trade): -0.0696
+Max Drawdown (points): 1.8100
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.2075
+GBPJPY - 2022:
+Trades: 7
+Total PnL (points): 7.7640
+Gross Profit: 10.4520
+Gross Loss: -2.6880
+Profit Factor: 3.8884
+Winrate: 0.7143
+Avg Win: 2.0904
+Avg Loss: -1.3440
+Expectancy (avg/trade): 1.1091
+Max Drawdown (points): 2.0710
+Max Losing Streak (trades): 1
+Sharpe (trade-level): 1.0622
+GBPJPY - 2023:
+Trades: 15
+Total PnL (points): 3.3510
+Gross Profit: 8.0400
+Gross Loss: -4.6890
+Profit Factor: 1.7147
+Winrate: 0.6667
+Avg Win: 0.8040
+Avg Loss: -0.9378
+Expectancy (avg/trade): 0.2234
+Max Drawdown (points): 2.4110
+Max Losing Streak (trades): 2
+Sharpe (trade-level): 0.8183
+GBPJPY - 2024:
+Trades: 13
+Total PnL (points): -0.2770
+Gross Profit: 4.3190
+Gross Loss: -4.5960
+Profit Factor: 0.9397
+Winrate: 0.4615
+Avg Win: 0.7198
+Avg Loss: -0.6566
+Expectancy (avg/trade): -0.0213
+Max Drawdown (points): 2.0880
+Max Losing Streak (trades): 2
+Sharpe (trade-level): -0.0882
+GBPJPY - 2025:
+Trades: 13
+Total PnL (points): -1.3370
+Gross Profit: 2.8060
+Gross Loss: -4.1430
+Profit Factor: 0.6773
+Winrate: 0.2308
+Avg Win: 0.9353
+Avg Loss: -0.4143
+Expectancy (avg/trade): -0.1028
+Max Drawdown (points): 2.5040
+Max Losing Streak (trades): 5
+Sharpe (trade-level): -0.5467
+Utan 2016:
+{'Trades': 185, 'Total PnL (points)': 20.56200000000134, 'Gross Profit': 92.84100000000063, 'Gross Loss': -72.27899999999926, 
+'Profit Factor': 1.2844809695762474, 'Winrate': 0.5081081081081081, 'Avg Win': 0.9876702127659642, 'Avg Loss': -0.7942747252747171, 
+'Expectancy (avg/trade)': 0.11114594594595319, 'Max Drawdown (points)': 11.120999999999615, 'Max Losing Streak (trades)': 5, 
+'Sharpe (trade-level)': 1.174452183238217}
+SHORTS <= 70th percentile Asia range
+{'Trades': 113, 'Total PnL (points)': 26.118000000000915, 'Gross Profit': 68.34300000000042, 'Gross Loss': -42.22499999999948, 
+'Profit Factor': 1.6185435168739195, 'Winrate': 0.46017699115044247, 'Avg Win': 1.3142884615384696, 'Avg Loss': -0.6922131147540899, 
+'Expectancy (avg/trade)': 0.23113274336283995, 'Max Drawdown (points)': 8.712999999999756, 'Max Losing Streak (trades)': 5, 
+'Sharpe (trade-level)': 1.0930054791937047}
+LONGS > 70th percentile Asia range
+{'Trades': 78, 'Total PnL (points)': 23.620000000000424, 'Gross Profit': 53.838000000000186, 'Gross Loss': -30.21799999999978, 
+'Profit Factor': 1.7816533192137327, 'Winrate': 0.6025641025641025, 'Avg Win': 1.1454893617021316, 'Avg Loss': -0.97477419354838, 
+'Expectancy (avg/trade)': 0.30282051282051825, 'Max Drawdown (points)': 5.973999999999847, 'Max Losing Streak (trades)': 3, 
+'Sharpe (trade-level)': 1.7711064613712673}
+Det viktigast som buffer zone erbjuder är överlevande edge utan extremen 2016. Denna är nu okej att låsa in som kandidat till portföljen. Vi har USDJPY,
+EURJPY med volatility_filter > 0.7 och GBPJPY där shorts < 0.65 och longs > 0.75. Även fast strategin behövde lite justering för att kunna utnyttja 
+GBPJPYs microstruktur är det väldigt tydligt att denna typen av strategi kan hitta edge i /JPY-par. Vi testar fler sådana med originalet 
+volatility_filter > 0.7. Vi testar förtst CHFJPY som liknar EURJPY med mindre noise och mer stabila prisrörelser, 0.3 slippage och 1.0 spread:
+Market: CHFJPY
+Trades: 211
+Total PnL (points): -8.5180
+Gross Profit: 59.0790
+Gross Loss: -67.5970
+Profit Factor: 0.8740
+Winrate: 0.5308
+Avg Win: 0.5275
+Avg Loss: -0.6828
+Expectancy (avg/trade): -0.0404
+Max Drawdown (points): 21.4650
+Max Losing Streak (trades): 10
+Sharpe (trade-level): -0.5823
+CADJPY som brukar vara medel volatil, fungerar edge i medium-vol marknader? 0.35 slippage och 1.1 spread: 
+Market: CADJPY
+Trades: 175
+Total PnL (points): 5.7970
+Gross Profit: 49.2910
+Gross Loss: -43.4940
+Profit Factor: 1.1333
+Winrate: 0.4914
+Avg Win: 0.5732
+Avg Loss: -0.4887
+Expectancy (avg/trade): 0.0331
+Max Drawdown (points): 14.7720
+Max Losing Streak (trades): 7
+Sharpe (trade-level): 0.5604
+AUDJPY som är rätt volatil men inte lika som GBPJPY, hur hanterar modellen semi-explosiva marknader? 0.40 slippage och 1.2 spread:
+Market: AUDJPY
+Trades: 215
+Total PnL (points): -4.6290
+Gross Profit: 62.4850
+Gross Loss: -67.1140
+Profit Factor: 0.9310
+Winrate: 0.4698
+Avg Win: 0.6187
+Avg Loss: -0.5887
+Expectancy (avg/trade): -0.0215
+Max Drawdown (points): 17.9940
+Max Losing Streak (trades): 13
+Sharpe (trade-level): -0.3281
+NZDJPY är mindre likvid med mer brus, robustness test. 0.50 slippage och 1.4 spread:
+Market: NZDJPY
+Trades: 245
+Total PnL (points): -19.0010
+Gross Profit: 86.4820
+Gross Loss: -105.4830
+Profit Factor: 0.8199
+Winrate: 0.4857
+Avg Win: 0.7267
+Avg Loss: -0.8372
+Expectancy (avg/trade): -0.0776
+Max Drawdown (points): 32.9540
+Max Losing Streak (trades): 5
+Sharpe (trade-level): -0.8873
+Vi kan nu dra slutsatsen att strategin inte är JPY edge. Det är en selektiv edge i specifika JPY-par. De JPY par som har edge har mer likheter med 
+varandra än de andra. USDJPY och EURJPY är centralbanksdrivna med rena trender och continuations, det är här den riktiga edgen finns. GBPJPY är ett 
+specialfall på grund av dess höga volatilitet, den kräver speciallogik med buffer och riktning. CHFJPY är mest intressant, dess likhet med EURJPY
+borde teoretiskt betyda att edge finns här med. Att det inte gör det bevisar att strategin kräver direktionelt makro flow, vilket CHFJPY saknar.
+USDJPY och EURJPY drivs av räntedifferanser och centralbanker som divergerar, detta innebär att kapital flödar vilket ger trend, vilket strategin
+kan utnyttja i continuation. Swiss Franc och Japanska Yen är båda två "safe-haven" valutor, båda stärks vid risk-off och försvagas vid risk-on. 
+Det finns ingen tydlig riktning vilket skapar mycket chop, vilket våran strategi inte kan utnyttja. Så när vi får breakout i CHFJPY men ingen
+continuation där pris istället mean revertar får vi många små wins och större losses, precis det som datan säger: Winrate: 53%, Avg win: 0.52,
+Avg loss: -0.68. Det kan vara rätt riktning ofta, men ingen fullföljning. Vi har våra portfölj kandidater nu, USDJPY, EURJPY och GBPJPY med buffer.
