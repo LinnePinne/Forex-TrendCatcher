@@ -108,4 +108,229 @@ Prob(CAGR < 0): 0.00132
 Ni får Days: 8169 Years: 22.38. Det är rimligt för perioden, men i koden räknas detta från daglig resamplad equity över hela tidsintervallet. Om det 
 finns långa hål i underliggande data, särskilt i GBPJPY, så kommer tiden ändå räknas som om portföljen “levde” genom luckorna. Det är inte nödvändigtvis 
 fel, men det gör CAGR lite lägre eftersom tiden inkluderar perioder där ni inte hade någon möjlighet att handla vissa marknader. Sharpe runt 0.58–0.63 på 
-daily ann. är helt okej för en sådan här lång historik, särskilt med riktiga kostnader och flera marknader. Sortino över 1 är också bra.
+daily ann. är helt okej för en sådan här lång historik, särskilt med riktiga kostnader och flera marknader. Sortino över 1 är också bra. Vi borde köra
+portföljen på kortare delperioder, det säger mer om robusthet än bara full-period CAGR. 2012 - 2020:
+======================================================================
+ PORTFÖLJ-RESULTAT (USD) 
+======================================================================
+Start Capital: 50000.0000
+End Equity: 76098.3612
+Net PnL ($): 26098.3612
+Return (%): 52.1967
+Max Drawdown ($): 3904.1503
+Max Drawdown (%): 6.5761
+Markets: 3
+Trades Closed: 242
+Days: 2851.0000
+Years: 7.8110
+Sharpe (daily, ann.): 0.8327
+Sortino (daily, ann.): 1.8253
+CAGR (%): 5.5860
+Calmar: 0.8494
+Max DD MTM ($): 4888.5436
+Max DD MTM (%): 8.2227
+Max Intraday DD MTM ($): 2826.7553
+Max Intraday DD MTM (%): 4.0621
+Risk contributions:
+EURJPY 0.000386152601535212
+GBPJPY 0.000386152601535212
+USDJPY 0.0003861526015352121
+RC ratio max/min: 1.0000000000000002
+======================================================================
+ERC WEIGHTS (from equal-weight daily returns)
+======================================================================
+EURJPY: 0.4005
+GBPJPY: 0.1889
+USDJPY: 0.4106
+Sum: 1.0
+======================================================================
+PORTFÖLJ-RESULTAT (ERC weights)
+======================================================================
+Start Capital: 50000.0000
+End Equity: 73380.5464
+Net PnL ($): 23380.5464
+Return (%): 46.7611
+Max Drawdown ($): 2813.4694
+Max Drawdown (%): 4.8156
+Markets: 3
+Trades Closed: 242
+Days: 2851.0000
+Years: 7.8110
+Sharpe (daily, ann.): 0.9047
+Sortino (daily, ann.): 2.4155
+CAGR (%): 5.0341
+Calmar: 1.0454
+Max DD MTM ($): 4096.8140
+Max DD MTM (%): 6.9885
+Max Intraday DD MTM ($): 1966.9411
+Max Intraday DD MTM (%): 3.5193
+
+2020 - 2025:
+======================================================================
+ PORTFÖLJ-RESULTAT (USD) 
+======================================================================
+Start Capital: 50000.0000
+End Equity: 55797.5215
+Net PnL ($): 5797.5215
+Return (%): 11.5950
+Max Drawdown ($): 1864.9669
+Max Drawdown (%): 3.7509
+Markets: 3
+Trades Closed: 187
+Days: 2112.0000
+Years: 5.7863
+Sharpe (daily, ann.): 0.5113
+Sortino (daily, ann.): 0.8333
+CAGR (%): 2.0127
+Calmar: 0.5366
+Max DD MTM ($): 3171.2442
+Max DD MTM (%): 5.7257
+Max Intraday DD MTM ($): 3171.2442
+Max Intraday DD MTM (%): 5.7257
+Risk contributions:
+EURJPY 0.00022910276699082924
+GBPJPY 0.00022910276699082926
+USDJPY 0.0002291027669908292
+RC ratio max/min: 1.0000000000000002
+======================================================================
+ERC WEIGHTS (from equal-weight daily returns)
+======================================================================
+EURJPY: 0.3232
+GBPJPY: 0.3274
+USDJPY: 0.3494
+Sum: 1.0
+======================================================================
+PORTFÖLJ-RESULTAT (ERC weights)
+======================================================================
+Start Capital: 50000.0000
+End Equity: 55736.6253
+Net PnL ($): 5736.6253
+Return (%): 11.4733
+Max Drawdown ($): 2171.9720
+Max Drawdown (%): 4.3439
+Markets: 3
+Trades Closed: 187
+Days: 2112.0000
+Years: 5.7863
+Sharpe (daily, ann.): 0.5688
+Sortino (daily, ann.): 0.8823
+CAGR (%): 1.9904
+Calmar: 0.4582
+Max DD MTM ($): 3168.8067
+Max DD MTM (%): 5.7265
+Max Intraday DD MTM ($): 3168.8067
+Max Intraday DD MTM (%): 5.7265
+
+2003(05) - 2011:
+======================================================================
+ PORTFÖLJ-RESULTAT (USD) 
+======================================================================
+Start Capital: 50000.0000
+End Equity: 57746.4511
+Net PnL ($): 7746.4511
+Return (%): 15.4929
+Max Drawdown ($): 3586.8899
+Max Drawdown (%): 6.0329
+Markets: 3
+Trades Closed: 135
+Days: 2699.0000
+Years: 7.3945
+Sharpe (daily, ann.): 0.5324
+Sortino (daily, ann.): 0.8704
+CAGR (%): 1.9818
+Calmar: 0.3285
+Max DD MTM ($): 4247.5526
+Max DD MTM (%): 7.1115
+Max Intraday DD MTM ($): 3257.9985
+Max Intraday DD MTM (%): 5.4993
+Risk contributions:
+EURJPY 0.00020747061269687096
+GBPJPY 0.0002074706126968708
+USDJPY 0.0002074706126968711
+RC ratio max/min: 1.0000000000000013
+======================================================================
+ERC WEIGHTS (from equal-weight daily returns)
+======================================================================
+EURJPY: 0.2437
+GBPJPY: 0.4519
+USDJPY: 0.3044
+Sum: 1.0
+======================================================================
+PORTFÖLJ-RESULTAT (ERC weights)
+======================================================================
+Start Capital: 50000.0000
+End Equity: 56925.1813
+Net PnL ($): 6925.1813
+Return (%): 13.8504
+Max Drawdown ($): 3136.0878
+Max Drawdown (%): 5.4222
+Markets: 3
+Trades Closed: 135
+Days: 2699.0000
+Years: 7.3945
+Sharpe (daily, ann.): 0.5712
+Sortino (daily, ann.): 0.9402
+CAGR (%): 1.7832
+Calmar: 0.3289
+Max DD MTM ($): 3783.0686
+Max DD MTM (%): 6.5119
+Max Intraday DD MTM ($): 2633.2434
+Max Intraday DD MTM (%): 4.5628
+2012 - 2020 är den bästa perioden med stor marginal. 2020 - 2025 är positivt men klart svagare. Det är inte dåligt men det säger att portföljen inte är
+lika stark i den senare regim som i 2012-2020 där 2016 stack ut som extremt positiv. 2003(05) - 2011 är positiv men också svagare. 2020 - 2025 och
+2003(05) - 2011 är godkända men inte imponerande. Och de är de två som verkligen reflekterar hur stark edgen är eftersom 2016 var ett extrem år på grund
+av brexit och dess påverkan på GBPJPY. Vi vill inte förlita oss på ett sådant eller liknande event för att fånga samma edge i framtiden som 2012 - 2020.
+Att portföljen är godkänd i alla perioder men att resultaten varierar säger att den är regimkänslig men inte regimberoende till den grad att den 
+kollapsar. Vi vill också kolla hur mycket varje marknad bidrar till drawdown och pnl i varje delperiod.
+=== PnL attribution 2003(05)-2011 ===
+        Trades      PnL_USD  ...  PnL_Share_%  ProfitFactor
+Market                       ...                           
+EURJPY      75  2579.656301  ...    36.434094      1.262213
+GBPJPY      39  2290.990083  ...    32.357081      1.383798
+USDJPY      65  2209.689604  ...    31.208824      1.287101
+=== PnL attribution 2012-2020 ===
+        Trades       PnL_USD  ...  PnL_Share_%  ProfitFactor
+Market                        ...                           
+GBPJPY      96  13252.174277  ...    49.064003      1.944017
+USDJPY      91  11863.485679  ...    43.922611      2.590567
+EURJPY      91   1894.313887  ...     7.013387      1.134256
+=== PnL attribution 2021-2025 ===
+        Trades      PnL_USD  ...  PnL_Share_%  ProfitFactor
+Market                       ...                           
+EURJPY      58  4992.905688  ...    44.531605      1.728597
+GBPJPY      56  3825.110305  ...    34.116066      1.474223
+USDJPY      57  2394.033694  ...    21.352329      1.318686
+=== Realized DD attribution 2003(05)-2011 ===
+   Market  Trades      PnL_USD    MaxDD_USD  AvgTrade_USD
+0  EURJPY      75  2579.656301  2924.188944     34.395417
+1  GBPJPY      39  2290.990083  1858.089358     58.743335
+2  USDJPY      65  2209.689604  2175.658476     33.995225
+=== Realized DD attribution 2012-2020 ===
+   Market  Trades       PnL_USD    MaxDD_USD  AvgTrade_USD
+1  GBPJPY      96  13252.174277  3029.446200    138.043482
+2  USDJPY      91  11863.485679  1710.573749    130.367974
+0  EURJPY      91   1894.313887  2860.638423     20.816636
+=== Realized DD attribution 2021-2025 ===
+   Market  Trades      PnL_USD    MaxDD_USD  AvgTrade_USD
+0  EURJPY      58  4992.905688  2597.054658     86.084581
+1  GBPJPY      56  3825.110305  1396.776775     68.305541
+2  USDJPY      57  2394.033694  2291.743435     42.000591
+=== Daily attribution 2003(05)-2011 ===
+   Market      PnL_USD  DailyVol_USD    MaxDD_USD  BestDay_USD  WorstDay_USD
+0  EURJPY  2579.656301     67.444869  2924.188944  1241.051043  -1424.063201
+1  GBPJPY  2290.990083     53.542933  1858.089358   932.586632  -1077.976966
+2  USDJPY  2209.689604     52.974563  2175.658476  1088.594133  -1013.729547
+=== Daily attribution 2012-2020 ===
+   Market       PnL_USD  DailyVol_USD    MaxDD_USD  BestDay_USD  WorstDay_USD
+1  GBPJPY  13252.174277    166.903542  3029.446200  8089.833253  -1138.151480
+2  USDJPY  11863.485679     74.839499  1710.573749  2042.603666   -734.222709
+0  EURJPY   1894.313887     75.626961  2860.638423  1851.402608   -810.786461
+=== Daily attribution 2021-2025 ===
+   Market      PnL_USD  DailyVol_USD    MaxDD_USD  BestDay_USD  WorstDay_USD
+0  EURJPY  4992.905688     93.575453  2597.054658  2107.069679  -2164.636885
+1  GBPJPY  3825.110305     97.019993  1396.776775  2960.722542   -901.248227
+2  USDJPY  2394.033694     80.258577  2291.743435  1382.229063  -1730.277571
+Portföljen har roterande egde, 2003(05) - 2011 är balanserad, i 2012 - 2020 dominerar GBPJPY och USDJPY, och i 2021 - 2025 tar EURJPY över. Detta är
+extremt positivt för robusthet. 
+
+
