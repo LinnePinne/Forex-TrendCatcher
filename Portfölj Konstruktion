@@ -105,7 +105,7 @@ max    247711.912663     395.423825     -3.509114      1.347896      7.411885
 Prob(MaxDD worse than -10%): 0.48722
 Prob(MaxDD worse than -15%): 0.08848
 Prob(CAGR < 0): 0.00132
-Ni får Days: 8169 Years: 22.38. Det är rimligt för perioden, men i koden räknas detta från daglig resamplad equity över hela tidsintervallet. Om det 
+Vi får Days: 8169 Years: 22.38. Det är rimligt för perioden, men i koden räknas detta från daglig resamplad equity över hela tidsintervallet. Om det 
 finns långa hål i underliggande data, särskilt i GBPJPY, så kommer tiden ändå räknas som om portföljen “levde” genom luckorna. Det är inte nödvändigtvis 
 fel, men det gör CAGR lite lägre eftersom tiden inkluderar perioder där ni inte hade någon möjlighet att handla vissa marknader. Sharpe runt 0.58–0.63 på 
 daily ann. är helt okej för en sådan här lång historik, särskilt med riktiga kostnader och flera marknader. Sortino över 1 är också bra. Vi borde köra
@@ -331,6 +331,49 @@ USDJPY      57  2394.033694  ...    21.352329      1.318686
 1  GBPJPY  3825.110305     97.019993  1396.776775  2960.722542   -901.248227
 2  USDJPY  2394.033694     80.258577  2291.743435  1382.229063  -1730.277571
 Portföljen har roterande egde, 2003(05) - 2011 är balanserad, i 2012 - 2020 dominerar GBPJPY och USDJPY, och i 2021 - 2025 tar EURJPY över. Detta är
-extremt positivt för robusthet. 
-
+extremt positivt för robusthet. Vi har redan räknar ut ERC vikter och kört bootstrapp på equal weights och ERC, där vi fick: 
+======================================================================
+ERC WEIGHTS (from equal-weight daily returns)
+======================================================================
+EURJPY: 0.3567
+GBPJPY: 0.2456
+USDJPY: 0.3977
+Sum: 1.0
+======================================================================
+BOOTSTRAP SUMMARY (Equal weights)
+======================================================================
+           EndEquity  TotalReturn_%       MaxDD_%        Sharpe        CAGR_%
+count   50000.000000   50000.000000  50000.000000  50000.000000  50000.000000
+mean    97544.587537      95.089175    -10.525099      0.572947      2.913068
+std     23269.514185      46.539028      3.221869      0.171517      1.057974
+min     40824.817847     -18.350364    -39.923747     -0.196756     -0.901743
+5%      65900.478503      31.800957    -16.604575      0.284983      1.241389
+25%     81105.316316      62.210633    -12.200236      0.459528      2.184865
+50%     94237.710525      88.475421     -9.935046      0.576029      2.872356
+75%    110231.582228     120.463164     -8.219952      0.690249      3.595439
+95%    140080.789199     180.161578     -6.426303      0.849243      4.710616
+max    283337.710805     466.675422     -3.609657      1.261210      8.058720
+Prob(MaxDD worse than -10%): 0.49136
+Prob(MaxDD worse than -15%): 0.09228
+Prob(CAGR < 0): 0.00144
+======================================================================
+BOOTSTRAP SUMMARY (ERC weights)
+======================================================================
+           EndEquity  TotalReturn_%       MaxDD_%        Sharpe        CAGR_%
+count   50000.000000   50000.000000  50000.000000  50000.000000  50000.000000
+mean    95884.378158      91.768756    -10.484437      0.583936      2.845626
+std     21607.847676      43.215695      3.184175      0.178143      1.006394
+min     40871.845088     -18.256310    -38.174771     -0.188529     -0.896645
+5%      65894.850037      31.789700    -16.465492      0.286309      1.241003
+25%     80525.224734      61.050449    -12.146235      0.464736      2.152098
+50%     93052.112651      86.104225     -9.907237      0.586620      2.814178
+75%    108059.873021     116.119746     -8.212421      0.705380      3.503377
+95%    135329.626806     170.659254     -6.429072      0.873301      4.549301
+max    247711.912663     395.423825     -3.509114      1.347896      7.411885
+Prob(MaxDD worse than -10%): 0.48722
+Prob(MaxDD worse than -15%): 0.08848
+Prob(CAGR < 0): 0.00132
+Det är inte stor skillnad men ERC är lite mer risk justerad. Vi väljer därför ERC som vikter. Strategiportföljen är nu klar och vi ska gå över till
+att implementera denna forex trendföljande strategi och våran forex mean reversion strategi i den stora portföljen där en trendföljande och en mean 
+reversion strategi på US equities redan ingår.
 
