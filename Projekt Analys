@@ -1,0 +1,28 @@
+Analys av ChatGPT:
+Min professionella bedömning: ni har gjort mycket rätt, men slutversionen är inte färdig-validerad. Den största risken är inte klassisk look-ahead bias i själva entry/exit-loopen, utan data-snooping/overfitting genom många manuella testval.
+Det ni gjort bra:
+Ni har en tydlig hypotes: London continuation efter Asia range + förhöjd ATR-regim. Ni använder nästa bars open för entry/exit, vilket är mycket bättre än att fylla på samma candle som signalen uppstår. Koden använder Asia range först efter kl. 
+08 och sätter den till NaN innan dess, vilket minskar risken för intradags-lookahead. ATR och ATR-MA beräknas på historiska bars, och fills sker på next_row["open"] med spread/slippage/commission.
+Största röda flaggan:
+Processen har väldigt många iterativa beslut: entryfönster 08–12, 08–10, 08–09; ATR MA 30/70/75/80; ATR-period 10/14/20; buffer; distance-filter; Asia range percentil 0.6/0.7/0.8; long/short-separering; marknadsspecifika regler för GBPJPY. Loggen 
+visar att ni ofta “låser in” den variant som fungerade bäst efter att ha tittat på resultatet. Det är textbook data-snooping-risk, även om varje enskilt val har en rimlig marknadsförklaring.
+GBPJPY är den största overfitting-risken.
+USDJPY/EURJPY med samma asia_range_pct_rank > 0.7 är mer försvarbart. Men GBPJPY har speciallogik: longs kräver >0.75 och shorts <0.65 i slutkoden. Det kom efter många tester och efter att ni identifierat att 2016/Brexit var en stor outlier. Det kan 
+vara en verklig mikrostruktur-effekt, men just nu ser det mer “fit:at” ut än bevisat.
+Potentiell subtil bias:
+asia_range_pct_rank inkluderar dagens Asia range i rolling-ranken. Det är inte lookahead om ni handlar först efter Asia-sessionen, eftersom dagens Asia range redan är känd. Men det måste vara exakt sant i live: ingen handel före att hela 00–07-rangen 
+är färdig. Där ser koden okej ut eftersom sessionen är 08–09.
+Portföljdelen är bra men behöver hårdare verklighetskontroll.
+Ni har MTM-equity, intraday DD, USD-konvertering, sanity checks, ERC weights och bootstrap. Det är positivt. Men ERC-vikter och portföljval verkar beräknas på hela historiken och sedan rapporteras på samma historik. Det är inte deploybar validering; 
+vikter måste beräknas walk-forward, endast på data som fanns då.
+Min rekommendation innan ni litar på strategin:
+Frys exakt reglerna nu. Rör inte parametrarna mer.
+Kör walk-forward: t.ex. träna/kalibrera 2003–2012, testa 2013–2016; träna 2003–2016, testa 2017–2020; träna 2003–2020, testa 2021–2026.
+Kör parameter-surface, inte bara bästa värden. En robust strategi ska fungera ungefär vid 0.65/0.70/0.75, ATR-MA 60/75/90, inte bara på en punkt.
+Separera “strategy discovery” från “final validation”. Er nuvarande logg är discovery, inte ren out-of-sample.
+För GBPJPY: kräv extra bevis. Antingen samma logik fungerar på annan period, eller så lägg den som experimentell/lägre vikt i portföljen.
+Testa kostnadsstress: 1.5x och 2x spread/slippage. Om edge försvinner är den inte robust nog.
+Rapportera resultat utan 2016, utan 2024, och utan bästa 5 trades. Strategin ska fortfarande vara acceptabel.
+Slutsats:
+Jag ser ingen uppenbar grov look-ahead bias i koden. Men jag ser hög data-mining-risk, särskilt i marknadsval och GBPJPY-regler. USDJPY/EURJPY-idén är mer trovärdig: enkel, sammanhängande och med rimlig regimeförklaring. Jag hade inte kallat detta färdigt
+än; jag hade kallat det en lovande strategi som behöver walk-forward och fryst out-of-sample innan kapital sätts bakom den.
