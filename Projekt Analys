@@ -26,3 +26,175 @@ Rapportera resultat utan 2016, utan 2024, och utan bästa 5 trades. Strategin sk
 Slutsats:
 Jag ser ingen uppenbar grov look-ahead bias i koden. Men jag ser hög data-mining-risk, särskilt i marknadsval och GBPJPY-regler. USDJPY/EURJPY-idén är mer trovärdig: enkel, sammanhängande och med rimlig regimeförklaring. Jag hade inte kallat detta färdigt
 än; jag hade kallat det en lovande strategi som behöver walk-forward och fryst out-of-sample innan kapital sätts bakom den.
+Det kommande arbetet delas in i faser och läggs upp såhär:
+FAS 1 — FRYS STRATEGIN (ingen mer optimering)
+1A — Lås regelboken
+Syfte: stoppa parameterläckage. Exakt strategi (ingen kodändring längre)
+
+Timeframe: 1H
+Asia: 00–07
+Entry: 08–09
+ATR14
+ATR_MA75
+Entry: ATR > ATR_MA
+Exit: ATR < ATR_MA
+USDJPY/EURJPY: Asia percentile >0.7
+GBPJPY:
+Long >0.75
+Short <0.65
+Spread/slippage exakt definierade
+Ingen ny idé får ändra detta.
+Output:
+
+1B — Definiera vad som räknas som framgång
+Syfte: undvika moving goalposts.
+Sätt hårda krav:
+Exempel:
+Metric	Minimum
+PF	>1.20
+Sharpe	>1.0
+CAGR	>8%
+Max DD	<20%
+OOS PF	>1.05
+OOS Expectancy	>0
+Om strategi missar → underkänd.
+
+1C — Isolera researchdata
+Syfte: förhindra kontaminering.
+Dela historiken:
+Discovery:
+2003–2018
+Validation:
+2019–2022
+Final holdout:
+2023–2026
+2023–2026 får inte tittas på igen förrän allt annat är klart.
+
+FAS 2 — ROBUSTHET (försök döda modellen)
+2A — Walk-forward test
+Syfte: simulera verklig utveckling.
+Exempel:
+Train:
+2003–2010
+Test:
+2011–2013
+Train:
+2003–2013
+Test:
+2014–2016
+Train:
+2003–2016
+Test:
+2017–2019
+…
+För varje fönster:
+välj parametrar EN gång
+kör framåt
+lås
+Mät:
+PF
+DD
+CAGR
+Winrate
+OOS degradation
+Mål:
+OOS ≈ minst 60–80% av IS.
+
+2B — Parameter surface
+Syfte: hitta om ni står på en nål.
+Kör grid:
+ATR:
+10–20
+ATR_MA:
+50–100
+Percentile:
+0.55–0.85
+Session:
+08–09
+08–10
+08–11
+Visualisera:
+PF / Sharpe.
+Bra:
+bred platå.
+Dåligt:
+enda bra punkt.
+
+2C — Monte Carlo av trades
+Syfte: se verklig risk.
+Inte bootstrap av dagar.
+Shuffle:
+tradeordning
+block
+slumpa slippage
+50k–100k simuleringar.
+Output:
+5% CAGR
+95% DD
+ruin probability
+
+2D — Stresskostnader
+Syfte: testa verkligheten.
+Kör:
+1× kostnad
+1.5×
+2×
+3×
+Mät:
+PF.
+Om PF <1.05 vid 1.5×:
+underkänd.
+
+FAS 3 — GENERALISERING
+3A — Cross-market validation
+Syfte: testa om idén är verklig.
+Frys regler.
+Testa utan ändringar:
+AUDJPY
+CADJPY
+CHFJPY
+NOKJPY
+SEKJPY
+Vi får INTE optimera.
+Resultat:
+Market	PF
+USDJPY	
+EURJPY	
+…	
+
+3B — Cross-era validation
+Syfte: testa regimberoende.
+Dela:
+Pre-GFC
+GFC
+QE
+Covid
+Inflation
+Mål:
+ingen period får kollapsa.
+
+3C — Leave-one-era-out
+Syfte: hitta beroenden.
+Kör:
+utan 2008–09
+utan 2012–16
+utan 2020–22
+utan 2024
+Om strategi dör → ej robust.
+
+FAS 4 — PORTFÖLJ
+4A — Walk-forward vikter
+Syfte: undvika portfölj-lookahead.
+ERC får endast använda historik fram till datum.
+Inte hela sample.
+
+4B — Correlation stress
+Syfte: kriser.
+Anta:
+Corr → 1
+Spread ×2
+Se DD.
+
+
+högre slippage
+sämre fills
