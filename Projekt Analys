@@ -185,123 +185,890 @@ USDJPY/EURJPY: Asia percentile >0.7
 GBPJPY:
 Long >0.75
 Short <0.65
-================================================================================
-PHASE 2A WALK-FORWARD VALIDATION
-Locked strategy. No optimization.
-================================================================================
+====================================================================================================
+PHASE 2A ANALYSIS PACKAGE - COPY EVERYTHING BELOW INTO CHATGPT
+====================================================================================================
 
-LOCKED RULES:
-asia_start: 00:00
-asia_end: 07:00
-entry_start: 08:00:00
-entry_end: 09:00:00
-atr_period: 14
-atr_ma_period: 75
-asia_rank_window_days: 252
-asia_rank_min_periods: 50
-usd_eur_jpy_threshold: 0.7
-gbpjpy_long_threshold: 0.75
-gbpjpy_short_threshold: 0.65
 
-Running locked market backtests...
-USDJPY: 213 trades, PF=1.760, expectancy=0.15433
-EURJPY: 224 trades, PF=1.344, expectancy=0.10802
-GBPJPY: 191 trades, PF=1.687, expectancy=0.26041
+====================================================================================================
+1) WALK-FORWARD OOS SUMMARY
+====================================================================================================
+ WF                IS Period               OOS Period  IS Trades  IS PF  IS Expectancy points  OOS Trades  OOS Total PnL points  OOS PF  OOS Expectancy points  OOS Winrate  OOS Max DD points  OOS Trade Sharpe  Portfolio Return %  Portfolio Net PnL $  Portfolio Max DD %  Portfolio Max DD MTM %  Portfolio CAGR %  Portfolio Sharpe  Pass PF > 1.05  Pass Exp > 0  Pass Return > 0  Pass Trades >= 30  Segment Pass
+WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31        135 1.5570                0.1678         139               19.5244  1.3958                 0.1405       0.4964            12.7936            1.3731              5.6834            2841.6886              3.7410                  4.6159            1.8946            0.6589            True          True             True               True          True
+WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31        274 1.4687                0.1539          94               41.3230  2.4941                 0.4396       0.5426             8.4068            1.7600             10.6387            5319.3367              1.8523                  3.0676            3.4434            1.0244            True          True             True               True          True
+WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31        368 1.7097                0.2269          58                2.6776  1.2170                 0.0462       0.5172             6.5593            0.5069              0.8404             420.2240              1.4971                  1.7338            0.2686            0.3274            True          True             True               True          True
+WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31        426 1.6629                0.2023         102                4.5500  1.1478                 0.0446       0.5098             7.9826            0.4184              0.6817             340.8362              2.0681                  2.6673            0.2267            0.1478            True          True             True               True          True
+WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31        528 1.5643                0.1718         100               16.0748  1.6396                 0.1607       0.5900             5.2957            1.7099              3.4870            1743.5110              1.0123                  2.3529            1.1619            0.8103            True          True             True               True          True
 
-Full-sample per-market diagnostics, OBS ej OOS-beslut:
-   Market  Trades  Total PnL  ...  Expectancy  Max Drawdown  Sharpe (trade-level)
-0  USDJPY     213    32.8733  ...    0.154335        4.3365              2.749757
-1  EURJPY     224    24.1960  ...    0.108018        9.5120              1.507763
-2  GBPJPY     191    49.7380  ...    0.260408        9.0060              1.821449
 
-[3 rows x 7 columns]
+====================================================================================================
+2) COMBINED OOS SUMMARY
+====================================================================================================
+ Trades  Total PnL  Gross Profit  Gross Loss  Profit Factor  Winrate  Avg Win  Avg Loss  Expectancy  Max Drawdown  Max Losing Streak  Sharpe (trade-level)  Start Capital  End Equity  Net PnL ($)  Return (%)  Max Drawdown ($)  Max Drawdown (%)  Markets  Trades Closed  Sharpe (daily, ann.)  Sortino (daily, ann.)  CAGR (%)  Calmar   Days   Years  Max DD MTM ($)  Max DD MTM (%)  Max Intraday DD MTM ($)  Max Intraday DD MTM (%)        Label
+    493    84.1498      229.4028    -145.253         1.5793   0.5294   0.8789   -0.6261      0.1707       13.0395                  9                 2.675        50000.0   61426.352    11426.352     22.8527         1914.9095             3.741        3            493                0.6264                 1.4029    1.3839  0.3725 5466.0 14.9753       2365.1057          4.6159                 1441.055                   2.3529 COMBINED_OOS
 
-================================================================================
-WF1: IS 2003-05-01 -> 2010-12-31 | OOS 2011-01-01 -> 2013-12-31
-================================================================================
-OOS trades=139 | PF=1.396 | Exp=0.14046 | PortRet=5.68% | Pass=True
 
-================================================================================
-WF2: IS 2003-05-01 -> 2013-12-31 | OOS 2014-01-01 -> 2016-12-31
-================================================================================
-OOS trades=94 | PF=2.494 | Exp=0.43961 | PortRet=10.64% | Pass=True
+====================================================================================================
+3) COMBINED OOS VARIANT TESTS
+====================================================================================================
+                        Variant  Point Trades  Point PF  Point Expectancy  Point Total PnL  Portfolio Trades  Portfolio Return %  Portfolio Net PnL $  Portfolio Max DD %  Portfolio Max DD MTM %  Portfolio CAGR %  Portfolio Sharpe
+                        All OOS           493    1.5793            0.1707          84.1498               493             22.8527           11426.3520              3.7410                  4.6159            1.3839            0.6264
+           USDJPY + EURJPY only           320    1.4762            0.1203          38.4858               320             16.7749            8387.4286              4.4930                  4.8680            1.0409            0.5208
+                    GBPJPY only           173    1.7087            0.2640          45.6640               173             34.5852           17292.5916              5.3933                  6.2774            2.0062            0.4532
+                 Without GBPJPY           320    1.4762            0.1203          38.4858               320             16.7749            8387.4286              4.4930                  4.8680            1.0409            0.5208
+Without best 5 portfolio trades           488    1.2867            0.0853          41.6477               488             11.5979            5798.9299              3.7410                  4.6159            0.7354            0.4637
+       Without best year (2016)           459    1.3152            0.0965          44.2773               459             11.7959            5897.9551              3.7410                  4.6159            0.7474            0.4164
 
-================================================================================
-WF3: IS 2003-05-01 -> 2016-12-31 | OOS 2017-01-01 -> 2019-12-31
-================================================================================
-OOS trades=58 | PF=1.217 | Exp=0.04617 | PortRet=0.84% | Pass=True
 
-================================================================================
-WF4: IS 2003-05-01 -> 2019-12-31 | OOS 2020-01-01 -> 2022-12-31
-================================================================================
-OOS trades=102 | PF=1.148 | Exp=0.04461 | PortRet=0.68% | Pass=True
+====================================================================================================
+4) WALK-FORWARD MARKET ATTRIBUTION - POINTS
+====================================================================================================
+ WF Market  Trades     PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  PnL_Share_%
+WF1 GBPJPY      53 12.5500    0.2368      33.1160   -20.5660        1.6102      64.2785
+WF1 USDJPY      44  9.2144    0.2094      16.4764    -7.2620        2.2689      47.1943
+WF1 EURJPY      42 -2.2400   -0.0533      19.2610   -21.5010        0.8958     -11.4728
+WF2 GBPJPY      31 25.7460    0.8305      39.6110   -13.8650        2.8569      62.3043
+WF2 USDJPY      30  9.6400    0.3213      13.9859    -4.3459        3.2182      23.3284
+WF2 EURJPY      33  5.9370    0.1799      15.3830    -9.4460        1.6285      14.3673
+WF3 USDJPY      16  3.3846    0.2115       4.0129    -0.6283        6.3869     126.4042
+WF3 GBPJPY      22  0.2340    0.0106       7.3000    -7.0660        1.0331       8.7392
+WF3 EURJPY      20 -0.9410   -0.0471       3.7060    -4.6470        0.7975     -35.1434
+WF4 GBPJPY      26  5.3970    0.2076      14.9040    -9.5070        1.5677     118.6154
+WF4 EURJPY      36  0.1130    0.0031      11.4980   -11.3850        1.0099       2.4835
+WF4 USDJPY      40 -0.9600   -0.0240       8.9428    -9.9028        0.9031     -21.0989
+WF5 EURJPY      31  9.6370    0.3109      14.5920    -4.9550        2.9449      59.9510
+WF5 USDJPY      28  4.7008    0.1679      11.4488    -6.7480        1.6966      29.2433
+WF5 GBPJPY      41  1.7370    0.0424      15.1650   -13.4280        1.1294      10.8057
 
-================================================================================
-WF5: IS 2003-05-01 -> 2022-12-31 | OOS 2023-01-01 -> 2026-12-31
-================================================================================
-OOS trades=100 | PF=1.640 | Exp=0.16075 | PortRet=3.49% | Pass=True
 
-================================================================================
-COMBINED OOS SUMMARY
-================================================================================
-                                    0
-Trades                            493
-Total PnL                     84.1498
-Gross Profit                 229.4028
-Gross Loss                   -145.253
-Profit Factor                1.579333
-Winrate                      0.529412
-Avg Win                      0.878938
-Avg Loss                    -0.626091
-Expectancy                   0.170689
-Max Drawdown                  13.0395
-Max Losing Streak                   9
-Sharpe (trade-level)         2.674969
-Start Capital                 50000.0
-End Equity               61426.352017
-Net PnL ($)              11426.352017
-Return (%)                  22.852704
-Max Drawdown ($)          1914.909532
-Max Drawdown (%)             3.740967
-Markets                             3
-Trades Closed                     493
-Sharpe (daily, ann.)         0.626355
-Sortino (daily, ann.)        1.402853
-CAGR (%)                     1.383853
-Calmar                       0.372472
-Days                           5466.0
-Years                       14.975342
-Max DD MTM ($)            2365.105703
-Max DD MTM (%)               4.615869
-Max Intraday DD MTM ($)   1441.055005
-Max Intraday DD MTM (%)      2.352888
-Label                    COMBINED_OOS
+====================================================================================================
+5) WALK-FORWARD DIRECTION ATTRIBUTION - POINTS
+====================================================================================================
+ WF Market Direction  Trades     PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor
+WF1 GBPJPY      LONG      22 11.0430    0.5020      18.8780    -7.8350        2.4094
+WF1 USDJPY      LONG      23  7.2923    0.3171      11.3424    -4.0501        2.8005
+WF1 EURJPY      LONG      19  3.7670    0.1983      13.6060    -9.8390        1.3829
+WF1 USDJPY     SHORT      21  1.9221    0.0915       5.1340    -3.2119        1.5984
+WF1 GBPJPY     SHORT      31  1.5070    0.0486      14.2380   -12.7310        1.1184
+WF1 EURJPY     SHORT      23 -6.0070   -0.2612       5.6550   -11.6620        0.4849
+WF2 GBPJPY     SHORT      17 17.6300    1.0371      25.6060    -7.9760        3.2104
+WF2 GBPJPY      LONG      14  8.1160    0.5797      14.0050    -5.8890        2.3782
+WF2 USDJPY      LONG      15  7.0055    0.4670       8.6011    -1.5956        5.3905
+WF2 EURJPY     SHORT      15  3.9660    0.2644       6.6640    -2.6980        2.4700
+WF2 USDJPY     SHORT      15  2.6345    0.1756       5.3848    -2.7503        1.9579
+WF2 EURJPY      LONG      18  1.9710    0.1095       8.7190    -6.7480        1.2921
+WF3 USDJPY     SHORT      10  2.3700    0.2370       2.5696    -0.1996       12.8737
+WF3 GBPJPY     SHORT      12  1.2490    0.1041       2.9700    -1.7210        1.7257
+WF3 USDJPY      LONG       6  1.0146    0.1691       1.4433    -0.4287        3.3667
+WF3 EURJPY      LONG      12  0.2910    0.0242       2.6560    -2.3650        1.1230
+WF3 GBPJPY      LONG      10 -1.0150   -0.1015       4.3300    -5.3450        0.8101
+WF3 EURJPY     SHORT       8 -1.2320   -0.1540       1.0500    -2.2820        0.4601
+WF4 GBPJPY     SHORT       9  5.6900    0.6322       8.4350    -2.7450        3.0729
+WF4 EURJPY     SHORT      16  2.9130    0.1821       5.8860    -2.9730        1.9798
+WF4 USDJPY     SHORT      20  1.1010    0.0550       4.6249    -3.5239        1.3124
+WF4 GBPJPY      LONG      17 -0.2930   -0.0172       6.4690    -6.7620        0.9567
+WF4 USDJPY      LONG      20 -2.0610   -0.1031       4.3179    -6.3789        0.6769
+WF4 EURJPY      LONG      20 -2.8000   -0.1400       5.6120    -8.4120        0.6671
+WF5 EURJPY      LONG      19 10.2700    0.5405      11.0160    -0.7460       14.7668
+WF5 GBPJPY      LONG      12  6.8590    0.5716       9.4240    -2.5650        3.6741
+WF5 USDJPY      LONG      19  4.1049    0.2160       6.0802    -1.9753        3.0781
+WF5 USDJPY     SHORT       9  0.5959    0.0662       5.3686    -4.7727        1.1249
+WF5 EURJPY     SHORT      12 -0.6330   -0.0528       3.5760    -4.2090        0.8496
+WF5 GBPJPY     SHORT      29 -5.1220   -0.1766       5.7410   -10.8630        0.5285
 
-================================================================================
-VARIANT / FALSIFICATION TESTS
-================================================================================
-                           Variant  ...  Portfolio Sharpe
-0                          All OOS  ...          0.626355
-1             USDJPY + EURJPY only  ...          0.520781
-2                      GBPJPY only  ...          0.453236
-3                   Without GBPJPY  ...          0.520781
-4  Without best 5 portfolio trades  ...          0.463692
-5         Without best year (2016)  ...          0.416448
 
-[6 rows x 12 columns]
+====================================================================================================
+6) COMBINED OOS MARKET ATTRIBUTION - POINTS
+====================================================================================================
+Market  Trades     PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  PnL_Share_%
+GBPJPY     173 45.6640    0.2640     110.0960    -64.432        1.7087      54.2651
+USDJPY     158 25.9798    0.1644      54.8668    -28.887        1.8994      30.8733
+EURJPY     162 12.5060    0.0772      64.4400    -51.934        1.2408      14.8616
 
-================================================================================
-PASS / FAIL DIAGNOSTIK
-================================================================================
-                                  Check      Value  Pass
-0       Positive OOS portfolio segments        5/5  True
-1                OOS PF > 1.05 segments        5/5  True
-2           OOS expectancy > 0 segments        5/5  True
-3                   Strict segment pass        5/5  True
-4                Combined OOS PF > 1.15   1.579333  True
-5           Combined OOS expectancy > 0   0.170689  True
-6     Combined OOS portfolio return > 0  22.852704  True
-7  USDJPY+EURJPY survive without GBPJPY  16.774857  True
-8        Survives without best 5 trades   11.59786  True
-9            Survives without best year   11.79591  True
 
+====================================================================================================
+7) COMBINED OOS YEAR ATTRIBUTION - USD
+====================================================================================================
+ Exit Year  Trades   PnL_USD  AvgTrade_USD  GrossProfit_USD  GrossLoss_USD  ProfitFactor
+      2011      44 -206.5940       -4.6953        2736.0494     -2942.6434        0.9298
+      2012      55 1034.3993       18.8073        3226.6238     -2192.2245        1.4718
+      2013      40 2013.8833       50.3471        4081.2456     -2067.3623        1.9741
+      2014      38  455.6125       11.9898        2321.0473     -1865.4348        1.2442
+      2015      21  -55.4466       -2.6403         649.5356      -704.9821        0.9214
+      2016      34 5265.7044      154.8737        6085.5559      -819.8515        7.4228
+      2017      15  933.6035       62.2402        1072.7485      -139.1450        7.7096
+      2018      32 -615.4389      -19.2325         837.2142     -1452.6531        0.5763
+      2019      12  128.9739       10.7478         347.3456      -218.3718        1.5906
+      2020      31 -566.1443      -18.2627         921.1976     -1487.3420        0.6194
+      2021      30 -210.6971       -7.0232         823.2138     -1033.9109        0.7962
+      2022      40 1008.5817       25.2145        3026.9178     -2018.3360        1.4997
+      2023      38  968.7544       25.4935        2159.1115     -1190.3571        1.8138
+      2024      39 1049.2365       26.9035        2053.0220     -1003.7855        2.0453
+      2025      24  221.9235        9.2468        1036.9495      -815.0260        1.2723
+
+
+====================================================================================================
+8) PORTFOLIO TRADE LOG DIAGNOSTICS
+====================================================================================================
+
+--- BASIC LOG STATS ---
+Closed trades: 493
+Total PnL_USD: 11426.35
+Gross Profit: 31377.78
+Gross Loss: -19951.43
+Profit Factor: 1.5727
+Avg Trade USD: 23.18
+Median Trade USD: 5.54
+Winrate: 0.5294
+
+--- TOP 10 BEST PORTFOLIO TRADES ---
+Market Direction          Entry Time           Exit Time  Entry Price  Exit Price      Units   PnL_USD     Equity
+GBPJPY     SHORT 2016-06-23 09:00:00 2016-06-27 14:00:00     154.0110    133.6500 12335.6194 2473.7591 57051.1587
+GBPJPY     SHORT 2022-09-21 09:00:00 2022-09-27 08:00:00     162.8210    156.1280 17408.5164  806.7082 59059.0172
+GBPJPY      LONG 2016-07-12 09:00:00 2016-07-15 01:00:00     135.2800    140.3790 14531.2360  703.9803 58105.2085
+GBPJPY      LONG 2013-04-04 09:00:00 2013-04-06 05:00:00     143.6580    149.6200 11314.5642  690.8091 52725.0128
+USDJPY      LONG 2014-10-30 09:00:00 2014-11-04 10:00:00     109.1794    113.5916 17313.1615  671.7122 53234.5762
+EURJPY      LONG 2013-04-04 09:00:00 2013-04-06 04:00:00     122.1460    126.7250 13307.2525  623.8457 52034.2038
+EURJPY      LONG 2025-02-28 09:00:00 2025-03-05 23:00:00     156.3990    160.5520 19620.1457  546.9159 61666.0150
+USDJPY      LONG 2013-06-18 09:00:00 2013-06-21 22:00:00      94.9664     97.7666 17343.1242  495.8318 52525.2043
+USDJPY      LONG 2013-04-04 09:00:00 2013-04-06 04:00:00      95.2334     97.5646 17001.6701  405.3479 51410.3581
+USDJPY     SHORT 2024-09-03 09:00:00 2024-09-06 02:00:00     146.0135    143.3894 20079.4088  366.7632 60881.0127
+
+--- TOP 10 WORST PORTFOLIO TRADES ---
+Market Direction          Entry Time           Exit Time  Entry Price  Exit Price      Units   PnL_USD     Equity
+EURJPY      LONG 2022-09-22 09:00:00 2022-09-23 22:00:00     143.0540    138.8530 20094.1020 -589.7987 58252.3090
+USDJPY     SHORT 2023-01-04 09:00:00 2023-01-06 00:00:00     130.2455    133.4035 19785.5251 -469.1006 58887.4746
+GBPJPY      LONG 2014-01-21 09:00:00 2014-01-25 03:00:00     172.0120    168.5350 10717.8732 -364.6989 52302.6493
+EURJPY      LONG 2011-06-07 09:00:00 2011-06-11 01:00:00     117.5330    115.1620 11522.3418 -341.0157 50294.1878
+GBPJPY      LONG 2011-05-31 09:00:00 2011-06-03 02:00:00     134.9600    132.4100 10311.7586 -325.9581 50847.9685
+USDJPY      LONG 2022-09-22 09:00:00 2022-09-23 21:00:00     145.6545    143.3635 19719.3010 -315.7954 58842.1077
+EURJPY      LONG 2012-11-07 09:00:00 2012-11-09 06:00:00     103.2990    101.5810 12961.7258 -280.8235 49772.1344
+EURJPY      LONG 2011-08-04 09:00:00 2011-08-06 01:00:00     113.8010    111.9860 11690.5296 -271.3215 49482.5285
+GBPJPY     SHORT 2013-11-18 09:00:00 2013-11-22 09:00:00     161.2030    163.6720 10961.3639 -268.4460 52816.5464
+EURJPY     SHORT 2013-02-05 09:00:00 2013-02-07 05:00:00     124.1860    126.1200 12658.2099 -262.6544 50665.7289
+
+--- CONCENTRATION TESTS ---
+Best 1 trade as % of total PnL: 21.65%
+Best 5 trades as % of total PnL: 46.80%
+Worst 5 trades as % of total PnL: -18.30%
+
+--- YEARLY PORTFOLIO TRADE ATTRIBUTION FROM LOG ---
+ Year  Trades   PnL_USD  AvgTrade_USD  BestTrade_USD  WorstTrade_USD
+ 2011      44 -206.5940       -4.6953       325.9089       -341.0157
+ 2012      55 1034.3993       18.8073       295.9194       -280.8235
+ 2013      40 2013.8833       50.3471       690.8091       -268.4460
+ 2014      38  455.6125       11.9898       671.7122       -364.6989
+ 2015      21  -55.4466       -2.6403       165.6868       -235.5028
+ 2016      34 5265.7044      154.8737      2473.7591       -178.0218
+ 2017      15  933.6035       62.2402       308.8249        -44.2156
+ 2018      32 -615.4389      -19.2325       137.7913       -260.7732
+ 2019      12  128.9739       10.7478       132.9919       -108.6789
+ 2020      31 -566.1443      -18.2627       228.0235       -202.9181
+ 2021      30 -210.6971       -7.0232       158.7768       -232.4388
+ 2022      40 1008.5817       25.2145       806.7082       -589.7987
+ 2023      38  968.7544       25.4935       313.5303       -469.1006
+ 2024      39 1049.2365       26.9035       366.7632       -193.6466
+ 2025      24  221.9235        9.2468       546.9159       -134.3042
+
+--- YEAR CONCENTRATION ---
+Best year: 2016, PnL=5265.70, Share of total=46.08%
+Worst year: 2018, PnL=-615.44, Share of total=-5.39%
+
+
+====================================================================================================
+9) MTM EQUITY DIAGNOSTICS
+====================================================================================================
+
+--- MTM SUMMARY ---
+Start MTM equity: 49964.84
+End MTM equity: 61426.35
+Min MTM equity: 48873.48
+Max MTM equity: 61957.14
+Max MTM DD $: 2365.11
+Max MTM DD %: 4.62%
+Max Intraday MTM DD $: 1441.06
+Max Intraday MTM DD %: 2.35%
+
+--- WORST 10 MTM DRAWDOWN POINTS ---
+               Time  Equity_MTM       Cash     Unreal       DD_$    DD_%
+2011-08-05 08:00:00  48873.4771 49960.3426 -1086.8655 -2365.1057 -0.0462
+2011-08-05 11:00:00  49001.2956 49960.3426  -959.0470 -2237.2872 -0.0437
+2011-08-05 07:00:00  49007.6200 49960.3426  -952.7226 -2230.9628 -0.0435
+2011-08-05 05:00:00  49019.6860 49960.3426  -940.6566 -2218.8968 -0.0433
+2011-08-05 06:00:00  49034.8515 49960.3426  -925.4911 -2203.7313 -0.0430
+2011-08-05 12:00:00  49041.8873 49960.3426  -918.4553 -2196.6955 -0.0429
+2011-08-05 10:00:00  49056.3152 49960.3426  -904.0274 -2182.2676 -0.0426
+2011-08-05 15:00:00  49082.8303 49960.3426  -877.5123 -2155.7526 -0.0421
+2011-08-05 09:00:00  49091.9179 49960.3426  -868.4247 -2146.6649 -0.0419
+2011-08-05 04:00:00  49104.7448 49960.3426  -855.5977 -2133.8380 -0.0416
+
+====================================================================================================
+END PHASE 2A ANALYSIS PACKAGE
+====================================================================================================
+Fas 2A är godkänd, men inte perfekt.
+Strategin klarar walk-forward-testet objektivt: alla fem OOS-segment är positiva, alla fem har PF > 1.05, positiv expectancy, positiv portföljavkastning och tillräckligt antal trades. 
+Det är ett starkt resultat. Men det finns två tydliga varningar:
+- En stor del av edge kommer från 2016 och några få stora trades.
+- GBPJPY är både en viktig vinstkälla och den största overfitting-risken.
+
+1. Walk-forward-resultatet är starkt
+Det viktigaste är att strategin inte bara fungerar i ett segment.
+OOS-resultaten:
+Segment	OOS PF	OOS expectancy	Portfolio return
+WF1 2011–2013	1.40	0.1405	+5.68%
+WF2 2014–2016	2.49	0.4396	+10.64%
+WF3 2017–2019	1.22	0.0462	+0.84%
+WF4 2020–2022	1.15	0.0446	+0.68%
+WF5 2023–2026	1.64	0.1607	+3.49
+Alla perioder är positiva. Det är mycket bättre än att bara ha ett bra totalresultat. WF3 och WF4 är svaga, men de överlever. Det är viktigt: en strategi behöver inte tjäna mycket i
+varje regim, men den får inte kollapsa. Här kollapsar den inte. Det här är ett klart plus för strategin.
+
+2. Total OOS är bra på trade-nivå
+Combined OOS:
+Trades: 493
+Profit Factor: 1.5793
+Winrate: 52.94%
+Expectancy: 0.1707 points/trade
+Trade-level Sharpe: 2.675
+Max losing streak: 9
+Det är statistiskt klart bättre än noise. 493 trades är inte enormt, men det är tillräckligt för att detta inte ska kännas som ett rent slumpresultat. Kombinationen PF 1.58, positiv 
+expectancy och nästan 500 trades är bra. Det jag gillar mest är att winrate inte är extremt hög. Strategin tjänar inte pengar genom en misstänkt “too good to be true”-winrate, utan 
+genom rimlig asymmetri:
+Avg win: 0.8789
+Avg loss: -0.6261
+Det betyder att den har positiv payoff-profil.
+
+3. Portföljresultatet är stabilt men inte högavkastande
+Portföljen gick från 50 000 till 61 426 USD, alltså +22.85% över nästan 15 år. CAGR är bara 1.38%, vilket är lågt. Men drawdown är också mycket låg: realiserad max DD 3.74%, 
+MTM max DD 4.62%. Det betyder att strategin i nuvarande sizing är mer av en lågvolatil, lågexponerad edge än en färdig högavkastande portfölj. Det är inte negativt. Det betyder bara att 
+nästa fråga inte är “är strategin lönsam?”, utan: Kan vi skala den utan att kostnader, slippage och tail risk förstör edgen? Vid ungefär 2x sizing hade man grovt kunnat förvänta sig runt
+2.7% CAGR och 9–10% MTM-DD, innan kostnadseffekter. Vid 3x kanske runt 4% CAGR och 14% DD. Men det måste stress-testas, inte antas.
+
+4. Den stora varningen: koncentration
+Det här är den viktigaste röda flaggan.
+Ni har:
+Best 1 trade = 21.65% av total PnL
+Best 5 trades = 46.80% av total PnL
+Best year 2016 = 46.08% av total PnL
+Det är mycket. Det betyder att totalresultatet ser mycket bättre ut tack vare ett fåtal extremt bra händelser, framför allt GBPJPY under 2016. Den största traden var GBPJPY short 2016-06-23
+till 2016-06-27, med +2 473 USD. Det är en mycket stor trade relativt totalvinsten. Men här är den viktiga nyansen:
+När ni tar bort bästa 5 trades är strategin fortfarande positiv:
+PF: 1.2867
+Expectancy: 0.0853
+Portfolio return: 11.60%
+CAGR: 0.7354%
+Och när ni tar bort bästa året, 2016, är den också fortfarande positiv:
+PF: 1.3152
+Expectancy: 0.0965
+Portfolio return: 11.80%
+CAGR: 0.7474%
+Det är väldigt viktigt. Det betyder att 2016 förstorar resultatet kraftigt, men strategin dör inte utan 2016. Min bedömning:
+Koncentration: Varning, men inte underkänt. Hade strategin blivit negativ utan 2016 hade jag varit mycket hårdare. Nu överlever den, men edge blir klart svagare.
+
+5. Marknadsattribution: GBPJPY är både styrka och risk
+Combined OOS per marknad:
+Marknad	Trades	PnL points	PF	PnL share
+GBPJPY	173	45.6640	1.7087	54.27%
+USDJPY	158	25.9798	1.8994	30.87%
+EURJPY	162	12.5060	1.2408	14.86%
+Det här är faktiskt ganska bra. Alla tre marknader är positiva. USDJPY har högst PF, GBPJPY har mest PnL, EURJPY är svagast men fortfarande positiv. Men GBPJPY står för över halva point-PnL
+och mycket av de största portföljtradesen. Det gör GBPJPY till en edge contributor, men också en risk contributor. Jag hade inte tagit bort GBPJPY. Men jag hade inte heller behandlat GBPJPY
+som lika robust som USDJPY. Min ranking:
+1. USDJPY — mest robust kvalitet
+2. GBPJPY — högst edge men högst specialregel/koncentrationsrisk
+3. EURJPY — positiv men svagare och mer regimberoende
+
+6. USDJPY + EURJPY utan GBPJPY är viktigaste positiva beviset
+Det bästa robustness-beviset i hela paketet är detta:
+USDJPY + EURJPY only:
+PF: 1.4762
+Expectancy: 0.1203
+Portfolio return: 16.77%
+CAGR: 1.04%
+Max DD MTM: 4.87%
+Det betyder att strategin inte är helt beroende av GBPJPY. Utan GBPJPY finns fortfarande en verklig edge. Det gör hela strategin mycket mer trovärdig. Hade USDJPY + EURJPY varit svaga och GBPJPY 
+stått för allt, hade jag sagt att Fas 2A är tveksam. Men så är det inte.
+
+7. Årsfördelningen är acceptabel, men 2016 dominerar
+Negativa år:
+2011: -206
+2015: -55
+2018: -615
+2020: -566
+2021: -211
+Positiva år:
+2012, 2013, 2014, 2016, 2017, 2019, 2022, 2023, 2024, 2025
+Det är 10 positiva år och 5 negativa år. Det är bra. De negativa åren är dessutom relativt kontrollerade. Det sämsta året är 2018 med cirka -615 USD, vilket bara är -5.39% av totalvinsten.
+Problemet är att 2016 är extremt stort:
+2016 PnL: +5265.70 USD
+Share of total: 46.08%
+PF: 7.42
+Det säger att strategin har en konvex komponent: den tjänar mycket när en stor trendhändelse inträffar. Det är inte nödvändigtvis dåligt. Trendföljande strategier ska ofta ha sådan positiv skew. 
+Men man måste vara ärlig med att mycket av totalavkastningen kommer från ett fåtal “crisis/trend expansion”-händelser.
+
+8. Direction attribution visar regimrotation
+Det finns ingen enkel “longs är alltid bäst” eller “shorts är alltid bäst”-slutsats längre.
+Exempel:
+WF1: GBPJPY longs och USDJPY longs är starka, EURJPY shorts är dåliga.
+WF2: nästan allt fungerar, särskilt GBPJPY shorts.
+WF3: USDJPY bär perioden, EURJPY är svagt.
+WF4: shorts bär perioden, longs är generellt svaga.
+WF5: longs är starka, särskilt EURJPY och GBPJPY, men GBPJPY shorts är dåliga.
+Det här är faktiskt positivt för den låsta modellen, eftersom olika delar av modellen bär olika regimer. Men det betyder också att ni inte ska börja “förbättra” genom att ta bort en riktning 
+baserat på senaste perioden. Det vore klassisk overfitting. Min rekommendation:
+Rör inte direction-reglerna nu. De verkar rotera. Det är exakt därför man ska låsa modellen och låta portföljen bära regimskiften.
+
+9. Drawdownprofilen är mycket bra
+MTM max DD:
+Max MTM DD: 4.62%
+Max intraday MTM DD: 2.35%
+Worst MTM drawdown: 2011-08-05
+Det är väldigt kontrollerat. Men jag vill lägga in en viktig reservation: låg DD beror delvis på låg exponering. Strategin verkar ha låg tradefrekvens och måttlig notionalexponering. Därför ska 
+ni inte dra slutsatsen att strategin är “riskfri”. Den är bara lågvolatil i denna sizing. Nästa steg måste testa vad som händer vid:
+2x cost
+2x exposure
+spread widening
+slippage stress
+simultana positioner under stress
+
+Slutbetyg för Fas 2A
+Jag skulle sätta:
+Fas 2A-resultat: GODKÄND
+Confidence: 7/10
+Robusthet: 7/10
+Overfitting-risk kvar: 6/10
+Deploybar direkt: Nej
+Gå vidare till Fas 2B: Ja
+
+Det som höjer betyget:
+Alla fem OOS-perioder är positiva.
+Total OOS PF är bra.
+Nästan 500 trades.
+USDJPY + EURJPY fungerar utan GBPJPY.
+Strategin överlever utan bästa 5 trades och utan 2016.
+Drawdown är låg.
+
+Det som sänker betyget:
+2016 står för extremt stor andel av total edge.
+Bästa 5 trades står för nästan halva totalvinsten.
+GBPJPY är både specialanpassad och största PnL-källan.
+CAGR är låg i nuvarande sizing.
+WF3 och WF4 är svaga även om de är positiva.
+Min rekommendation
+
+Ni ska inte ändra strategin efter detta. Fas 2A är tillräckligt bra för att gå vidare. Nästa steg är Fas 2B — Parameter Surface, men med en viktig regel:
+Ni får inte välja nya parametrar från 2B.
+Ni ska bara se om den låsta strategin ligger på en robust platå.
+För Fas 2B vill jag att ni testar runt låsta värden:
+ATR period: 10, 14, 20
+ATR MA: 50, 60, 75, 90, 100
+USDJPY/EURJPY threshold: 0.60, 0.65, 0.70, 0.75, 0.80
+GBPJPY long threshold: 0.70, 0.75, 0.80
+GBPJPY short threshold: 0.55, 0.60, 0.65, 0.70
+Entry window: 08–09, 08–10
+Men syftet är endast att svara på:
+Är 0.70 / 0.75 / 0.65 en robust region eller bara den bästa punkten i historiken? Om Fas 2B visar en bred platå är strategin betydligt mer trovärdig. Om Fas 2B visar att bara exakt dessa
+parametrar fungerar, då är Fas 2A-resultatet mer misstänkt.
+==============================================================================================================
+PHASE 2B ANALYSIS PACKAGE - COPY EVERYTHING BELOW INTO CHATGPT
+==============================================================================================================
+
+==============================================================================================================
+1) GLOBAL SURFACE SUMMARY
+==============================================================================================================
+Total combinations: 1800
+Combos with OOS PF > 1.00: 1621/1800 (90.06%)
+Combos with OOS PF > 1.05: 1457/1800 (80.94%)
+Combos with OOS PF > 1.20: 857/1800 (47.61%)
+Combos with OOS expectancy > 0: 1621/1800 (90.06%)
+Combos with >=4 positive OOS segments: 996/1800 (55.33%)
+Combos with all 5 positive OOS segments: 339/1800 (18.83%)
+Combos with >=4 segments PF>1.05: 742/1800 (41.22%)
+
+OOS PF distribution:
+count    1800.0000
+mean        1.2357
+std         0.1923
+min         0.8813
+5%          0.9663
+25%         1.0790
+50%         1.1772
+75%         1.4109
+95%         1.5482
+max         1.6822
+
+OOS Expectancy distribution:
+count    1800.0000
+mean        0.0729
+std         0.0582
+min        -0.0554
+5%         -0.0134
+25%         0.0264
+50%         0.0563
+75%         0.1261
+95%         0.1610
+max         0.2082
+
+==============================================================================================================
+2) LOCKED STRATEGY POSITION IN SURFACE
+==============================================================================================================
+                                    ParamID  atr_period  atr_ma_period  usd_eur_jpy_threshold  gbpjpy_long_threshold  gbpjpy_short_threshold entry_window  IsLocked  ParamDistanceFromLocked  OOS Trades  OOS Total PnL  OOS PF  OOS Expectancy  OOS MaxDD  OOS_Positive_Segments  OOS_PF_GT_105_Segments  OOS_Min_PF  RobustnessScore  OOS_PF_Rank_Desc  RobustnessScore_Rank_Desc
+ATR14_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900          14             75                    0.7                   0.75                    0.65  08:00-09:00      True                        0         493        84.1498  1.5793          0.1707    13.0395                      5                       5      1.1478           5.0094              58.0                       39.0
+
+Locked interpretation helpers:
+Locked OOS PF rank: 58/1800  (1 = highest PF)
+Locked robustness score rank: 39/1800  (1 = highest score)
+Locked OOS PF percentile: 96.83%
+
+==============================================================================================================
+3) LOCAL NEIGHBORHOOD SUMMARY AROUND LOCKED VALUES
+==============================================================================================================
+Local neighborhood combinations: 486
+Median OOS PF: 1.1962
+P25/P75 OOS PF: 1.1067 / 1.4223
+Min/Max OOS PF: 0.9171 / 1.6526
+% PF > 1.05: 83.54%
+% Expectancy > 0: 91.36%
+Median positive OOS segments: 4.00/5
+
+Closest neighborhood rows sorted by distance then OOS PF:
+                                    ParamID  atr_period  atr_ma_period  usd_eur_jpy_threshold  gbpjpy_long_threshold  gbpjpy_short_threshold entry_window  IsLocked  ParamDistanceFromLocked  OOS Trades  OOS Total PnL  OOS PF  OOS Expectancy  OOS MaxDD  OOS_Positive_Segments  OOS_PF_GT_105_Segments  OOS_Min_PF  RobustnessScore  OOS_PF_Rank_Desc  RobustnessScore_Rank_Desc
+ATR14_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900          14             75                   0.70                   0.75                    0.65  08:00-09:00      True                        0         493        84.1498  1.5793          0.1707    13.0395                      5                       5      1.1478           5.0094              58.0                       39.0
+ATR14_MA75_UE0.75_GL0.75_GS0.65_EW0800_0900          14             75                   0.75                   0.75                    0.65  08:00-09:00     False                        1         454        82.5839  1.6120          0.1819    13.0950                      5                       5      1.1670           5.1193              29.0                       17.0
+ATR14_MA75_UE0.70_GL0.80_GS0.65_EW0800_0900          14             75                   0.70                   0.80                    0.65  08:00-09:00     False                        1         481        85.3298  1.6073          0.1774    12.6377                      5                       5      1.2059           5.0994              32.0                       19.0
+ATR14_MA75_UE0.70_GL0.75_GS0.60_EW0800_0900          14             75                   0.70                   0.75                    0.60  08:00-09:00     False                        1         485        83.7828  1.5865          0.1727    13.0395                      5                       5      1.1312           5.0262              45.0                       35.0
+ATR14_MA75_UE0.70_GL0.75_GS0.70_EW0800_0900          14             75                   0.70                   0.75                    0.70  08:00-09:00     False                        1         505        85.1018  1.5701          0.1685    14.2057                      5                       5      1.1555           4.9866              69.0                       46.0
+ATR14_MA75_UE0.65_GL0.75_GS0.65_EW0800_0900          14             75                   0.65                   0.75                    0.65  08:00-09:00     False                        1         518        83.0349  1.5478          0.1603    12.6377                      5                       5      1.0897           4.8956              93.0                       70.0
+ATR14_MA75_UE0.70_GL0.70_GS0.65_EW0800_0900          14             75                   0.70                   0.70                    0.65  08:00-09:00     False                        1         503        80.4458  1.5344          0.1599    12.7936                      5                       5      1.1229           4.8820             115.0                       72.0
+ATR14_MA60_UE0.70_GL0.75_GS0.65_EW0800_0900          14             60                   0.70                   0.75                    0.65  08:00-09:00     False                        1         497        67.1953  1.4570          0.1352    18.4737                      4                       4      0.9563           4.3006             279.0                      370.0
+ATR10_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900          10             75                   0.70                   0.75                    0.65  08:00-09:00     False                        1         498        61.5356  1.4012          0.1236    16.3757                      3                       3      0.9600           3.8597             496.0                      656.0
+ATR14_MA90_UE0.70_GL0.75_GS0.65_EW0800_0900          14             90                   0.70                   0.75                    0.65  08:00-09:00     False                        1         479        57.3265  1.3826          0.1197    13.3982                      5                       5      1.3062           4.4989             549.0                      252.0
+ATR20_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900          20             75                   0.70                   0.75                    0.65  08:00-09:00     False                        1         474        43.9327  1.2782          0.0927    18.0086                      5                       5      1.1339           4.1643             753.0                      499.0
+ATR14_MA75_UE0.70_GL0.75_GS0.65_EW0800_1000          14             75                   0.70                   0.75                    0.65  08:00-10:00     False                        1         899        41.2591  1.1366          0.0459    27.0127                      4                       3      0.9824           3.2300            1067.0                      970.0
+ATR14_MA75_UE0.75_GL0.80_GS0.65_EW0800_0900          14             75                   0.75                   0.80                    0.65  08:00-09:00     False                        2         442        83.7639  1.6434          0.1895    12.9940                      5                       5      1.2285           5.2198              10.0                        6.0
+ATR14_MA75_UE0.75_GL0.75_GS0.60_EW0800_0900          14             75                   0.75                   0.75                    0.60  08:00-09:00     False                        2         446        82.2169  1.6203          0.1843    13.7330                      5                       5      1.1670           5.1439              20.0                       12.0
+ATR14_MA75_UE0.70_GL0.80_GS0.60_EW0800_0900          14             75                   0.70                   0.80                    0.60  08:00-09:00     False                        2         473        84.9628  1.6151          0.1796    12.7936                      5                       5      1.1970           5.1201              28.0                       16.0
+ATR14_MA75_UE0.75_GL0.75_GS0.70_EW0800_0900          14             75                   0.75                   0.75                    0.70  08:00-09:00     False                        2         466        83.5359  1.6011          0.1793    12.8960                      5                       5      1.2008           5.0982              37.0                       20.0
+ATR14_MA75_UE0.70_GL0.80_GS0.70_EW0800_0900          14             75                   0.70                   0.80                    0.70  08:00-09:00     False                        2         493        86.2818  1.5969          0.1750    14.3616                      5                       5      1.2158           5.0744              38.0                       24.0
+ATR14_MA75_UE0.65_GL0.80_GS0.65_EW0800_0900          14             75                   0.65                   0.80                    0.65  08:00-09:00     False                        2         506        84.2149  1.5735          0.1664    12.7936                      5                       5      1.1401           4.9775              64.0                       50.0
+ATR14_MA75_UE0.75_GL0.70_GS0.65_EW0800_0900          14             75                   0.75                   0.70                    0.65  08:00-09:00     False                        2         464        78.8799  1.5626          0.1700    15.2680                      5                       5      1.1411           4.9792              79.0                       48.0
+ATR14_MA75_UE0.65_GL0.75_GS0.60_EW0800_0900          14             75                   0.65                   0.75                    0.60  08:00-09:00     False                        2         510        82.6679  1.5541          0.1621    12.6377                      5                       5      1.0897           4.9141              88.0                       62.0
+ATR14_MA75_UE0.70_GL0.70_GS0.60_EW0800_0900          14             75                   0.70                   0.70                    0.60  08:00-09:00     False                        2         495        80.0788  1.5406          0.1618    12.9735                      5                       5      1.1229           4.9005             103.0                       66.0
+ATR14_MA75_UE0.65_GL0.75_GS0.70_EW0800_0900          14             75                   0.65                   0.75                    0.70  08:00-09:00     False                        2         530        83.9869  1.5397          0.1585    14.2057                      5                       5      1.1206           4.8821             106.0                       71.0
+ATR20_MA60_UE0.70_GL0.75_GS0.65_EW0800_0900          20             60                   0.70                   0.75                    0.65  08:00-09:00     False                        2         501        83.0398  1.5383          0.1657    12.9846                      5                       5      1.1234           4.9171             109.0                       61.0
+ATR14_MA75_UE0.70_GL0.70_GS0.70_EW0800_0900          14             75                   0.70                   0.70                    0.70  08:00-09:00     False                        2         515        81.3978  1.5267          0.1581    14.3616                      5                       5      1.1550           4.8690             129.0                       79.0
+ATR14_MA75_UE0.65_GL0.70_GS0.65_EW0800_0900          14             75                   0.65                   0.70                    0.65  08:00-09:00     False                        2         528        79.3309  1.5058          0.1502    12.7936                      5                       5      1.0675           4.7768             166.0                      121.0
+ATR14_MA60_UE0.75_GL0.75_GS0.65_EW0800_0900          14             60                   0.75                   0.75                    0.65  08:00-09:00     False                        2         459        67.5906  1.4926          0.1473    18.5019                      5                       5      1.0980           4.7497             196.0                      129.0
+ATR14_MA60_UE0.70_GL0.75_GS0.60_EW0800_0900          14             60                   0.70                   0.75                    0.60  08:00-09:00     False                        2         490        68.2583  1.4734          0.1393    17.5417                      4                       4      0.8884           4.3287             239.0                      357.0
+ATR14_MA60_UE0.70_GL0.80_GS0.65_EW0800_0900          14             60                   0.70                   0.80                    0.65  08:00-09:00     False                        2         485        67.0513  1.4701          0.1383    18.0987                      5                       4      1.0004           4.4966             247.0                      255.0
+ATR14_MA60_UE0.70_GL0.75_GS0.70_EW0800_0900          14             60                   0.70                   0.75                    0.70  08:00-09:00     False                        2         506        68.8403  1.4567          0.1360    18.4737                      4                       4      0.9265           4.2969             280.0                      376.0
+ATR14_MA60_UE0.65_GL0.75_GS0.65_EW0800_0900          14             60                   0.65                   0.75                    0.65  08:00-09:00     False                        2         522        66.8405  1.4370          0.1280    18.4097                      4                       4      0.8837           4.2167             354.0                      456.0
+ATR10_MA90_UE0.70_GL0.75_GS0.65_EW0800_0900          10             90                   0.70                   0.75                    0.65  08:00-09:00     False                        2         497        66.3361  1.4345          0.1335    13.9787                      5                       4      1.0229           4.4249             361.0                      294.0
+ATR10_MA75_UE0.70_GL0.80_GS0.65_EW0800_0900          10             75                   0.70                   0.80                    0.65  08:00-09:00     False                        2         485        63.4776  1.4290          0.1309    16.3177                      5                       3      1.0113           4.2507             386.0                      420.0
+ATR14_MA60_UE0.70_GL0.70_GS0.65_EW0800_0900          14             60                   0.70                   0.70                    0.65  08:00-09:00     False                        2         505        64.3973  1.4262          0.1275    17.7417                      4                       4      0.9721           4.2199             397.0                      453.0
+ATR10_MA75_UE0.75_GL0.75_GS0.65_EW0800_0900          10             75                   0.75                   0.75                    0.65  08:00-09:00     False                        2         459        60.5418  1.4222          0.1319    16.7079                      4                       4      0.9945           4.2414             411.0                      432.0
+ATR10_MA60_UE0.70_GL0.75_GS0.65_EW0800_0900          10             60                   0.70                   0.75                    0.65  08:00-09:00     False                        2         516        60.4357  1.4170          0.1171    15.5129                      4                       3      0.9361           3.9952             427.0                      608.0
+ATR10_MA75_UE0.70_GL0.75_GS0.60_EW0800_0900          10             75                   0.70                   0.75                    0.60  08:00-09:00     False                        2         491        62.5196  1.4151          0.1273    15.4437                      3                       3      0.9124           3.8874             437.0                      643.0
+ATR14_MA90_UE0.75_GL0.75_GS0.65_EW0800_0900          14             90                   0.75                   0.75                    0.65  08:00-09:00     False                        2         441        56.5126  1.4079          0.1281    11.3041                      5                       5      1.2679           4.5695             468.0                      213.0
+ATR14_MA90_UE0.70_GL0.80_GS0.65_EW0800_0900          14             90                   0.70                   0.80                    0.65  08:00-09:00     False                        2         466        58.4415  1.4043          0.1254    13.3982                      5                       5      1.3080           4.5606             478.0                      217.0
+ATR10_MA75_UE0.70_GL0.75_GS0.70_EW0800_0900          10             75                   0.70                   0.75                    0.70  08:00-09:00     False                        2         508        63.3636  1.4036          0.1247    16.3757                      3                       3      0.9459           3.8655             485.0                      653.0
+ATR14_MA90_UE0.65_GL0.75_GS0.65_EW0800_0900          14             90                   0.65                   0.75                    0.65  08:00-09:00     False                        2         501        60.9646  1.3944          0.1217    13.6711                      5                       5      1.2589           4.5147             518.0                      246.0
+
+==============================================================================================================
+4) ONE-FACTOR VARIANTS AROUND LOCKED STRATEGY
+==============================================================================================================
+     Changed Parameter                                      ParamID  atr_period  atr_ma_period  usd_eur_jpy_threshold  gbpjpy_long_threshold  gbpjpy_short_threshold entry_window  IsLocked  ParamDistanceFromLocked  OOS Trades  OOS Total PnL  OOS PF  OOS Expectancy  OOS MaxDD  OOS_Positive_Segments  OOS_PF_GT_105_Segments  OOS_Min_PF  RobustnessScore  OOS_PF_Rank_Desc  RobustnessScore_Rank_Desc
+                LOCKED  ATR14_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900          14             75                   0.70                   0.75                    0.65  08:00-09:00      True                        0         493        84.1498  1.5793          0.1707    13.0395                      5                       5      1.1478           5.0094              58.0                       39.0
+         atr_ma_period  ATR14_MA50_UE0.70_GL0.75_GS0.65_EW0800_0900          14             50                   0.70                   0.75                    0.65  08:00-09:00     False                        1         500        66.9737  1.4860          0.1339    13.6995                      5                       5      1.1491           4.6861             215.0                      158.0
+         atr_ma_period  ATR14_MA60_UE0.70_GL0.75_GS0.65_EW0800_0900          14             60                   0.70                   0.75                    0.65  08:00-09:00     False                        1         497        67.1953  1.4570          0.1352    18.4737                      4                       4      0.9563           4.3006             279.0                      370.0
+         atr_ma_period  ATR14_MA90_UE0.70_GL0.75_GS0.65_EW0800_0900          14             90                   0.70                   0.75                    0.65  08:00-09:00     False                        1         479        57.3265  1.3826          0.1197    13.3982                      5                       5      1.3062           4.4989             549.0                      252.0
+         atr_ma_period ATR14_MA100_UE0.70_GL0.75_GS0.65_EW0800_0900          14            100                   0.70                   0.75                    0.65  08:00-09:00     False                        1         475        60.4381  1.3818          0.1272    18.5946                      4                       4      0.8743           4.1274             552.0                      535.0
+            atr_period  ATR10_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900          10             75                   0.70                   0.75                    0.65  08:00-09:00     False                        1         498        61.5356  1.4012          0.1236    16.3757                      3                       3      0.9600           3.8597             496.0                      656.0
+            atr_period  ATR20_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900          20             75                   0.70                   0.75                    0.65  08:00-09:00     False                        1         474        43.9327  1.2782          0.0927    18.0086                      5                       5      1.1339           4.1643             753.0                      499.0
+             entry_end  ATR14_MA75_UE0.70_GL0.75_GS0.65_EW0800_1000          14             75                   0.70                   0.75                    0.65  08:00-10:00     False                        1         899        41.2591  1.1366          0.0459    27.0127                      4                       3      0.9824           3.2300            1067.0                      970.0
+ gbpjpy_long_threshold  ATR14_MA75_UE0.70_GL0.80_GS0.65_EW0800_0900          14             75                   0.70                   0.80                    0.65  08:00-09:00     False                        1         481        85.3298  1.6073          0.1774    12.6377                      5                       5      1.2059           5.0994              32.0                       19.0
+ gbpjpy_long_threshold  ATR14_MA75_UE0.70_GL0.70_GS0.65_EW0800_0900          14             75                   0.70                   0.70                    0.65  08:00-09:00     False                        1         503        80.4458  1.5344          0.1599    12.7936                      5                       5      1.1229           4.8820             115.0                       72.0
+gbpjpy_short_threshold  ATR14_MA75_UE0.70_GL0.75_GS0.60_EW0800_0900          14             75                   0.70                   0.75                    0.60  08:00-09:00     False                        1         485        83.7828  1.5865          0.1727    13.0395                      5                       5      1.1312           5.0262              45.0                       35.0
+gbpjpy_short_threshold  ATR14_MA75_UE0.70_GL0.75_GS0.70_EW0800_0900          14             75                   0.70                   0.75                    0.70  08:00-09:00     False                        1         505        85.1018  1.5701          0.1685    14.2057                      5                       5      1.1555           4.9866              69.0                       46.0
+gbpjpy_short_threshold  ATR14_MA75_UE0.70_GL0.75_GS0.55_EW0800_0900          14             75                   0.70                   0.75                    0.55  08:00-09:00     False                        1         479        69.1698  1.4635          0.1444    18.7419                      4                       4      0.7518           4.3053             257.0                      366.0
+ usd_eur_jpy_threshold  ATR14_MA75_UE0.80_GL0.75_GS0.65_EW0800_0900          14             75                   0.80                   0.75                    0.65  08:00-09:00     False                        1         406        79.5660  1.6305          0.1960    12.5720                      5                       5      1.0936           5.1990              16.0                        7.0
+ usd_eur_jpy_threshold  ATR14_MA75_UE0.75_GL0.75_GS0.65_EW0800_0900          14             75                   0.75                   0.75                    0.65  08:00-09:00     False                        1         454        82.5839  1.6120          0.1819    13.0950                      5                       5      1.1670           5.1193              29.0                       17.0
+ usd_eur_jpy_threshold  ATR14_MA75_UE0.65_GL0.75_GS0.65_EW0800_0900          14             75                   0.65                   0.75                    0.65  08:00-09:00     False                        1         518        83.0349  1.5478          0.1603    12.6377                      5                       5      1.0897           4.8956              93.0                       70.0
+ usd_eur_jpy_threshold  ATR14_MA75_UE0.60_GL0.75_GS0.65_EW0800_0900          14             75                   0.60                   0.75                    0.65  08:00-09:00     False                        1         553        80.1977  1.4936          0.1450    14.3566                      5                       5      1.0580           4.7301             192.0                      138.0
+
+==============================================================================================================
+5) PARAMETER SENSITIVITY TABLES
+==============================================================================================================
+
+--- atr_period ---
+ atr_period  Combos  Median_OOS_PF  Mean_OOS_PF  P25_OOS_PF  P75_OOS_PF  Median_OOS_Expectancy  Median_OOS_Trades  Pass_PF_105_Rate  Pass_Exp_Rate  Median_Positive_Segments  Median_PF105_Segments
+         10     600         1.2438       1.2663      1.1066      1.4241                 0.0732              649.0            0.8750         0.9983                       4.0                    3.0
+         14     600         1.2163       1.2597      1.0865      1.4288                 0.0688              617.0            0.8583         0.9583                       4.0                    3.0
+         20     600         1.1606       1.1811      0.9965      1.2843                 0.0550              598.5            0.6950         0.7450                       3.0                    3.0
+
+--- atr_ma_period ---
+ atr_ma_period  Combos  Median_OOS_PF  Mean_OOS_PF  P25_OOS_PF  P75_OOS_PF  Median_OOS_Expectancy  Median_OOS_Trades  Pass_PF_105_Rate  Pass_Exp_Rate  Median_Positive_Segments  Median_PF105_Segments
+            50     360         1.2663       1.3245      1.1461      1.5069                 0.0764              622.0            0.9944         1.0000                       4.0                    3.0
+            60     360         1.2357       1.2804      1.1172      1.4408                 0.0696              636.0            0.9972         1.0000                       4.0                    3.0
+            75     360         1.1545       1.2247      1.0920      1.3729                 0.0507              608.0            0.8306         0.8528                       4.0                    3.0
+            90     360         1.1095       1.1742      1.0155      1.3603                 0.0402              601.5            0.5861         0.8056                       3.0                    3.0
+           100     360         1.1052       1.1747      1.0249      1.3551                 0.0391              594.5            0.6389         0.8444                       3.0                    3.0
+
+--- usd_eur_jpy_threshold ---
+ usd_eur_jpy_threshold  Combos  Median_OOS_PF  Mean_OOS_PF  P25_OOS_PF  P75_OOS_PF  Median_OOS_Expectancy  Median_OOS_Trades  Pass_PF_105_Rate  Pass_Exp_Rate  Median_Positive_Segments  Median_PF105_Segments
+                  0.60     360         1.1466       1.2009      1.0624      1.3603                 0.0477              730.5            0.7750         0.8806                       3.0                    3.0
+                  0.65     360         1.1772       1.2391      1.0946      1.4030                 0.0559              686.5            0.8639         0.9444                       4.0                    3.0
+                  0.70     360         1.1746       1.2444      1.1014      1.4151                 0.0565              649.5            0.8667         0.9278                       4.0                    3.0
+                  0.75     360         1.1915       1.2442      1.0680      1.4338                 0.0644              599.0            0.7694         0.8722                       4.0                    3.0
+                  0.80     360         1.1932       1.2499      1.0739      1.4442                 0.0662              533.0            0.7722         0.8778                       4.0                    3.0
+
+--- gbpjpy_long_threshold ---
+ gbpjpy_long_threshold  Combos  Median_OOS_PF  Mean_OOS_PF  P25_OOS_PF  P75_OOS_PF  Median_OOS_Expectancy  Median_OOS_Trades  Pass_PF_105_Rate  Pass_Exp_Rate  Median_Positive_Segments  Median_PF105_Segments
+                  0.70     600         1.1782       1.2291      1.0828      1.3930                 0.0565              624.5            0.8233         0.9217                       4.0                    3.0
+                  0.75     600         1.1841       1.2390      1.0817      1.4153                 0.0582              610.5            0.8167         0.9000                       4.0                    3.0
+                  0.80     600         1.1722       1.2390      1.0691      1.4389                 0.0550              593.0            0.7883         0.8800                       4.0                    3.0
+
+--- gbpjpy_short_threshold ---
+ gbpjpy_short_threshold  Combos  Median_OOS_PF  Mean_OOS_PF  P25_OOS_PF  P75_OOS_PF  Median_OOS_Expectancy  Median_OOS_Trades  Pass_PF_105_Rate  Pass_Exp_Rate  Median_Positive_Segments  Median_PF105_Segments
+                   0.55     450         1.1402       1.1897      1.0574      1.3484                 0.0454              590.0            0.7800         0.8778                       3.0                    3.0
+                   0.60     450         1.1959       1.2565      1.0939      1.4413                 0.0647              602.0            0.8400         0.9244                       4.0                    3.0
+                   0.65     450         1.1916       1.2498      1.1001      1.4264                 0.0625              614.5            0.8178         0.9111                       4.0                    3.0
+                   0.70     450         1.1993       1.2467      1.0915      1.4270                 0.0618              625.5            0.8000         0.8889                       4.0                    3.0
+
+--- entry_window ---
+entry_window  Combos  Median_OOS_PF  Mean_OOS_PF  P25_OOS_PF  P75_OOS_PF  Median_OOS_Expectancy  Median_OOS_Trades  Pass_PF_105_Rate  Pass_Exp_Rate  Median_Positive_Segments  Median_PF105_Segments
+ 08:00-09:00     900         1.4109       1.4018      1.3254      1.4818                 0.1261              481.0            1.0000         1.0000                       4.0                    4.0
+ 08:00-10:00     900         1.0790       1.0696      1.0155      1.1271                 0.0264              886.5            0.6189         0.8011                       3.0                    3.0
+
+==============================================================================================================
+6) HEATMAP-LIKE PIVOT TABLES - MEDIAN OOS PF
+==============================================================================================================
+
+--- pf_atrma_by_usdeur_threshold ---
+usd_eur_jpy_threshold    0.60    0.65    0.70    0.75    0.80
+atr_ma_period                                                
+50                     1.2384  1.2757  1.2851  1.3060  1.3164
+60                     1.2069  1.2410  1.2553  1.2555  1.2612
+75                     1.1334  1.1740  1.1726  1.1710  1.1611
+90                     1.0921  1.1322  1.1187  1.1100  1.1031
+100                    1.0901  1.1166  1.1052  1.1194  1.1136
+
+--- pf_atr_by_atrma ---
+atr_ma_period     50      60      75      90      100
+atr_period                                           
+10             1.3085  1.2357  1.2005  1.1941  1.2041
+14             1.2383  1.2312  1.2493  1.1661  1.1820
+20             1.2556  1.2483  1.0898  1.0891  1.0698
+
+--- pf_gbp_long_by_short ---
+gbpjpy_short_threshold    0.55    0.60    0.65    0.70
+gbpjpy_long_threshold                                 
+0.70                    1.1400  1.1998  1.1927  1.2009
+0.75                    1.1452  1.2080  1.2015  1.2065
+0.80                    1.1335  1.1914  1.1820  1.1967
+
+--- positive_segments_atrma_by_usdeur ---
+usd_eur_jpy_threshold  0.60  0.65  0.70  0.75  0.80
+atr_ma_period                                      
+50                      4.0   4.0   4.0   4.0   4.0
+60                      4.0   4.0   4.0   4.0   3.0
+75                      4.0   4.0   4.0   4.0   4.0
+90                      3.0   3.0   3.0   3.0   3.0
+100                     3.0   3.0   3.0   4.0   3.0
+
+==============================================================================================================
+7) TOP 20 BY OOS PF - DO NOT OPTIMIZE FROM THIS
+==============================================================================================================
+                                    ParamID  atr_period  atr_ma_period  usd_eur_jpy_threshold  gbpjpy_long_threshold  gbpjpy_short_threshold entry_window  IsLocked  ParamDistanceFromLocked  OOS Trades  OOS Total PnL  OOS PF  OOS Expectancy  OOS MaxDD  OOS_Positive_Segments  OOS_PF_GT_105_Segments  OOS_Min_PF  RobustnessScore  OOS_PF_Rank_Desc  RobustnessScore_Rank_Desc
+ATR10_MA50_UE0.80_GL0.80_GS0.70_EW0800_0900          10             50                   0.80                   0.80                    0.70  08:00-09:00     False                        5         414        73.6404  1.6822          0.1779    13.9517                      4                       4      0.8804           4.8328               1.0                       89.0
+ATR10_MA50_UE0.75_GL0.80_GS0.70_EW0800_0900          10             50                   0.75                   0.80                    0.70  08:00-09:00     False                        5         461        78.3162  1.6763          0.1699    13.2746                      4                       4      0.8912           4.7866               2.0                      116.0
+ATR14_MA75_UE0.80_GL0.80_GS0.60_EW0800_0900          14             75                   0.80                   0.80                    0.60  08:00-09:00     False                        3         386        80.3790  1.6751          0.2082    13.1090                      5                       5      1.1521           5.3418               3.0                        1.0
+ATR10_MA50_UE0.80_GL0.75_GS0.70_EW0800_0900          10             50                   0.80                   0.75                    0.70  08:00-09:00     False                        4         427        74.2424  1.6666          0.1739    13.9517                      4                       4      0.8596           4.7841               4.0                      119.0
+ATR14_MA75_UE0.80_GL0.80_GS0.65_EW0800_0900          14             75                   0.80                   0.80                    0.65  08:00-09:00     False                        2         394        80.7460  1.6648          0.2049    12.4710                      5                       5      1.1521           5.3099               5.0                        2.0
+ATR10_MA50_UE0.75_GL0.75_GS0.70_EW0800_0900          10             50                   0.75                   0.75                    0.70  08:00-09:00     False                        4         474        78.9182  1.6619          0.1665    13.2746                      4                       4      0.8712           4.7431               6.0                      131.0
+ATR14_MA75_UE0.75_GL0.80_GS0.60_EW0800_0900          14             75                   0.75                   0.80                    0.60  08:00-09:00     False                        3         434        83.3969  1.6526          0.1922    13.6320                      5                       5      1.2285           5.2468               7.0                        4.0
+ATR14_MA75_UE0.80_GL0.80_GS0.70_EW0800_0900          14             75                   0.80                   0.80                    0.70  08:00-09:00     False                        3         406        81.6980  1.6510          0.2012    13.1017                      5                       5      1.1902           5.2803               8.0                        3.0
+ATR14_MA50_UE0.80_GL0.80_GS0.70_EW0800_0900          14             50                   0.80                   0.80                    0.70  08:00-09:00     False                        4         412        73.9785  1.6454          0.1796    13.1219                      5                       5      1.2284           5.1730               9.0                        9.0
+ATR14_MA75_UE0.75_GL0.80_GS0.65_EW0800_0900          14             75                   0.75                   0.80                    0.65  08:00-09:00     False                        2         442        83.7639  1.6434          0.1895    12.9940                      5                       5      1.2285           5.2198              10.0                        6.0
+ATR14_MA75_UE0.80_GL0.75_GS0.60_EW0800_0900          14             75                   0.80                   0.75                    0.60  08:00-09:00     False                        2         398        79.1990  1.6397          0.1990    13.2100                      5                       5      1.0936           5.2279              11.0                        5.0
+ATR10_MA50_UE0.80_GL0.70_GS0.70_EW0800_0900          10             50                   0.80                   0.70                    0.70  08:00-09:00     False                        5         434        72.5934  1.6348          0.1673    13.9517                      4                       4      0.8489           4.7007              12.0                      149.0
+ATR10_MA50_UE0.75_GL0.70_GS0.70_EW0800_0900          10             50                   0.75                   0.70                    0.70  08:00-09:00     False                        5         481        77.2692  1.6322          0.1606    13.2746                      4                       4      0.8609           4.6668              13.0                      166.0
+ATR14_MA75_UE0.75_GL0.80_GS0.70_EW0800_0900          14             75                   0.75                   0.80                    0.70  08:00-09:00     False                        3         454        84.7159  1.6312          0.1866    12.7950                      5                       5      1.2649           5.1960              14.0                        8.0
+ATR10_MA50_UE0.80_GL0.80_GS0.65_EW0800_0900          10             50                   0.80                   0.80                    0.65  08:00-09:00     False                        4         405        66.8804  1.6309          0.1651    13.5197                      4                       4      0.9112           4.6998              15.0                      150.0
+ATR14_MA75_UE0.80_GL0.75_GS0.65_EW0800_0900          14             75                   0.80                   0.75                    0.65  08:00-09:00     False                        1         406        79.5660  1.6305          0.1960    12.5720                      5                       5      1.0936           5.1990              16.0                        7.0
+ATR10_MA50_UE0.75_GL0.80_GS0.65_EW0800_0900          10             50                   0.75                   0.80                    0.65  08:00-09:00     False                        4         452        71.5562  1.6284          0.1583    12.8426                      4                       4      0.9209           4.6644              17.0                      168.0
+ATR10_MA50_UE0.80_GL0.80_GS0.60_EW0800_0900          10             50                   0.80                   0.80                    0.60  08:00-09:00     False                        5         398        65.8484  1.6260          0.1654    13.5197                      4                       4      0.9112           4.6940              18.0                      154.0
+ATR10_MA50_UE0.75_GL0.80_GS0.60_EW0800_0900          10             50                   0.75                   0.80                    0.60  08:00-09:00     False                        5         445        70.5242  1.6239          0.1585    12.8426                      4                       4      0.9209           4.6584              19.0                      172.0
+ATR14_MA75_UE0.75_GL0.75_GS0.60_EW0800_0900          14             75                   0.75                   0.75                    0.60  08:00-09:00     False                        2         446        82.2169  1.6203          0.1843    13.7330                      5                       5      1.1670           5.1439              20.0                       12.0
+
+==============================================================================================================
+8) TOP 20 BY ROBUSTNESS SCORE - DO NOT OPTIMIZE FROM THIS
+==============================================================================================================
+                                    ParamID  atr_period  atr_ma_period  usd_eur_jpy_threshold  gbpjpy_long_threshold  gbpjpy_short_threshold entry_window  IsLocked  ParamDistanceFromLocked  OOS Trades  OOS Total PnL  OOS PF  OOS Expectancy  OOS MaxDD  OOS_Positive_Segments  OOS_PF_GT_105_Segments  OOS_Min_PF  RobustnessScore  OOS_PF_Rank_Desc  RobustnessScore_Rank_Desc
+ATR14_MA75_UE0.80_GL0.80_GS0.60_EW0800_0900          14             75                   0.80                   0.80                    0.60  08:00-09:00     False                        3         386        80.3790  1.6751          0.2082    13.1090                      5                       5      1.1521           5.3418               3.0                        1.0
+ATR14_MA75_UE0.80_GL0.80_GS0.65_EW0800_0900          14             75                   0.80                   0.80                    0.65  08:00-09:00     False                        2         394        80.7460  1.6648          0.2049    12.4710                      5                       5      1.1521           5.3099               5.0                        2.0
+ATR14_MA75_UE0.80_GL0.80_GS0.70_EW0800_0900          14             75                   0.80                   0.80                    0.70  08:00-09:00     False                        3         406        81.6980  1.6510          0.2012    13.1017                      5                       5      1.1902           5.2803               8.0                        3.0
+ATR14_MA75_UE0.75_GL0.80_GS0.60_EW0800_0900          14             75                   0.75                   0.80                    0.60  08:00-09:00     False                        3         434        83.3969  1.6526          0.1922    13.6320                      5                       5      1.2285           5.2468               7.0                        4.0
+ATR14_MA75_UE0.80_GL0.75_GS0.60_EW0800_0900          14             75                   0.80                   0.75                    0.60  08:00-09:00     False                        2         398        79.1990  1.6397          0.1990    13.2100                      5                       5      1.0936           5.2279              11.0                        5.0
+ATR14_MA75_UE0.75_GL0.80_GS0.65_EW0800_0900          14             75                   0.75                   0.80                    0.65  08:00-09:00     False                        2         442        83.7639  1.6434          0.1895    12.9940                      5                       5      1.2285           5.2198              10.0                        6.0
+ATR14_MA75_UE0.80_GL0.75_GS0.65_EW0800_0900          14             75                   0.80                   0.75                    0.65  08:00-09:00     False                        1         406        79.5660  1.6305          0.1960    12.5720                      5                       5      1.0936           5.1990              16.0                        7.0
+ATR14_MA75_UE0.75_GL0.80_GS0.70_EW0800_0900          14             75                   0.75                   0.80                    0.70  08:00-09:00     False                        3         454        84.7159  1.6312          0.1866    12.7950                      5                       5      1.2649           5.1960              14.0                        8.0
+ATR14_MA50_UE0.80_GL0.80_GS0.70_EW0800_0900          14             50                   0.80                   0.80                    0.70  08:00-09:00     False                        4         412        73.9785  1.6454          0.1796    13.1219                      5                       5      1.2284           5.1730               9.0                        9.0
+ATR14_MA75_UE0.80_GL0.75_GS0.70_EW0800_0900          14             75                   0.80                   0.75                    0.70  08:00-09:00     False                        2         418        80.5180  1.6183          0.1926    12.9458                      5                       5      1.1289           5.1728              21.0                       10.0
+ATR20_MA60_UE0.80_GL0.80_GS0.60_EW0800_0900          20             60                   0.80                   0.80                    0.60  08:00-09:00     False                        5         391        76.6119  1.5960          0.1959    14.0200                      5                       5      1.1275           5.1556              39.0                       11.0
+ATR14_MA75_UE0.75_GL0.75_GS0.60_EW0800_0900          14             75                   0.75                   0.75                    0.60  08:00-09:00     False                        2         446        82.2169  1.6203          0.1843    13.7330                      5                       5      1.1670           5.1439              20.0                       12.0
+ATR20_MA50_UE0.80_GL0.80_GS0.60_EW0800_0900          20             50                   0.80                   0.80                    0.60  08:00-09:00     False                        5         385        73.6286  1.6157          0.1912    12.5759                      5                       5      1.0564           5.1439              25.0                       13.0
+ATR20_MA50_UE0.80_GL0.80_GS0.65_EW0800_0900          20             50                   0.80                   0.80                    0.65  08:00-09:00     False                        4         392        73.6716  1.6061          0.1879    12.3339                      5                       5      1.1371           5.1331              33.0                       14.0
+ATR20_MA60_UE0.80_GL0.80_GS0.65_EW0800_0900          20             60                   0.80                   0.80                    0.65  08:00-09:00     False                        4         398        76.5349  1.5846          0.1923    13.7780                      5                       5      1.1275           5.1203              50.0                       15.0
+ATR14_MA75_UE0.70_GL0.80_GS0.60_EW0800_0900          14             75                   0.70                   0.80                    0.60  08:00-09:00     False                        2         473        84.9628  1.6151          0.1796    12.7936                      5                       5      1.1970           5.1201              28.0                       16.0
+ATR14_MA75_UE0.75_GL0.75_GS0.65_EW0800_0900          14             75                   0.75                   0.75                    0.65  08:00-09:00     False                        1         454        82.5839  1.6120          0.1819    13.0950                      5                       5      1.1670           5.1193              29.0                       17.0
+ATR20_MA60_UE0.75_GL0.80_GS0.60_EW0800_0900          20             60                   0.75                   0.80                    0.60  08:00-09:00     False                        5         441        80.9218  1.5906          0.1835    14.5290                      5                       5      1.1852           5.0997              42.0                       18.0
+ATR14_MA75_UE0.70_GL0.80_GS0.65_EW0800_0900          14             75                   0.70                   0.80                    0.65  08:00-09:00     False                        1         481        85.3298  1.6073          0.1774    12.6377                      5                       5      1.2059           5.0994              32.0                       19.0
+ATR14_MA75_UE0.75_GL0.75_GS0.70_EW0800_0900          14             75                   0.75                   0.75                    0.70  08:00-09:00     False                        2         466        83.5359  1.6011          0.1793    12.8960                      5                       5      1.2008           5.0982              37.0                       20.0
+
+==============================================================================================================
+9) BOTTOM 20 BY OOS PF
+==============================================================================================================
+                                     ParamID  atr_period  atr_ma_period  usd_eur_jpy_threshold  gbpjpy_long_threshold  gbpjpy_short_threshold entry_window  IsLocked  ParamDistanceFromLocked  OOS Trades  OOS Total PnL  OOS PF  OOS Expectancy  OOS MaxDD  OOS_Positive_Segments  OOS_PF_GT_105_Segments  OOS_Min_PF  RobustnessScore  OOS_PF_Rank_Desc  RobustnessScore_Rank_Desc
+ATR20_MA100_UE0.80_GL0.80_GS0.55_EW0800_1000          20            100                   0.80                   0.80                    0.55  08:00-10:00     False                        6         617       -34.1556  0.8813         -0.0554    52.2151                      2                       2      0.4631           1.7610            1800.0                     1795.0
+ATR20_MA100_UE0.75_GL0.80_GS0.55_EW0800_1000          20            100                   0.75                   0.80                    0.55  08:00-10:00     False                        6         702       -34.8318  0.8879         -0.0496    53.1320                      2                       2      0.4919           1.8067            1799.0                     1792.0
+ ATR20_MA75_UE0.75_GL0.80_GS0.55_EW0800_1000          20             75                   0.75                   0.80                    0.55  08:00-10:00     False                        5         727       -31.3766  0.8925         -0.0432    47.3046                      3                       2      0.7074           2.0499            1798.0                     1753.0
+ATR20_MA100_UE0.80_GL0.80_GS0.70_EW0800_1000          20            100                   0.80                   0.80                    0.70  08:00-10:00     False                        6         662       -31.3236  0.8974         -0.0473    46.1166                      1                       1      0.7011           1.5848            1797.0                     1800.0
+ ATR20_MA75_UE0.80_GL0.80_GS0.55_EW0800_1000          20             75                   0.80                   0.80                    0.55  08:00-10:00     False                        5         641       -27.8037  0.8976         -0.0434    42.2036                      3                       3      0.6774           2.1988            1796.0                     1710.0
+ATR20_MA100_UE0.75_GL0.80_GS0.70_EW0800_1000          20            100                   0.75                   0.80                    0.70  08:00-10:00     False                        6         747       -31.9998  0.9025         -0.0428    45.7697                      1                       1      0.7220           1.6200            1795.0                     1799.0
+ ATR20_MA75_UE0.60_GL0.80_GS0.55_EW0800_1000          20             75                   0.60                   0.80                    0.55  08:00-10:00     False                        5         902       -31.8719  0.9068         -0.0353    42.2957                      2                       2      0.7324           1.9667            1794.0                     1774.0
+ATR20_MA100_UE0.60_GL0.80_GS0.55_EW0800_1000          20            100                   0.60                   0.80                    0.55  08:00-10:00     False                        6         872       -31.1136  0.9139         -0.0357    57.8750                      2                       2      0.5106           1.9201            1793.0                     1783.0
+ ATR20_MA90_UE0.75_GL0.80_GS0.55_EW0800_1000          20             90                   0.75                   0.80                    0.55  08:00-10:00     False                        6         712       -25.8932  0.9145         -0.0364    43.8145                      2                       2      0.5847           1.9361            1792.0                     1781.0
+ ATR20_MA90_UE0.80_GL0.80_GS0.55_EW0800_1000          20             90                   0.80                   0.80                    0.55  08:00-10:00     False                        6         629       -23.5130  0.9156         -0.0374    40.5026                      3                       3      0.5319           2.2195            1791.0                     1702.0
+ ATR20_MA75_UE0.75_GL0.80_GS0.70_EW0800_1000          20             75                   0.75                   0.80                    0.70  08:00-10:00     False                        5         778       -25.7376  0.9171         -0.0331    46.4787                      2                       2      0.7082           1.9873            1790.0                     1770.0
+ATR20_MA100_UE0.80_GL0.80_GS0.60_EW0800_1000          20            100                   0.80                   0.80                    0.60  08:00-10:00     False                        6         632       -23.6716  0.9177         -0.0375    39.3611                      2                       2      0.6324           1.9474            1789.0                     1777.0
+ATR20_MA100_UE0.80_GL0.75_GS0.55_EW0800_1000          20            100                   0.80                   0.75                    0.55  08:00-10:00     False                        5         638       -23.9886  0.9178         -0.0376    52.7587                      2                       2      0.4835           1.9096            1788.0                     1784.0
+ ATR20_MA75_UE0.75_GL0.75_GS0.55_EW0800_1000          20             75                   0.75                   0.75                    0.55  08:00-10:00     False                        4         750       -24.3966  0.9182         -0.0325    42.1226                      3                       3      0.7116           2.2926            1787.0                     1668.0
+ ATR20_MA90_UE0.75_GL0.80_GS0.70_EW0800_1000          20             90                   0.75                   0.80                    0.70  08:00-10:00     False                        6         763       -25.5732  0.9214         -0.0335    39.7632                      2                       2      0.7958           2.0134            1786.0                     1763.0
+ATR20_MA100_UE0.75_GL0.80_GS0.60_EW0800_1000          20            100                   0.75                   0.80                    0.60  08:00-10:00     False                        6         717       -24.3478  0.9216         -0.0340    39.6969                      2                       2      0.6563           1.9767            1785.0                     1773.0
+ATR20_MA100_UE0.75_GL0.75_GS0.55_EW0800_1000          20            100                   0.75                   0.75                    0.55  08:00-10:00     False                        5         723       -24.6648  0.9216         -0.0341    53.4876                      2                       2      0.5107           1.9395            1784.0                     1779.0
+ ATR20_MA90_UE0.80_GL0.80_GS0.70_EW0800_1000          20             90                   0.80                   0.80                    0.70  08:00-10:00     False                        6         680       -23.1930  0.9229         -0.0341    36.4959                      2                       2      0.7489           2.0011            1783.0                     1766.0
+ ATR20_MA75_UE0.80_GL0.80_GS0.70_EW0800_1000          20             75                   0.80                   0.80                    0.70  08:00-10:00     False                        5         692       -22.1647  0.9235         -0.0320    44.3325                      3                       2      0.7049           2.1513            1782.0                     1730.0
+ ATR20_MA75_UE0.80_GL0.75_GS0.55_EW0800_1000          20             75                   0.80                   0.75                    0.55  08:00-10:00     False                        4         664       -20.8237  0.9250         -0.0314    37.9115                      3                       3      0.6811           2.3010            1781.0                     1664.0
+
+==============================================================================================================
+10) LOCKED MARKET BREAKDOWN - COMBINED OOS
+==============================================================================================================
+                                    ParamID        Scope Market  Trades  Total PnL     PF  Expectancy  Winrate  MaxDD
+ATR14_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900 Combined_OOS EURJPY     162    12.5060 1.2408      0.0772   0.5247 9.1450
+ATR14_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900 Combined_OOS GBPJPY     173    45.6640 1.7087      0.2640   0.5087 9.0060
+ATR14_MA75_UE0.70_GL0.75_GS0.65_EW0800_0900 Combined_OOS USDJPY     158    25.9798 1.8994      0.1644   0.5570 4.3365
+
+==============================================================================================================
+11) QUICK PASS/FAIL DIAGNOSTICS
+==============================================================================================================
+                                                      Check     Value  Pass
+                                       Locked OOS PF > 1.15  1.579333  True
+                                  Locked OOS expectancy > 0  0.170689  True
+                       Locked has >=4 positive OOS segments         5  True
+                          Locked has >=4 segments PF > 1.05         5  True
+                Locked not isolated: local median PF > 1.15  1.196212  True
+        Locked not isolated: >70% local neighbors PF > 1.05  0.835391  True
+                   Broad surface: >50% all combos PF > 1.05  0.809444  True
+Locked is not only top spike: rank not required, but report   58/1800  True
+
+==============================================================================================================
+END PHASE 2B ANALYSIS PACKAGE
+==============================================================================================================
+Bedömning av Fas 2B
+Fas 2B är godkänd — och faktiskt starkare än jag förväntade mig. Det viktigaste resultatet är detta:
+Total combinations: 1800
+PF > 1.00: 90.06%
+PF > 1.05: 80.94%
+PF > 1.20: 47.61%
+Expectancy > 0: 90.06%
+All 5 OOS-segment positiva: 18.83%
+>=4 positiva OOS-segment: 55.33%
+Det betyder att strategin inte verkar ligga på en ensam överoptimerad punkt. Den fungerar över en bred del av parameter-ytan. Det är exakt vad vi ville se i Fas 2B. Min dom:
+Fas 2B: GODKÄND
+Robusthetsbetyg: 8/10
+Overfitting-risk efter Fas 2B: lägre än tidigare
+Gå vidare till Fas 2C: Ja
+Ändra strategin: Nej
+
+1. Den låsta strategin ligger väldigt bra i surface
+Locked strategy:
+ATR14
+ATR_MA75
+USD/EUR JPY threshold 0.70
+GBPJPY long 0.75
+GBPJPY short 0.65
+Entry 08–09
+OOS Trades: 493
+OOS PF: 1.5793
+OOS Expectancy: 0.1707
+Positive OOS segments: 5/5
+PF > 1.05 segments: 5/5
+OOS PF rank: 58/1800
+Robustness score rank: 39/1800
+OOS PF percentile: 96.83%
+Detta är mycket bra. Den låsta strategin är inte bara “lite över medel”; den ligger i toppskiktet av hela testytan. Men den är inte ensam bäst, vilket är positivt. En ensam
+rank 1-punkt hade varit mer misstänkt. Här ser vi att flera närliggande varianter också fungerar. Det betyder:
+Strategin är stark, men inte en isolerad spike.
+
+2. Local neighborhood är det viktigaste beviset
+Närliggande parameterområde runt locked:
+Local neighborhood combinations: 486
+Median OOS PF: 1.1962
+P25/P75 PF: 1.1067 / 1.4223
+PF > 1.05: 83.54%
+Expectancy > 0: 91.36%
+Median positive OOS segments: 4/5
+
+Det här är kanske det viktigaste i hela Fas 2B. En överfit-strategi brukar se ut så här:
+Locked PF: 1.58
+Local median PF: 0.95
+Många närliggande varianter negativa
+
+Men er ser ut så här:
+Locked PF: 1.58
+Local median PF: 1.20
+Majoriteten av närliggande varianter positiva. Det är ett tydligt platåbeteende. Inte perfekt, men klart godkänt.
+
+3. Entry window 08–09 bekräftas extremt tydligt
+Det starkaste parameterbeviset är entry-fönstret.
+08–09:
+Median OOS PF: 1.4109
+Mean OOS PF: 1.4018
+PF > 1.05 rate: 100%
+Expectancy > 0 rate: 100%
+08–10:
+Median OOS PF: 1.0790
+Mean OOS PF: 1.0696
+PF > 1.05 rate: 61.89%
+Expectancy > 0 rate: 80.11%
+Och one-factor-testet visar samma sak:
+Locked 08–09:
+OOS PF: 1.5793
+Expectancy: 0.1707
+MaxDD: 13.0395
+Ändrat till 08–10:
+OOS PF: 1.1366
+Expectancy: 0.0459
+MaxDD: 27.0127
+Detta är en mycket stark bekräftelse på er hypotes: edgen sitter i första London-timmen, inte i “allmän breakout senare på dagen”. Det här är inte en varning. Det är en 
+strukturell bekräftelse.
+
+4. Volatility-thresholds verkar robusta
+USDJPY/EURJPY threshold är inte känslig på ett farligt sätt:
+0.60: median PF 1.1466
+0.65: median PF 1.1772
+0.70: median PF 1.1746
+0.75: median PF 1.1915
+0.80: median PF 1.1932
+Det betyder att 0.70 inte verkar vara en magisk curve-fit-punkt. Hela zonen 0.65–0.80 fungerar. Det är mycket positivt. Men en intressant observation är att hårdare filter, 
+0.75–0.80, ofta ger lite högre PF men färre trades. Det är väntat. Er locked 0.70 är därför en bra balans mellan trade count och kvalitet. Jag hade inte ändrat till 0.80 även 
+om topplistan ser bättre ut, eftersom 0.70 är mer diversifierat och mindre selektivt.
+
+5. GBPJPY-reglerna ser mindre överfit ut efter Fas 2B
+Det här var den största frågan. Fas 2B gör mig mer bekväm med GBPJPY.
+GBPJPY long threshold:
+0.70 median PF: 1.1782
+0.75 median PF: 1.1841
+0.80 median PF: 1.1722
+GBPJPY short threshold:
+0.55 median PF: 1.1402
+0.60 median PF: 1.1959
+0.65 median PF: 1.1916
+0.70 median PF: 1.1993
+Det betyder att GBPJPY-reglerna inte verkar vara extremt sköra. Long-threshold 0.75 är mitt i en fungerande zon. Short-threshold 0.65 är också i en fungerande zon. Det enda 
+som ser svagare ut är GBPJPY short 0.55, vilket tyder på att för lågt short-filter släpper in för mycket brus. Det stödjer er ursprungliga idé om att GBPJPY behöver tydlig 
+regimselektion. Min uppdaterade bedömning:
+GBPJPY är fortfarande den mest riskabla marknaden,
+men specialreglerna ser inte längre ut som ren curve-fit.
+
+6. ATR14 är godkänt, men ATR_MA75 är inte globalt bäst
+ATR-period:
+ATR10 median PF: 1.2438
+ATR14 median PF: 1.2163
+ATR20 median PF: 1.1606
+ATR10 och ATR14 är båda bra. ATR20 är svagare. Det betyder att edgen föredrar snabbare volatilitetsmätning. ATR14 är absolut rimligt och ligger nära stark zon.
+ATR_MA-period:
+MA50 median PF: 1.2663
+MA60 median PF: 1.2357
+MA75 median PF: 1.1545
+MA90 median PF: 1.1095
+MA100 median PF: 1.1052
+Här är en viktig nyans: globalt ser MA50/60 bättre ut än MA75. Men i den låsta lokala kombinationen fungerar MA75 mycket bra. One-factor-testet visar:
+MA50: PF 1.4860
+MA60: PF 1.4570
+MA75 locked: PF 1.5793
+MA90: PF 1.3826
+MA100: PF 1.3818
+Så även om MA50/60 är starkare i global median, är locked-kombinationen med MA75 starkare än när man bara byter MA-period. Därför ser jag ingen anledning att ändra.
+Min slutsats:
+ATR14/MA75 är godkänt.
+Men i framtida forskning, inte i denna strategy version, kan MA50–60 vara ett område att studera separat.
+
+7. Topplistorna ska inte få er att byta parametrar
+Top 20 visar att flera bättre varianter finns, exempelvis:
+ATR14_MA75_UE0.80_GL0.80_GS0.60
+PF: 1.6751
+Expectancy: 0.2082
+Robustness rank: 1
+Det är lockande att byta till den. Gör inte det. Varför? För att Fas 2B inte är en optimeringsfas. Det är en falsifieringsfas. Att byta till en topprankad variant nu 
+skulle återstarta overfitting-processen. Det rätta sättet att tolka topplistan är:
+Bra: många toppvarianter liknar locked.
+Dåligt: om toppvarianterna hade varit helt annorlunda.
+Här är toppvarianterna ofta i samma logiska region:
+Entry 08–09
+ATR14 eller snabb ATR
+MA50–75
+USD/EUR threshold 0.75–0.80
+GBPJPY long 0.75–0.80
+GBPJPY short 0.60–0.70
+Det stödjer strategin.
+
+8. Bottom 20 bekräftar också hypotesen
+De sämsta varianterna är huvudsakligen:
+Entry 08–10
+ATR20
+MA75/90/100
+GBPJPY short 0.55
+Det är exakt vad vi förväntar oss om strategins edge sitter i tidig continuation och snabb volregim. När ni släpper in mer tid, långsammare ATR och för lågt
+GBPJPY-short-filter försämras edge kraftigt. Detta stärker den strukturella förklaringen.
+
+9. Marknadsbreakdown för locked är fortfarande bra
+Locked combined OOS:
+EURJPY: 162 trades, PF 1.2408, expectancy 0.0772
+GBPJPY: 173 trades, PF 1.7087, expectancy 0.2640
+USDJPY: 158 trades, PF 1.8994, expectancy 0.1644
+Alla tre marknader är positiva. EURJPY är svagast, men fortfarande inte dålig. USDJPY är renast. GBPJPY är starkast men mest känslig för outliers. Min ranking är oförändrad:
+1. USDJPY — högst kvalitet
+2. GBPJPY — högst edge, men mer event/outlier-risk
+3. EURJPY — svagast men bidrar till diversifiering
+
+Slutdom för Fas 2B
+Fas 2B: GODKÄND
+Parameter surface: Stark
+Local robustness: Stark
+Entry-window-hypotes: Mycket starkt bekräftad
+GBPJPY-overfit-risk: Minskad men inte eliminerad
+Strategin bör inte ändras
+Gå vidare till Fas 2C
+Det här är ett viktigt steg. Efter Fas 2A såg strategin lovande ut men med koncentrationsrisk. Efter Fas 2B ser den betydligt mer robust ut, eftersom nästan hela området 
+runt locked-reglerna fortsätter vara positivt.
+Det ni ska göra nu
+Ni ska inte byta till någon bättre variant. Den låsta strategin förblir:
+ATR14
+ATR_MA75
+USDJPY/EURJPY > 0.70
+GBPJPY long > 0.75
+GBPJPY short < 0.65
+Entry 08–09
+Nästa steg bör vara Fas 2C — Monte Carlo / Trade Resampling / Risk of Ruin.
+Där vill vi testa:
+1. Slumpad tradeordning
+2. Block-bootstrap av trades
+3. Worst-case sequencing
+4. Slippage-stress
+5. Ta bort bästa 1, 5, 10 trades
+6. Probability of negative outcome
+7. Probability of >10%, >15%, >20% drawdown vid olika exposure-scale
+Fas 2B säger: edgen verkar robust.
+Fas 2C ska svara på: kan vi överleva den verkliga distributionen av trades?
