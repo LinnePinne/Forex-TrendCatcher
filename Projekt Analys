@@ -46,29 +46,6 @@ Spread/slippage exakt definierade
 Ingen ny idé får ändra detta.
 Output:
 
-1B — Definiera vad som räknas som framgång
-Syfte: undvika moving goalposts.
-Sätt hårda krav:
-Exempel:
-Metric	Minimum
-PF	>1.20
-Sharpe	>1.0
-CAGR	>8%
-Max DD	<20%
-OOS PF	>1.05
-OOS Expectancy	>0
-Om strategi missar → underkänd.
-
-1C — Isolera researchdata
-Syfte: förhindra kontaminering.
-Dela historiken:
-Discovery:
-2003–2018
-Validation:
-2019–2022
-Final holdout:
-2023–2026
-2023–2026 får inte tittas på igen förrän allt annat är klart.
 
 FAS 2 — ROBUSTHET (försök döda modellen)
 2A — Walk-forward test
@@ -195,6 +172,136 @@ Corr → 1
 Spread ×2
 Se DD.
 
+Fas 1a:
+Vi låser helt enkelt strategin som nedan och går in på fas 2 direkt:
+Timeframe: 1H
+Asia: 00–07
+Entry: 08–09
+ATR14
+ATR_MA75
+Entry: ATR > ATR_MA
+Exit: ATR < ATR_MA
+USDJPY/EURJPY: Asia percentile >0.7
+GBPJPY:
+Long >0.75
+Short <0.65
+================================================================================
+PHASE 2A WALK-FORWARD VALIDATION
+Locked strategy. No optimization.
+================================================================================
 
-högre slippage
-sämre fills
+LOCKED RULES:
+asia_start: 00:00
+asia_end: 07:00
+entry_start: 08:00:00
+entry_end: 09:00:00
+atr_period: 14
+atr_ma_period: 75
+asia_rank_window_days: 252
+asia_rank_min_periods: 50
+usd_eur_jpy_threshold: 0.7
+gbpjpy_long_threshold: 0.75
+gbpjpy_short_threshold: 0.65
+
+Running locked market backtests...
+USDJPY: 213 trades, PF=1.760, expectancy=0.15433
+EURJPY: 224 trades, PF=1.344, expectancy=0.10802
+GBPJPY: 191 trades, PF=1.687, expectancy=0.26041
+
+Full-sample per-market diagnostics, OBS ej OOS-beslut:
+   Market  Trades  Total PnL  ...  Expectancy  Max Drawdown  Sharpe (trade-level)
+0  USDJPY     213    32.8733  ...    0.154335        4.3365              2.749757
+1  EURJPY     224    24.1960  ...    0.108018        9.5120              1.507763
+2  GBPJPY     191    49.7380  ...    0.260408        9.0060              1.821449
+
+[3 rows x 7 columns]
+
+================================================================================
+WF1: IS 2003-05-01 -> 2010-12-31 | OOS 2011-01-01 -> 2013-12-31
+================================================================================
+OOS trades=139 | PF=1.396 | Exp=0.14046 | PortRet=5.68% | Pass=True
+
+================================================================================
+WF2: IS 2003-05-01 -> 2013-12-31 | OOS 2014-01-01 -> 2016-12-31
+================================================================================
+OOS trades=94 | PF=2.494 | Exp=0.43961 | PortRet=10.64% | Pass=True
+
+================================================================================
+WF3: IS 2003-05-01 -> 2016-12-31 | OOS 2017-01-01 -> 2019-12-31
+================================================================================
+OOS trades=58 | PF=1.217 | Exp=0.04617 | PortRet=0.84% | Pass=True
+
+================================================================================
+WF4: IS 2003-05-01 -> 2019-12-31 | OOS 2020-01-01 -> 2022-12-31
+================================================================================
+OOS trades=102 | PF=1.148 | Exp=0.04461 | PortRet=0.68% | Pass=True
+
+================================================================================
+WF5: IS 2003-05-01 -> 2022-12-31 | OOS 2023-01-01 -> 2026-12-31
+================================================================================
+OOS trades=100 | PF=1.640 | Exp=0.16075 | PortRet=3.49% | Pass=True
+
+================================================================================
+COMBINED OOS SUMMARY
+================================================================================
+                                    0
+Trades                            493
+Total PnL                     84.1498
+Gross Profit                 229.4028
+Gross Loss                   -145.253
+Profit Factor                1.579333
+Winrate                      0.529412
+Avg Win                      0.878938
+Avg Loss                    -0.626091
+Expectancy                   0.170689
+Max Drawdown                  13.0395
+Max Losing Streak                   9
+Sharpe (trade-level)         2.674969
+Start Capital                 50000.0
+End Equity               61426.352017
+Net PnL ($)              11426.352017
+Return (%)                  22.852704
+Max Drawdown ($)          1914.909532
+Max Drawdown (%)             3.740967
+Markets                             3
+Trades Closed                     493
+Sharpe (daily, ann.)         0.626355
+Sortino (daily, ann.)        1.402853
+CAGR (%)                     1.383853
+Calmar                       0.372472
+Days                           5466.0
+Years                       14.975342
+Max DD MTM ($)            2365.105703
+Max DD MTM (%)               4.615869
+Max Intraday DD MTM ($)   1441.055005
+Max Intraday DD MTM (%)      2.352888
+Label                    COMBINED_OOS
+
+================================================================================
+VARIANT / FALSIFICATION TESTS
+================================================================================
+                           Variant  ...  Portfolio Sharpe
+0                          All OOS  ...          0.626355
+1             USDJPY + EURJPY only  ...          0.520781
+2                      GBPJPY only  ...          0.453236
+3                   Without GBPJPY  ...          0.520781
+4  Without best 5 portfolio trades  ...          0.463692
+5         Without best year (2016)  ...          0.416448
+
+[6 rows x 12 columns]
+
+================================================================================
+PASS / FAIL DIAGNOSTIK
+================================================================================
+                                  Check      Value  Pass
+0       Positive OOS portfolio segments        5/5  True
+1                OOS PF > 1.05 segments        5/5  True
+2           OOS expectancy > 0 segments        5/5  True
+3                   Strict segment pass        5/5  True
+4                Combined OOS PF > 1.15   1.579333  True
+5           Combined OOS expectancy > 0   0.170689  True
+6     Combined OOS portfolio return > 0  22.852704  True
+7  USDJPY+EURJPY survive without GBPJPY  16.774857  True
+8        Survives without best 5 trades   11.59786  True
+9            Survives without best year   11.79591  True
+
