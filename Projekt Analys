@@ -1259,3 +1259,814 @@ month_block_bootstrap 2x exposure P(DD>20%) < 10%     0.0016  True
 END PHASE 2C ANALYSIS PACKAGE
 ==============================================================================================================
 
+Fas 2C är godkänd.
+Strategin klarar Monte Carlo-, kostnads-, sequencing- och koncentrationstesterna bättre än jag hade förväntat mig. Min dom:
+Fas 2C: GODKÄND
+Riskrobusthet: 8/10
+Sannolik ruin vid 1x–2x sizing: låg
+Rekommenderad live-sizing initialt: 1x–2x
+Max forsknings-sizing: 3x
+Undvik tills vidare: 4x–5x
+Det viktigaste är att strategin inte bara ser bra ut i historisk ordning. Den överlever även när vi stressar tradeordning, kostnader och blockvisa regimer.
+
+1. Baseline är stabil
+Baseline locked combined OOS:
+Trades: 493
+Net PnL: +11,426 USD
+Return: +22.85%
+Max DD: 3.74%
+PF: 1.5727
+Winrate: 52.94%
+Expectancy: +23.18 USD/trade
+Longest losing streak: 8
+Det är ett rent och stabilt baseline-resultat. Drawdown är låg relativt avkastningen, och losing streak på 8 trades är fullt hanterbart. Viktigt: den låga drawdownen
+betyder inte att strategin är riskfri. Det betyder att nuvarande sizing är konservativ.
+
+2. Koncentrationstestet är godkänt men visar fortfarande positiv skew, Det här är centralt:
+Remove best 1 trade:
+Net PnL: +8,952
+PF: 1.4487
+Remove best 5 trades:
+Net PnL: +6,079
+PF: 1.3047
+Remove best 10 trades:
+Net PnL: +3,640
+PF: 1.1825
+Remove best 20 trades:
+Net PnL: +373
+PF: 1.0187
+Detta är bra. Strategin dör inte utan bästa 1, 5 eller 10 trades. Det betyder att edgen inte bara är en trade eller ett extremt litet antal trades. Men: efter att ni tar
+bort bästa 20 trades är strategin nästan flat. Det visar att modellen är positivt skewed trend following. Den tjänar mycket på ett begränsat antal stora expansionsrörelser.
+Det är inte dåligt. Det är normalt för trendföljande strategier. Men det betyder att ni måste acceptera att mycket av avkastningen kommer från få stora “runner”-perioder.
+
+3. Utan 2016 och 2013 överlever den fortfarande
+Viktigt:
+Remove best year 2016:
+Net PnL: +6,160
+Return: +12.32%
+PF: 1.3220
+Remove best 2 years 2016 + 2013:
+Net PnL: +4,146
+Return: +8.29%
+PF: 1.2430
+Det här är starkt. Tidigare var 2016 den största varningen. Nu ser vi att strategin fortfarande är positiv även utan bästa året och utan de två bästa åren. Min tolkning:
+2016 förstärker edgen kraftigt, men strategin är inte beroende av 2016 för att vara positiv. Detta minskar overfitting-risken betydligt.
+
+4. Kostnadsstress är mycket bra
+Deterministisk kostnadsstress:
+1x exposure, 1x cost:
+PF 1.5727, return +22.85%, DD 3.74%
+1x exposure, 2x cost:
+PF 1.4879, return +20.11%, DD 3.91%
+1x exposure, 3x cost:
+PF 1.4082, return +17.38%, DD 4.34%
+Det här är ett väldigt bra resultat. Strategin klarar 3x kostnad utan att bli marginell. Det betyder att kostnadsantagandena inte verkar vara hela edgen. Om strategin hade 
+fallit från PF 1.57 till PF 1.03 vid 2x cost hade jag blivit orolig. Här håller den PF över 1.40 även vid 3x cost. Det är en stark valideringspunkt.
+
+5. 2x exposure ser rimligt ut
+Vid 2x exposure:
+2x exposure, 1x cost:
+Return: +45.71%
+Max DD: 7.31%
+2x exposure, 2x cost:
+Return: +40.23%
+Max DD: 7.65%
+2x exposure, 3x cost:
+Return: +34.75%
+Max DD: 8.08%
+Det är fortfarande kontrollerat. Även med 3x kostnad är drawdown under 10% i historisk sequencing. Min bedömning:
+2x är rimlig övre gräns för initial live-sizing,
+givet att verklig execution matchar backtest hyfsat.
+
+6. 3x exposure är möjligt, men inte initialt
+Vid 3x exposure:
+3x exposure, 1x cost:
+Return: +68.56%
+Max DD: 10.73%
+3x exposure, 2x cost:
+Return: +60.34%
+Max DD: 11.23%
+3x exposure, 3x cost:
+Return: +52.13%
+Max DD: 11.88%
+Det är inte katastrofalt. 3x ser fortfarande matematiskt levande ut. Men 3x är där strategin börjar få meningsfull drawdown-risk i Monte Carlo, särskilt när block-bootstrap används.
+Jag hade därför inte börjat live på 3x. Jag hade sett 3x som “max research allocation” eller något man först överväger efter paper/live-verifiering.
+
+7. 4x–5x blir för aggressivt
+Vid 5x och 3x cost:
+Return: +86.88%
+Max DD historiskt: 19.02%
+PF: 1.4082
+Det ser fortfarande lönsamt ut historiskt, men Monte Carlo visar att drawdown-sannolikheterna blir för höga. Exempel month-block bootstrap vid 5x exposure och 3x cost:
+P95 max DD: 33.63%
+P99 max DD: 45.39%
+Probability DD > 20%: 30.30%
+Probability DD > 30%: 8.10%
+Probability min equity < 80% start: 10.55%
+Det är för aggressivt för en strategi som ännu inte är live-verifierad. Min bedömning:
+4x–5x är inte förbjudet matematiskt,
+men det är inte professionellt rimligt innan live-data finns.
+
+8. Monte Carlo: baseline är stark
+Vid 1x exposure och normal cost:
+IID bootstrap
+P05 Net PnL: +5,022
+P01 Net PnL: +2,381
+Median max DD: 2.81%
+P95 max DD: 5.10%
+P99 max DD: 6.69%
+Prob end negative: 0.14%
+Prob DD > 10%: 0.06%
+Month-block bootstrap
+P05 Net PnL: +4,354
+P01 Net PnL: +1,578
+Median max DD: 3.40%
+P95 max DD: 6.38%
+P99 max DD: 8.21%
+Prob end negative: 0.33%
+Prob DD > 10%: 0.21%
+Month-block är mer realistiskt än IID eftersom dåliga månader kan klustra. Även där är baseline mycket stabil.
+Det här är en stark Fas 2C-pass.
+
+9. 2x Monte Carlo är fortfarande acceptabelt
+Vid 2x exposure och normal cost:
+IID bootstrap
+P95 max DD: 9.69%
+P99 max DD: 12.47%
+Prob DD > 10%: 4.21%
+Prob DD > 20%: 0.04%
+Month-block bootstrap
+P95 max DD: 11.65%
+P99 max DD: 15.20%
+Prob DD > 10%: 10.92%
+Prob DD > 20%: 0.16%
+Det här är acceptabelt. Month-block säger att 2x har ungefär 11% sannolikhet att få över 10% DD, men nästan ingen sannolikhet att få över 20% DD.
+Min slutsats:
+2x är fortfarande inom rimlig risk.
+
+10. 3x är gränszonen
+Vid 3x exposure och normal cost:
+Month-block bootstrap
+Median max DD: 8.67%
+P95 max DD: 16.86%
+P99 max DD: 22.21%
+Prob DD > 10%: 35.31%
+Prob DD > 15%: 8.58%
+Prob DD > 20%: 2.07%
+Det här är inte dåligt, men det är en annan riskklass. Vid 3x måste ni acceptera att en 10–15% drawdown inte är ovanlig.
+3x kan vara rimligt senare, men inte innan live-execution är bekräftad.
+
+11. Worst-case sequencing är den stora psykologiska varningen
+Worst-case sequencing:
+Actual historical order:
+Max DD: 3.74%
+Longest losing streak: 8
+Worst first / losses first:
+Max DD: 39.90%
+Longest losing streak: 232
+Detta är inte ett realistiskt scenario i exakt den formen, eftersom det staplar alla förluster först. Men det visar hur mycket strategin är beroende av att vinnare och förlorare 
+blandas rimligt över tid. Den viktiga lärdomen är: Sizing måste sättas efter Monte Carlo/block-risk, inte efter historisk max DD. Historisk DD 3.74% är för snäll. Den verkliga
+riskbilden ligger närmare month-block bootstrap än actual-order-resultatet.
+
+12. Worst months är hanterbara
+Sämsta månaderna:
+2014-01: -756
+2011-08: -751
+2011-06: -686
+2020-03: -678
+2022-03: -488
+Det är bra att de sämsta månaderna är utspridda över olika år och regimer. Det tyder inte på att en enda marknadsmiljö totalförstör strategin. Bästa månaderna är däremot mer extrema:
+2016-06: +2337
+2016-07: +1408
+2013-04: +1367
+2014-11: +1295
+2024-09: +1028
+Det bekräftar återigen positiv skew. Strategin har många små/medelstora perioder och några stora trendexpansioner.
+
+Slutbetyg Fas 2C
+Fas 2C: GODKÄND
+Baseline risk: Mycket bra
+Cost robustness: Mycket bra
+Monte Carlo robustness: Bra
+Sequencing risk: Hanterbar vid 1x–2x
+Concentration risk: Fortfarande närvarande men ej fatal
+
+Jag skulle sätta:
+1x sizing: mycket konservativt
+1.5x sizing: rimligt initialt
+2x sizing: rimligt efter execution-verifiering
+3x sizing: endast efter mer live/paper-data
+4x–5x sizing: nej, för tidigt
+Rekommenderad riskpolicy
+
+Jag hade satt följande regler:
+Initial paper/live shadow:
+1x
+Efter 50–100 live-signaler om fills matchar backtest:
+1.5x
+Efter 6–12 månader och stabil slippage:
+max 2x
+3x endast om:
+- live PF fortfarande >1.25
+- live slippage inom stressantagande
+- ingen DD över 10–12%
+- trade distribution liknar backtest
+4x–5x:
+inte aktuellt nu
+För stop-triggers:
+Stoppa / pausa om:
+- realiserad DD > 12% vid 2x
+- live PF < 1.05 efter minst 100 trades
+- average slippage > 2x antagande
+- 20-trade rolling expectancy klart negativ
+- marknadsregim skapar fler än 12–15 förlusttrades i rad
+Nästa steg
+Efter Fas 2C tycker jag att strategin har klarat den viktigaste kvantitativa falsifieringen.
+Nästa fas bör vara:
+Fas 2D — Execution & Cost Reality Check
+Där ska vi inte längre testa om signalen fungerar. Vi ska testa om den går att handla realistiskt:
+1. spread stress per timme
+2. rollover-/nyhetsfiltertest
+3. entry/exit slippage shock
+4. random delayed fills
+5. broker-timezone/DST-sanity check
+6. live shadow execution-logg
+==============================================================================================================
+PHASE 2D ANALYSIS PACKAGE - COPY EVERYTHING BELOW INTO CHATGPT
+==============================================================================================================
+
+==============================================================================================================
+1) BASELINE LOCKED COMBINED OOS PORTFOLIO STATS
+==============================================================================================================
+ Trades    NetPnL  EndEquity  ReturnPct  MaxDD_USD  MaxDD_Pct  ProfitFactor  Winrate  Expectancy  HistoricalReturnPctFromPortfolioSim  HistoricalMaxDDPctFromPortfolioSim
+    493 11426.352  61426.352    22.8527  1914.9095      3.741        1.5727   0.5294     23.1772                              22.8527                               3.741
+
+==============================================================================================================
+2) DATA QUALITY / TIMEZONE SANITY DIAGNOSTICS
+==============================================================================================================
+Market   Rows               Start                 End  DuplicateTimestamps  ModeGapHours  GapsGT1h  GapsGT6h  GapsGT24h  WeekendBars  MinBarsPerHourBucket  MaxBarsPerHourBucket  HourBucketsPresent
+USDJPY 146741 2003-05-04 19:00:00 2025-12-31 22:00:00                    0           1.0      1083       980        963        10576                  6060                  6393                  24
+EURJPY 149962 2003-08-03 19:00:00 2025-12-31 22:00:00                    0           1.0      1079      1007        987        10656                  6193                  6530                  24
+GBPJPY 117781 2003-08-03 19:00:00 2025-12-31 22:00:00                    0           1.0       804       744        726         9740                  4888                  4989                  24
+
+==============================================================================================================
+3) EXECUTION SCENARIO SUMMARY
+==============================================================================================================
+                                 Scenario  ExposureScale  Point Trades  Point Total PnL  Point PF  Point Expectancy  Point MaxDD  Portfolio Trades  Portfolio Net PnL $  Portfolio Return %  Portfolio Max DD %  Portfolio CAGR %  Portfolio Sharpe  NetPnL_Degradation_$  Return_Degradation_PctPts  PF_Degradation  DD_Increase_PctPts
+                         Baseline rebuilt            1.0           493          84.1498    1.5793            0.1707      12.6841               493           11426.3520             22.8527              3.7410            1.3839            0.6264                0.0000                     0.0000          0.0000              0.0000
+                              Spread x1.5            1.0           493          82.0273    1.5608            0.1664      13.1738               493           11105.7680             22.2115              3.7586            1.3484            0.6110             -320.5841                    -0.6412         -0.0185              0.0176
+                                Spread x2            1.0           493          79.9048    1.5425            0.1621      13.6636               493           10786.8505             21.5737              3.7849            1.3130            0.5956             -639.5015                    -1.2790         -0.0368              0.0440
+                                Spread x3            1.0           493          75.6598    1.5066            0.1535      14.6431               493           10153.9809             20.3080              3.8757            1.2422            0.5647            -1272.3712                    -2.5447         -0.0727              0.1347
+                              Slippage x2            1.0           493          80.9066    1.5511            0.1641      13.4297               493           10945.6149             21.8912              3.7677            1.3307            0.6032             -480.7371                    -0.9615         -0.0283              0.0267
+                              Slippage x3            1.0           493          77.6634    1.5234            0.1575      14.1753               493           10468.6250             20.9372              3.8367            1.2775            0.5801             -957.7271                    -1.9155         -0.0560              0.0957
+                  Spread x2 + Slippage x2            1.0           493          76.6616    1.5150            0.1555      14.4092               493           10311.0985             20.6222              3.8562            1.2599            0.5724            -1115.2535                    -2.2305         -0.0644              0.1152
+Spread x3 + Slippage x3 + Commission x1.5            1.0           493          67.9409    1.4438            0.1378      16.4218               493            9026.8162             18.0536              4.0420            1.1144            0.5087            -2399.5358                    -4.7991         -0.1356              0.3011
+                          Entry delay +1h            1.0           493          68.7778    1.4618            0.1395      15.1087               493            9380.4806             18.7610              4.4717            1.1548            0.5319            -2045.8714                    -4.0917         -0.1175              0.7307
+                          Entry delay +2h            1.0           493          72.6968    1.5261            0.1475      13.3665               493           10111.2757             20.2226              3.9852            1.2374            0.5761            -1315.0763                    -2.6302         -0.0532              0.2442
+                           Exit delay +1h            1.0           493          81.7298    1.5447            0.1658      13.2597               493           11046.1968             22.0924              3.9053            1.3418            0.6122             -380.1552                    -0.7603         -0.0347              0.1643
+                   Entry + Exit delay +1h            1.0           493          66.3078    1.4326            0.1345      15.7307               493            9004.1667             18.0083              4.6436            1.1119            0.5167            -2422.1854                    -4.8444         -0.1468              0.9026
+                 Rollover exits penalized            1.0           493          82.2537    1.5628            0.1668      13.0438               493           11143.8246             22.2876              3.7493            1.3526            0.6126             -282.5275                    -0.5651         -0.0166              0.0083
+              Weekend holds +5p exit slip            1.0           493          76.7498    1.5187            0.1557      13.9841               493           10302.6535             20.6053              3.7959            1.2589            0.5749            -1123.6985                    -2.2474         -0.0606              0.0549
+            High-risk exit hours +2p slip            1.0           493          80.6298    1.5491            0.1635      13.4441               493           10866.6834             21.7334              3.7712            1.3219            0.5992             -559.6687                    -1.1193         -0.0302              0.0302
+                    Full execution stress            1.0           493          50.0832    1.3110            0.1016      16.2373               493            6676.7347             13.3535              4.8958            0.8405            0.3955            -4749.6173                    -9.4992         -0.2684              1.1548
+
+==============================================================================================================
+4) MARKET ATTRIBUTION FOR KEY EXECUTION SCENARIOS - POINTS
+==============================================================================================================
+                   Scenario Market  Trades     PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  PnL_Share_%
+           Baseline rebuilt GBPJPY     173 45.6640    0.2640     110.0960   -64.4320        1.7087      54.2651
+           Baseline rebuilt USDJPY     158 25.9798    0.1644      54.8668   -28.8870        1.8994      30.8733
+           Baseline rebuilt EURJPY     162 12.5060    0.0772      64.4400   -51.9340        1.2408      14.8616
+                  Spread x2 GBPJPY     173 43.5880    0.2520     109.0480   -65.4600        1.6659      54.5499
+                  Spread x2 USDJPY     158 25.2688    0.1599      54.4708   -29.2020        1.8653      31.6236
+                  Spread x2 EURJPY     162 11.0480    0.0682      63.6760   -52.6280        1.2099      13.8265
+                  Spread x3 GBPJPY     173 41.5120    0.2400     108.0040   -66.4920        1.6243      54.8667
+                  Spread x3 USDJPY     158 24.5578    0.1554      54.0806   -29.5228        1.8318      32.4582
+                  Spread x3 EURJPY     162  9.5900    0.0592      62.9200   -53.3300        1.1798      12.6752
+                Slippage x3 GBPJPY     173 42.2040    0.2440     108.3520   -66.1480        1.6380      54.3422
+                Slippage x3 USDJPY     158 25.2214    0.1596      54.4444   -29.2230        1.8631      32.4753
+                Slippage x3 EURJPY     162 10.2380    0.0632      63.2560   -53.0180        1.1931      13.1825
+    Spread x2 + Slippage x2 GBPJPY     173 41.8580    0.2420     108.1780   -66.3200        1.6312      54.6010
+    Spread x2 + Slippage x2 USDJPY     158 24.8896    0.1575      54.2614   -29.3718        1.8474      32.4668
+    Spread x2 + Slippage x2 EURJPY     162  9.9140    0.0612      63.0880   -53.1740        1.1864      12.9322
+            Entry delay +1h GBPJPY     173 36.8300    0.2129     103.0190   -66.1890        1.5564      53.5493
+            Entry delay +1h USDJPY     158 22.1278    0.1400      52.2735   -30.1457        1.7340      32.1729
+            Entry delay +1h EURJPY     162  9.8200    0.0606      62.4210   -52.6010        1.1867      14.2779
+             Exit delay +1h GBPJPY     173 45.2540    0.2616     111.5610   -66.3070        1.6825      55.3703
+             Exit delay +1h USDJPY     158 24.0938    0.1525      53.7980   -29.7042        1.8111      29.4798
+             Exit delay +1h EURJPY     162 12.3820    0.0764      66.4270   -54.0450        1.2291      15.1499
+     Entry + Exit delay +1h GBPJPY     173 36.5400    0.2112     104.1760   -67.6360        1.5402      55.1066
+     Entry + Exit delay +1h USDJPY     158 20.3308    0.1287      51.3164   -30.9856        1.6561      30.6612
+     Entry + Exit delay +1h EURJPY     162  9.4370    0.0583      64.1060   -54.6690        1.1726      14.2321
+   Rollover exits penalized GBPJPY     173 44.9380    0.2598     109.7000   -64.7620        1.6939      54.6334
+   Rollover exits penalized USDJPY     158 25.6417    0.1623      54.7030   -29.0613        1.8823      31.1739
+   Rollover exits penalized EURJPY     162 11.6740    0.0721      64.0080   -52.3340        1.2231      14.1927
+Weekend holds +5p exit slip GBPJPY     173 43.0640    0.2489     108.5980   -65.5340        1.6571      56.1096
+Weekend holds +5p exit slip USDJPY     158 23.5298    0.1489      53.0796   -29.5498        1.7963      30.6578
+Weekend holds +5p exit slip EURJPY     162 10.1560    0.0627      63.0400   -52.8840        1.1920      13.2326
+      Full execution stress GBPJPY     173 29.7575    0.1720     100.9010   -71.1435        1.4183      59.4161
+      Full execution stress USDJPY     158 16.5617    0.1048      49.0908   -32.5291        1.5091      33.0684
+      Full execution stress EURJPY     162  3.7640    0.0232      61.1430   -57.3790        1.0656       7.5155
+
+==============================================================================================================
+5) EXIT HOUR / ROLLOVER DIAGNOSTICS
+==============================================================================================================
+ ExitHour  Trades   PnL_USD  AvgTrade_USD      PF  Winrate
+        0      53  652.7744       12.3165  1.2476   0.5283
+        1      42 2849.2512       67.8393  3.1471   0.6905
+        2      42 1321.0675       31.4540  1.7593   0.5952
+        3      15 -727.8536      -48.5236  0.3297   0.2667
+        4      22 1873.8554       85.1752  4.5241   0.7273
+        5      21  394.0636       18.7649  1.3936   0.4762
+        6      33 -834.2875      -25.2814  0.6145   0.3939
+        7      33  912.1026       27.6395  1.9234   0.6364
+        8      23 1633.8548       71.0372  4.4815   0.6957
+        9      13  443.4154       34.1089  1.7191   0.4615
+       10       6  628.1642      104.6940 11.7676   0.3333
+       11      12  -42.5448       -3.5454  0.5804   0.4167
+       12      19 -390.1706      -20.5353  0.5413   0.3684
+       13      20  436.7886       21.8394  1.7882   0.5000
+       14      14 2328.0971      166.2927  6.2526   0.3571
+       15       9   96.8535       10.7615  1.3855   0.5556
+       16       4  188.8130       47.2033  6.9670   0.7500
+       17       2  216.9407      108.4703     inf   1.0000
+       18       5  -51.8249      -10.3650  0.5132   0.4000
+       19      11 -712.9450      -64.8132  0.1583   0.4545
+       20      13 -237.3821      -18.2602  0.6627   0.4615
+       21      22 -232.9068      -10.5867  0.7427   0.5455
+       22      29 -859.9623      -29.6539  0.5755   0.3793
+       23      30 1540.1874       51.3396  4.0035   0.6000
+
+==============================================================================================================
+6) HOLDING TIME DIAGNOSTICS
+==============================================================================================================
+HoldingBin  Trades   PnL_USD  AvgTrade_USD     PF
+     <=12h      72 -960.8817      -13.3456 0.5114
+    12-24h     140  589.2104        4.2086 1.1451
+      1-2d      95 -869.7729       -9.1555 0.8637
+      2-4d     157 6259.5130       39.8695 1.9384
+      4-7d      29 6408.2832      220.9753 8.3514
+       >7d       0    0.0000           NaN    inf
+
+==============================================================================================================
+7) WEEKEND EXPOSURE DIAGNOSTICS
+==============================================================================================================
+ HeldOverWeekend  Trades    PnL_USD  AvgTrade_USD     PF  Winrate
+           False     345  -528.3084       -1.5313 0.9640   0.4812
+            True     148 11954.6604       80.7747 3.2703   0.6419
+
+==============================================================================================================
+8) MARKET x WEEKEND x ROLLOVER TIMING DIAGNOSTICS
+==============================================================================================================
+Market  HeldOverWeekend  ExitInRolloverWindow  Trades   PnL_USD  AvgTrade_USD
+EURJPY            False                 False      77  -29.7921       -0.3869
+EURJPY            False                  True      38 -405.0578      -10.6594
+EURJPY             True                 False      33 1496.3140       45.3428
+EURJPY             True                  True      14  515.4103       36.8150
+GBPJPY            False                 False      96 -498.6632       -5.1944
+GBPJPY            False                  True      25   68.1611        2.7264
+GBPJPY             True                 False      44 5312.9498      120.7489
+GBPJPY             True                  True       8  723.3845       90.4231
+USDJPY            False                 False      69  584.5887        8.4723
+USDJPY            False                  True      40 -247.5451       -6.1886
+USDJPY             True                 False      40 3460.8622       86.5216
+USDJPY             True                  True       9  445.7396       49.5266
+
+==============================================================================================================
+9) QUICK PASS/FAIL DIAGNOSTICS
+==============================================================================================================
+                                     Check    Value  Pass
+                Baseline rebuilt PF > 1.15   1.5793  True
+                       Spread x2 PF > 1.15   1.5425  True
+            Spread x2 portfolio return > 0  21.5737  True
+               Worst retail cost PF > 1.05   1.4438  True
+                 Entry delay +1h PF > 1.05   1.4618  True
+                  Exit delay +1h PF > 1.05   1.5447  True
+           Full execution stress PF > 1.00   1.3110  True
+Full execution stress portfolio return > 0  13.3535  True
+                   No duplicate timestamps   0.0000  True
+                    Mode bar gap is 1 hour   1.0000  True
+  Weekend-held trades reported, not hidden 148.0000  True
+
+==============================================================================================================
+END PHASE 2D ANALYSIS PACKAGE
+==============================================================================================================
+Fas 2D-bedömning
+
+Fas 2D är godkänd.
+Det här är ett starkt resultat, särskilt eftersom strategin överlever både kostnadsstress, slippage-stress, fill-delay och full execution stress. Min dom:
+Fas 2D: GODKÄND
+Execution robustness: 8/10
+Cost sensitivity: låg till måttlig
+Fill-delay sensitivity: måttlig
+Weekend exposure: viktig edge-komponent
+Rollover-risk: hanterbar
+Största varning: strategin tjänar oproportionerligt mycket på weekend-held trades
+Det viktigaste är att även det hårdaste scenariot fortfarande är positivt:
+Full execution stress:
+PF: 1.3110
+Portfolio return: +13.35%
+Max DD: 4.90%
+Sharpe: 0.3955
+Det är klart godkänt.
+
+1. Baseline reproduceras korrekt
+Baseline i Fas 2D matchar tidigare Fas 2A/2C:
+Trades: 493
+Net PnL: +11,426 USD
+Return: +22.85%
+Max DD: 3.74%
+PF: 1.5727
+Winrate: 52.94%
+Expectancy: +23.18 USD/trade
+Det är viktigt eftersom det visar att Fas 2D-koden inte råkat förändra strategin. Den reproducerar locked-strategin korrekt.
+
+2. Kostnadsstress är mycket bra
+Kostnadsstress:
+Scenario	PF	Return	Max DD
+Baseline	1.5793	22.85%	3.74%
+Spread x2	1.5425	21.57%	3.78%
+Spread x3	1.5066	20.31%	3.88%
+Slippage x3	1.5234	20.94%	3.84%
+Spread x2 + Slippage x2	1.5150	20.62%	3.86%
+Worst retail cost	1.4438	18.05%	4.04%
+Det här är starkt. Strategin tappar, men den tappar inte dramatiskt. Även “Spread x3 + Slippage x3 + Commission x1.5” har PF 1.4438. Min tolkning:
+Edgen kommer inte från för optimistiska spread/slippage-antaganden. Detta är ett av de starkaste argumenten för att strategin är praktiskt handlingsbar.
+
+3. Entry delay är största execution-känsligheten
+Det mest intressanta execution-testet är entry delay:
+Entry delay +1h:
+PF: 1.4618
+Return: +18.76%
+Entry delay +2h:
+PF: 1.5261
+Return: +20.22%
+Entry + Exit delay +1h:
+PF: 1.4326
+Return: +18.01%
+Strategin överlever delay, men +1h entry delay försämrar tydligt. Det bekräftar att entrytimingen är viktig. Första London-timmen är inte bara en kosmetisk
+detalj — edge sitter i snabb continuation efter break. Det här betyder operativt: Entry-execution måste vara automatiserad eller mycket konsekvent. Manuell sen 
+entry är inte acceptabel som liveprocess. Men eftersom +1h delay fortfarande är positivt är det inte en fatal risk.
+
+4. Exit delay är mindre farligt
+Exit delay +1h:
+PF: 1.5447
+Return: +22.09%
+Max DD: 3.91%
+Det är bara en liten försämring jämfört med baseline. Exit verkar alltså mindre känslig än entry.
+Det är logiskt: strategins entry fångar expansion; exit baseras på ATR-regimfall och är inte lika exakt sekundkänslig.
+Min slutsats:
+Prioritera exakt entry-execution före exakt exit-execution.
+
+5. Full execution stress är godkänt
+Full execution stress:
+PF: 1.3110
+Point expectancy: 0.1016
+Portfolio return: +13.35%
+Max DD: 4.90%
+Net PnL degradation: -4,749 USD
+Det här är godkänt. Det är inte lika starkt som baseline, men det är fortfarande lönsamt med rimlig drawdown. Min bedömning:
+Strategin har tillräcklig execution-marginal. Det betyder inte att live-resultat kommer matcha backtest, men det betyder att backtestet inte är extremt skört 
+mot normala execution-fel.
+
+6. Marknadsattribution under stress är viktig
+Under full execution stress:
+Market	PF	PnL
+GBPJPY	1.4183	+29.76 points
+USDJPY	1.5091	+16.56 points
+EURJPY	1.0656	+3.76 points
+Det här är både bra och varning. Alla tre marknader är fortfarande positiva, men EURJPY blir nästan marginell.
+Min ranking efter Fas 2D:
+1. USDJPY — mest robust under execution stress
+2. GBPJPY — fortfarande stark, men event-/weekend-driven
+3. EURJPY — svagast och mest känslig för execution/cost stress
+Jag hade inte tagit bort EURJPY, men jag hade gett den lägst prioritet i liveövervakning. Om live-slippage blir sämre än väntat är EURJPY första marknaden
+jag skulle granska.
+
+7. Weekend exposure är största strukturella varningen
+Det här är den viktigaste varningen i Fas 2D:
+HeldOverWeekend = False:
+345 trades
+PnL: -528 USD
+PF: 0.9640
+HeldOverWeekend = True:
+148 trades
+PnL: +11,954 USD
+PF: 3.2703
+Det betyder att nästan hela strategins nettoprofit kommer från trades som hålls över helg.
+Det är inte automatiskt dåligt. Trendföljande strategier tjänar ofta på att hålla vinnare länge. Men det betyder att strategin är exponerad mot:
+weekend gaps
+centralbank headlines
+geopolitical news
+JPY flash moves
+broker spread widening vid open
+Det viktigaste är att ni redan testade “Weekend holds +5p exit slip”:
+PF: 1.5187
+Return: +20.61%
+Det är fortfarande starkt. Så weekend risk är inte fatal. Men den är central.
+Min slutsats:
+Strategin ska inte ha ett enkelt “stäng före helg”-filter.
+Det skulle sannolikt döda mycket av edgen.
+Däremot ska ni ha en weekend risk policy.
+
+8. Holding time bekräftar trendföljande profil
+Holding-time diagnostics:
+<=12h: PF 0.5114
+12–24h: PF 1.1451
+1–2d: PF 0.8637
+2–4d: PF 1.9384
+4–7d: PF 8.3514
+Detta är väldigt tydligt. Strategin tjänar inte pengar på snabba exits. Den tjänar pengar när breakout-traden får ligga i flera dagar.
+Det bekräftar att strategin egentligen är:
+London breakout entry + multi-day trend continuation
+Inte en intraday scalping-strategi.
+Viktig konsekvens:
+Undvik att optimera exit för att ta vinst snabbare.
+Det kan förstöra den positiva skewen.
+
+9. Rollover-risk är hanterbar
+Rollover exits penalized:
+PF: 1.5628
+Return: +22.29%
+Max DD: 3.75%
+Det är nästan samma som baseline.
+High-risk exit hours +2p slip:
+PF: 1.5491
+Return: +21.73%
+Det här säger att rollover/exit-hour-cost inte är en stor risk för strategin.
+Men exit-hour-tabellen visar vissa svaga timmar:
+Hour 3: PF 0.3297
+Hour 6: PF 0.6145
+Hour 19: PF 0.1583
+Hour 22: PF 0.5755
+Jag skulle inte filtrera bort dessa ännu, eftersom det vore en ny optimering. Men jag skulle logga dem live.
+
+10. Datakvalitet är okej men kräver timezone-check
+Data quality:
+ModeGapHours: 1.0 för alla marknader
+Duplicate timestamps: 0
+Hour buckets present: 24
+Det är bra. Men det finns många gaps > 24h och weekend bars:
+USDJPY weekend bars: 10,576
+EURJPY weekend bars: 10,656
+GBPJPY weekend bars: 9,740
+Det kan vara normalt beroende på brokerdata och söndagsöppning, men det måste kontrolleras. Den största kvarvarande datarisken är 00–07 Asia och 08–09 entry 
+verkligen rätt sessiontid i datans timezone? Starttider som 19:00 i dataserien antyder broker/server-time snarare än ren Stockholmstid. Ni måste verifiera
+exakt timezone och DST-regim. Det här är inte ett strategifel, men det är ett operational risk item.
+
+Fas 2D slutdom
+Fas 2D: GODKÄND
+Cost robustness: stark
+Slippage robustness: stark
+Fill delay robustness: godkänd
+Rollover risk: låg
+Weekend risk: hög men edge-bärande
+Timezone/DST: måste verifieras manuellt
+Jag skulle höja strategins helhetsbetyg efter Fas 2D:
+Efter Fas 2A: 7/10
+Efter Fas 2B: 8/10
+Efter Fas 2C: 8/10
+Efter Fas 2D: 8/10
+Inte 9/10, på grund av weekend-beroendet och timezone-frågan.
+Rekommenderad action
+Behåll strategin låst
+Ändra inte reglerna.
+Ingen ny weekend-filter.
+Ingen ny exit-hour-filter.
+Ingen ny holding-time-filter.
+Ingen ny EURJPY-exkludering.
+Fas 2D visar risker, men inte tillräckligt för att ändra strategin.
+Lägg till liveövervakning
+När ni går vidare till paper/shadow:
+Logga per trade:
+signal time
+intended entry price
+actual entry price
+entry slippage
+intended exit price
+actual exit price
+exit slippage
+spread at entry
+spread at exit
+held over weekend true/false
+exit hour
+holding time
+market
+direction
+Efter 50–100 trades kan ni jämföra live mot backtest.
+Inför riskpolicy för weekend
+Inte “stäng allt före helg”, utan:
+1. Max total JPY-exposure över helg
+2. Max antal öppna JPY-positioner över helg
+3. Ingen ökning av position på fredag eftermiddag
+4. Extra slippage-budget på måndagsöppning
+5. Manuell risk review inför centralbank/eventhelger
+Nästa fas
+Nu har strategin klarat:
+Fas 2A — Walk-forward
+Fas 2B — Parameter surface
+Fas 2C — Monte Carlo risk
+Fas 2D — Execution stress
+Nästa naturliga steg är:
+Fas 3A — Cross-market / external validation
+Men här måste vi vara försiktiga: syftet är inte att hitta fler marknader att lägga till. Syftet är att se om samma logik dyker upp i närliggande JPY-par utan ny optimering.
+Jag hade kört:
+AUDJPY
+CADJPY
+CHFJPY
+NZDJPY
+NOKJPY
+SEKJPY
+Med exakt locked-regler, eller med endast den generella USD/EUR-regeln:
+Asia percentile > 0.70
+för att se om edge är JPY-baserad eller bara råkar fungera i era tre valda marknader.
+
+==============================================================================================================
+PHASE 3A ANALYSIS PACKAGE - COPY EVERYTHING BELOW INTO CHATGPT
+==============================================================================================================
+
+==============================================================================================================
+1) EXTERNAL DATA QUALITY / TIMEZONE SANITY
+==============================================================================================================
+Market Status                         CSV                           RawColumns   Rows               Start                 End  DuplicateTimestamps  ModeGapHours  GapsGT1h  GapsGT6h  GapsGT24h  WeekendBars  HourBucketsPresent  MinBarsPerHourBucket  MaxBarsPerHourBucket
+AUDJPY     OK AUDJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume 148002 2003-11-30 22:00:00 2025-12-31 22:00:00                    0           1.0      1066       993        970        10716                  24                  6108                  6431
+CADJPY     OK CADJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume 143790 2004-10-25 02:00:00 2025-12-31 22:00:00                    0           1.0       983       898        879        12347                  24                  5951                  6187
+CHFJPY     OK CHFJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume 150001 2003-08-03 19:00:00 2025-12-31 22:00:00                    0           1.0      1082      1009        987        10726                  24                  6193                  6507
+NZDJPY     OK NZDJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume 143328 2006-01-02 23:00:00 2025-12-31 22:00:00                    0           1.0       945       740        615        19120                  24                  5938                  6076
+NOKJPY     OK NOKJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume   9746 2024-05-15 11:00:00 2025-12-31 22:00:00                    0           1.0        99        87         85           74                  24                   394                   409
+SEKJPY     OK SEKJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume  10008 2024-05-15 11:00:00 2025-12-31 22:00:00                    0           1.0       107        90         88           78                  24                   402                   420
+
+==============================================================================================================
+2) EXTERNAL FULL-SAMPLE PER-MARKET DIAGNOSTICS - OBS EJ OOS-BESLUT
+==============================================================================================================
+ Trades  Total PnL  Gross Profit  Gross Loss  Profit Factor  Winrate  Avg Win  Avg Loss  Expectancy  Max Drawdown  Max Losing Streak  Sharpe (trade-level) Market Status Universe
+    215    -4.6290       62.4850    -67.1140         0.9310   0.4698   0.6187   -0.5887     -0.0215       17.9940                 13               -0.3281 AUDJPY     OK external
+    175     5.0970       48.9470    -43.8500         1.1162   0.4914   0.5692   -0.4927      0.0291       14.8600                  7                0.4927 CADJPY     OK external
+    211   -10.8390       57.8660    -68.7050         0.8422   0.5213   0.5261   -0.6802     -0.0514       22.1580                 10               -0.7410 CHFJPY     OK external
+    245   -19.9810       86.0060   -105.9870         0.8115   0.4857   0.7227   -0.8412     -0.0816       33.2460                  5               -0.9331 NZDJPY     OK external
+     11    -0.6828        0.0040     -0.6868         0.0059   0.0909   0.0040   -0.0687     -0.0621        0.6150                  9               -6.4048 NOKJPY     OK external
+      9    -0.0468        0.6802     -0.7270         0.9356   0.2222   0.3401   -0.1039     -0.0052        0.4661                  4               -0.0656 SEKJPY     OK external
+
+==============================================================================================================
+3) EXTERNAL COMBINED OOS SUMMARY - POINTS
+==============================================================================================================
+ Trades  Total PnL  Gross Profit  Gross Loss  Profit Factor  Winrate  Avg Win  Avg Loss  Expectancy  Max Drawdown  Max Losing Streak  Sharpe (trade-level)                 Scope
+    635    -2.9046      168.2642   -171.1688          0.983    0.485   0.5463   -0.5235     -0.0046        25.252                 12                -0.134 External_Combined_OOS
+
+==============================================================================================================
+4) EXTERNAL WALK-FORWARD SUMMARY
+==============================================================================================================
+ WF                IS Period               OOS Period  IS Trades  IS PF  IS Expectancy points  OOS Trades  OOS Total PnL points  OOS PF  OOS Expectancy points  OOS Winrate  OOS Max DD points  OOS Trade Sharpe  Pass PF > 1.05  Pass Exp > 0  Pass Trades >= 30  Segment Pass
+WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31        231 0.7569               -0.1220         169              -16.3190  0.7746                -0.0966       0.4438            25.2520           -1.0682           False         False               True         False
+WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31        400 0.7637               -0.1112         101               17.0900  1.9242                 0.1692       0.5248             5.3940            2.0491            True          True               True          True
+WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31        501 0.8675               -0.0547          92                6.7110  1.5960                 0.0729       0.4783             4.8270            1.6165            True          True               True          True
+WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31        593 0.9051               -0.0349         135               -9.4070  0.7480                -0.0697       0.4889            12.8150           -1.0326           False         False               True         False
+WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31        728 0.8821               -0.0413         138               -0.9796  0.9691                -0.0071       0.5072            14.6756           -0.1227           False         False               True         False
+
+==============================================================================================================
+5) EXTERNAL MARKET CLASSIFICATION
+==============================================================================================================
+Market  Trades  TotalPnL_points     PF  Expectancy_points  Winrate  MaxDD_points  Positive_WF_Segments  PF_GT_105_WF_Segments  Min_WF_PF  Worst_WF_PnL  Min_WF_Trades              Verdict
+NZDJPY     156          -2.0410 0.9514            -0.0131   0.4936        7.3700                     2                      2     0.8199       -3.1180             26                 FAIL
+CHFJPY     154          -9.9880 0.8179            -0.0649   0.5195       17.4800                     3                      2     0.4363      -14.4230             10                 FAIL
+SEKJPY       9          -0.0468 0.9356            -0.0052   0.2222        0.4661                     0                      0     0.9356       -0.0468              0  INSUFFICIENT_TRADES
+NOKJPY      11          -0.6828 0.0059            -0.0621   0.0909        0.6150                     0                      0     0.0059       -0.6828              0  INSUFFICIENT_TRADES
+CADJPY     137           6.1140 1.2125             0.0446   0.4891        5.4790                     4                      4     0.7267       -2.3560             17 STRONG_EXTERNAL_PASS
+AUDJPY     168           3.7400 1.0848             0.0223   0.4821       10.2620                     3                      2     0.5837       -3.9130             26   WEAK_EXTERNAL_PASS
+
+==============================================================================================================
+6) EXTERNAL MARKET ATTRIBUTION - COMBINED OOS POINTS
+==============================================================================================================
+Market  Trades     PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate   MaxDD  PnL_Share_%
+CADJPY     137  6.1140    0.0446      34.8900   -28.7760        1.2125   0.4891  5.4790    -210.4930
+AUDJPY     168  3.7400    0.0223      47.8430   -44.1030        1.0848   0.4821 10.2620    -128.7608
+SEKJPY       9 -0.0468   -0.0052       0.6802    -0.7270        0.9356   0.2222  0.4661       1.6119
+NOKJPY      11 -0.6828   -0.0621       0.0040    -0.6868        0.0059   0.0909  0.6150      23.5071
+NZDJPY     156 -2.0410   -0.0131      39.9820   -42.0230        0.9514   0.4936  7.3700      70.2676
+CHFJPY     154 -9.9880   -0.0649      44.8650   -54.8530        0.8179   0.5195 17.4800     343.8672
+
+==============================================================================================================
+7) EXTERNAL DIRECTION ATTRIBUTION - COMBINED OOS POINTS
+==============================================================================================================
+Market Direction  Trades     PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate   MaxDD  PnL_Share_%
+CADJPY     SHORT      72  7.1980    0.1000      19.9180   -12.7200        1.5659   0.5139  2.0720    -247.8130
+AUDJPY      LONG      88  5.3520    0.0608      26.4370   -21.0850        1.2538   0.5682  4.3570    -184.2588
+SEKJPY     SHORT       2  0.0791    0.0396       0.1769    -0.0977        1.8096   0.5000  0.0977      -2.7246
+NOKJPY     SHORT       2 -0.1032   -0.0516       0.0040    -0.1073        0.0376   0.5000  0.0000       3.5540
+SEKJPY      LONG       7 -0.1260   -0.0180       0.5033    -0.6292        0.7998   0.1429  0.4661       4.3366
+NOKJPY      LONG       9 -0.5796   -0.0644       0.0000    -0.5796        0.0000   0.0000  0.5118      19.9531
+NZDJPY      LONG      87 -0.7900   -0.0091      22.7560   -23.5460        0.9664   0.5172  4.9420      27.1981
+CADJPY      LONG      65 -1.0840   -0.0167      14.9720   -16.0560        0.9325   0.4615  5.6640      37.3200
+NZDJPY     SHORT      69 -1.2510   -0.0181      17.2260   -18.4770        0.9323   0.4638  5.0830      43.0695
+AUDJPY     SHORT      80 -1.6120   -0.0201      21.4060   -23.0180        0.9300   0.3875  9.9170      55.4980
+CHFJPY     SHORT      76 -2.7960   -0.0368      21.3760   -24.1720        0.8843   0.5132  9.5150      96.2608
+CHFJPY      LONG      78 -7.1920   -0.0922      23.4890   -30.6810        0.7656   0.5256 10.6860     247.6064
+
+==============================================================================================================
+8) EXTERNAL YEAR ATTRIBUTION - COMBINED OOS POINTS
+==============================================================================================================
+ Exit Year  Trades      PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor
+      2011      50 -15.3930   -0.3079      17.5060   -32.8990        0.5321
+      2012      61  -3.9560   -0.0649      12.8200   -16.7760        0.7642
+      2013      58   3.0300    0.0522      25.7510   -22.7210        1.1334
+      2014      35   8.5560    0.2445      15.1520    -6.5960        2.2971
+      2015      26   3.1260    0.1202       6.0030    -2.8770        2.0865
+      2016      40   5.4080    0.1352      14.4270    -9.0190        1.5996
+      2017      21   3.2600    0.1552       4.8320    -1.5720        3.0738
+      2018      50   6.8490    0.1370      11.6230    -4.7740        2.4346
+      2019      21  -3.3980   -0.1618       1.5160    -4.9140        0.3085
+      2020      43  -1.6320   -0.0380       6.3460    -7.9780        0.7954
+      2021      40  -2.7450   -0.0686       9.3190   -12.0640        0.7725
+      2022      51  -6.5230   -0.1279      10.7570   -17.2800        0.6225
+      2023      43  13.6660    0.3178      17.8390    -4.1730        4.2749
+      2024      61  -8.6660   -0.1421      10.8749   -19.5409        0.5565
+      2025      35  -4.4866   -0.1282       3.4983    -7.9849        0.4381
+
+==============================================================================================================
+9) WALK-FORWARD MARKET ATTRIBUTION - EXTERNAL POINTS
+==============================================================================================================
+ WF Market  Trades      PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate   MaxDD  PnL_Share_%
+WF1 CADJPY      39   1.0820    0.0277      13.4510   -12.3690        1.0875   0.5128  5.4790      -6.6303
+WF1 AUDJPY      47   0.1400    0.0030      17.2700   -17.1300        1.0082   0.4681  5.1180      -0.8579
+WF1 NZDJPY      43  -3.1180   -0.0725      14.1940   -17.3120        0.8199   0.4186  7.3700      19.1066
+WF1 CHFJPY      40 -14.4230   -0.3606      11.1620   -25.5850        0.4363   0.3750 17.1160      88.3816
+WF2 AUDJPY      26  10.3620    0.3985      13.6080    -3.2460        4.1922   0.5769  1.4020      60.6319
+WF2 CADJPY      17   3.6790    0.2164       6.7790    -3.1000        2.1868   0.4706  1.5980      21.5272
+WF2 CHFJPY      29   3.4790    0.1200       8.4770    -4.9980        1.6961   0.5517  2.1040      20.3569
+WF2 NZDJPY      29  -0.4300   -0.0148       6.7180    -7.1480        0.9398   0.4828  4.3550      -2.5161
+WF3 CHFJPY      10   2.4310    0.2431       3.5840    -1.1530        3.1084   0.5000  1.0740      36.2241
+WF3 NZDJPY      26   2.1190    0.0815       5.4460    -3.3270        1.6369   0.5769  1.8510      31.5750
+WF3 CADJPY      26   1.3020    0.0501       3.4340    -2.1320        1.6107   0.4231  1.2770      19.4010
+WF3 AUDJPY      30   0.8590    0.0286       5.5070    -4.6480        1.1848   0.4333  1.6890      12.7999
+WF4 NZDJPY      29  -1.3520   -0.0466       6.9240    -8.2760        0.8366   0.4828  3.1240      14.3723
+WF4 CHFJPY      34  -1.7860   -0.0525       8.4700   -10.2560        0.8259   0.5588  5.1550      18.9859
+WF4 CADJPY      36  -2.3560   -0.0654       6.2630    -8.6190        0.7267   0.4722  3.3510      25.0452
+WF4 AUDJPY      36  -3.9130   -0.1087       6.2580   -10.1710        0.6153   0.4444  6.1200      41.5967
+WF5 CADJPY      19   2.4070    0.1267       4.9630    -2.5560        1.9417   0.5789  1.4120    -245.7100
+WF5 NZDJPY      29   0.7400    0.0255       6.7000    -5.9600        1.1242   0.5517  2.5160     -75.5403
+WF5 CHFJPY      41   0.3110    0.0076      13.1720   -12.8610        1.0242   0.6098  6.8610     -31.7473
+WF5 SEKJPY       9  -0.0468   -0.0052       0.6802    -0.7270        0.9356   0.2222  0.4661       4.7795
+WF5 NOKJPY      11  -0.6828   -0.0621       0.0040    -0.6868        0.0059   0.0909  0.6150      69.7002
+WF5 AUDJPY      29  -3.7080   -0.1279       5.2000    -8.9080        0.5837   0.5172  5.4760     378.5180
+
+==============================================================================================================
+10) EXTERNAL VS ORIGINAL BENCHMARK COMPARISON - POINTS
+==============================================================================================================
+              Group  Markets  Trades  TotalPnL_points     PF  Expectancy_points  Winrate  MaxDD_points  TradeSharpe
+        External_3A        6     635          -2.9046 0.9830            -0.0046   0.4850       25.2520       -0.134
+Benchmark_Original3        3     493          84.1498 1.5793             0.1707   0.5294       13.0395        2.675
+
+==============================================================================================================
+11) EXTERNAL EQUAL-NOTIONAL PORTFOLIO SUMMARY - USD OPTIONAL
+==============================================================================================================
+PortfolioStatus  StartCapital  EndEquity  NetPnL_USD  Return_%  MaxDD_USD  MaxDD_%  Markets  TradesClosed  Sharpe_daily_ann  Sortino_daily_ann  CAGR_%  Calmar   Days   Years
+             OK       50000.0 49175.0524   -824.9476   -1.6499  2411.2997   4.8013        6           635           -0.0768            -0.0244 -0.1121 -0.0234 5417.0 14.8309
+
+==============================================================================================================
+12) EXTERNAL PORTFOLIO MARKET ATTRIBUTION - USD OPTIONAL
+==============================================================================================================
+Market  Trades       PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate     MaxDD  PnL_Share_%
+CADJPY     137  491.6839    3.5889    3177.9792 -2686.2953        1.1830   0.4891  551.1346     -59.6018
+AUDJPY     168  396.0795    2.3576    4573.8791 -4177.7996        1.0948   0.4821  955.2434     -48.0127
+SEKJPY       9   -3.9212   -0.4357     404.2172  -408.1385        0.9904   0.2222  254.5366       0.4753
+NZDJPY     156 -379.9312   -2.4355    4191.3516 -4571.2828        0.9169   0.4936  864.9761      46.0552
+NOKJPY      11 -404.0872  -36.7352       2.2240  -406.3112        0.0055   0.0909  363.3635      48.9834
+CHFJPY     154 -924.7714   -6.0050    3013.5214 -3938.2929        0.7652   0.5195 1472.5592     112.1006
+
+==============================================================================================================
+13) EXTERNAL PORTFOLIO YEAR ATTRIBUTION - USD OPTIONAL
+==============================================================================================================
+ Exit Year  Trades        PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor
+      2011      50 -1379.6096  -27.5922    1830.4925 -3210.1021        0.5702
+      2012      61  -423.1751   -6.9373    1303.3833 -1726.5585        0.7549
+      2013      58   245.7796    4.2376    2306.6005 -2060.8209        1.1193
+      2014      35   741.7710   21.1935    1272.7407  -530.9697        2.3970
+      2015      26   277.7030   10.6809     522.7682  -245.0652        2.1332
+      2016      40   374.0590    9.3515    1317.7728  -943.7138        1.3964
+      2017      21   299.7458   14.2736     454.7623  -155.0165        2.9336
+      2018      50   639.0912   12.7818    1124.2579  -485.1668        2.3173
+      2019      21  -342.9085  -16.3290     171.1513  -514.0598        0.3329
+      2020      43  -140.6097   -3.2700     693.0999  -833.7095        0.8313
+      2021      40  -251.5903   -6.2898     920.9422 -1172.5324        0.7854
+      2022      51  -534.5814  -10.4820     815.9435 -1350.5249        0.6042
+      2023      43   976.5421   22.7103    1305.8584  -329.3163        3.9654
+      2024      61  -749.6566  -12.2895     856.3911 -1606.0477        0.5332
+      2025      35  -557.5082  -15.9288     467.0079 -1024.5161        0.4558
+
+==============================================================================================================
+14) QUICK PASS/FAIL DIAGNOSTICS
+==============================================================================================================
+                                       Check    Value  Pass
+             Combined external OOS PF > 1.05   0.9830 False
+        Combined external OOS expectancy > 0  -0.0046 False
+      At least 3/6 external markets positive   2.0000 False
+    At least 2/6 markets weak-pass or better   2.0000  True
+            At least 1/6 markets strong-pass   1.0000  True
+           At least 3/5 WF segments positive   2.0000 False
+               At least 3/5 WF segments pass   2.0000 False
+                  External OOS trades >= 150 635.0000  True
+External equal-notional portfolio return > 0  -1.6499 False
+
+==============================================================================================================
+END PHASE 3A ANALYSIS PACKAGE
+==============================================================================================================
