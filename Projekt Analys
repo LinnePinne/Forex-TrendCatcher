@@ -2070,3 +2070,517 @@ External equal-notional portfolio return > 0  -1.6499 False
 ==============================================================================================================
 END PHASE 3A ANALYSIS PACKAGE
 ==============================================================================================================
+
+Fas 3A-bedömning
+Fas 3A är inte godkänd som bred extern validering. Det betyder inte att originalstrategin är ogiltig. Det betyder att edgen inte är generell 
+över alla JPY-par med samma enkla regel.
+Min dom:
+Fas 3A: EJ GODKÄND som bred cross-market-validation
+Originalstrategin: fortfarande godkänd från Fas 2A–2D
+Extern slutsats: edgen verkar marknadsspecifik, inte universell JPY-edge
+CADJPY: intressant kandidat
+AUDJPY: svag kandidat / watchlist
+CHFJPY, NZDJPY: nej
+NOKJPY, SEKJPY: för lite data
+Det viktiga är att externa combined OOS blev svagt negativt: 635 trades, total PnL -2.9046 points, PF 0.983 och negativ expectancy. Det är 
+inte en katastrof, men det är inte en extern bekräftelse.
+
+1. Extern portfölj misslyckas
+External combined OOS:
+Trades: 635
+Total PnL: -2.9046 points
+PF: 0.9830
+Expectancy: -0.0046
+Trade Sharpe: -0.134
+USD-portföljen blev också negativ:
+External equal-notional portfolio:
+Return: -1.65%
+Net PnL: -824.95 USD
+Max DD: 4.80%
+CAGR: -0.1121%
+Det här är ett tydligt nej för att lägga till alla externa par som en ny basket.
+Den här fasen falsifierar alltså hypotesen:
+"Strategin fungerar generellt på /JPY-par."
+Den bättre hypotesen efter Fas 3A är:
+"Strategin fungerar på vissa specifika /JPY-par där microstructure/regim passar modellen."
+
+2. Walk-forward är för svag
+External WF-resultat:
+Segment	OOS PF	OOS PnL	Pass
+WF1 2011–2013	0.7746	-16.3190	Nej
+WF2 2014–2016	1.9242	+17.0900	Ja
+WF3 2017–2019	1.5960	+6.7110	Ja
+WF4 2020–2022	0.7480	-9.4070	Nej
+WF5 2023–2026	0.9691	-0.9796	Nej
+Bara 2 av 5 WF-perioder passerar. Det räcker inte.
+Det här är den viktigaste skillnaden mot originalstrategin. Originalet klarade 5/5 positiva OOS-perioder. Externa marknader klarar bara 2/5.
+
+3. Marknad för marknad: CADJPY är bäst
+Market classification:
+CADJPY: PF 1.2125, +6.114 points, STRONG_EXTERNAL_PASS
+AUDJPY: PF 1.0848, +3.740 points, WEAK_EXTERNAL_PASS
+NZDJPY: PF 0.9514, FAIL
+CHFJPY: PF 0.8179, FAIL
+SEKJPY: insufficient trades
+NOKJPY: insufficient trades
+Det här är inte helt negativt. Det finns faktiskt signal i CADJPY, och eventuellt svag signal i AUDJPY. Men resten hjälper inte.
+Min ranking:
+1. CADJPY — klart mest intressant
+2. AUDJPY — svag men inte död
+3. NZDJPY — nära flat/negativ, ingen kandidat nu
+4. CHFJPY — tydligt nej
+5. SEKJPY — för lite data
+6. NOKJPY — för lite data
+4. CADJPY är den enda riktiga externa kandidaten
+CADJPY combined OOS:
+Trades: 137
+PnL: +6.114 points
+PF: 1.2125
+Expectancy: +0.0446
+Positive WF segments: 4
+PF > 1.05 WF segments: 4
+Det är inte lika starkt som USDJPY/EURJPY/GBPJPY, men det är tillräckligt för att vara en research candidate.
+Direction attribution visar dessutom att CADJPY-edgen nästan helt kommer från shorts:
+CADJPY SHORT:
+Trades: 72
+PnL: +7.1980
+PF: 1.5659
+CADJPY LONG:
+Trades: 65
+PnL: -1.0840
+PF: 0.9325
+Det här är intressant, men ni ska inte direkt ändra regler till “CADJPY shorts only”. Det vore en ny optimering. Däremot är det en tydlig
+signal för en separat Fas 3B-kandidat.
+
+5. AUDJPY är svag och riktningberoende
+AUDJPY combined OOS:
+Trades: 168
+PnL: +3.7400
+PF: 1.0848
+Expectancy: +0.0223
+Verdict: WEAK_EXTERNAL_PASS
+Men riktningarna skiljer sig:
+AUDJPY LONG:
+PnL: +5.3520
+PF: 1.2538
+AUDJPY SHORT:
+PnL: -1.6120
+PF: 0.9300
+AUDJPY är alltså inte stark som hel marknad, men longs har viss edge. Jag skulle inte lägga in AUDJPY i portföljen nu. Jag skulle sätta den
+på watchlist för vidare test.
+
+6. CHFJPY och NZDJPY ska inte läggas till
+CHFJPY:
+Trades: 154
+PnL: -9.9880
+PF: 0.8179
+Expectancy: -0.0649
+NZDJPY:
+Trades: 156
+PnL: -2.0410
+PF: 0.9514
+Expectancy: -0.0131
+CHFJPY är tydligt dålig. NZDJPY är närmare flat, men fortfarande inte bra nog.
+Särskilt CHFJPY är problematisk eftersom både long och short är negativa:
+CHFJPY LONG PF: 0.7656
+CHFJPY SHORT PF: 0.8843
+Det finns inget att rädda där utan att börja optimera.
+
+7. NOKJPY och SEKJPY går inte att bedöma
+NOKJPY och SEKJPY har bara 11 respektive 9 trades i OOS. Dessutom börjar båda dataserierna först 2024-05-15, vilket gör dem oanvändbara för
+lång historisk validering jämfört med övriga marknader.
+Min bedömning:
+NOKJPY/SEKJPY ska exkluderas från Fas 3A-slutsatsen.
+De är inte fail på edge — de är fail på sample size.
+För att utvärdera dem krävs längre historik, annars blir resultatet nästan meningslöst.
+
+8. Extern jämförelse mot originalet är brutal
+Det här är kärnan:
+External_3A:
+Markets: 6
+Trades: 635
+PF: 0.9830
+Expectancy: -0.0046
+MaxDD: 25.252 points
+Trade Sharpe: -0.134
+Benchmark_Original3:
+Markets: 3
+Trades: 493
+PF: 1.5793
+Expectancy: +0.1707
+MaxDD: 13.0395 points
+Trade Sharpe: 2.675
+Det är en enorm skillnad.
+Det säger att originalmarknaderna inte bara är “ett slumpmässigt urval av JPY-par”. De verkar vara de marknader där strategins logik passar 
+bäst. Det är både bra och dåligt:
+Bra: originalstrategin ser mer specifikt valid ut.
+Dåligt: den är mindre universell än vi hoppades.
+
+9. Vad betyder detta för originalstrategin?
+Det här är viktigt: Fas 3A underkänner inte originalstrategin.
+Originalstrategin har redan klarat:
+Fas 2A — walk-forward
+Fas 2B — parameter surface
+Fas 2C — Monte Carlo
+Fas 2D — execution stress
+Fas 3A säger bara att ni inte ska anta att samma edge finns brett över alla JPY-par. Min uppdaterade helhetsbedömning:
+Originalstrategin: fortfarande stark
+Extern generalisering: svag
+Portfolio expansion: nej, inte ännu
+CADJPY research candidate: ja
+AUDJPY research watchlist: ja
+CHFJPY/NZDJPY: nej
+
+10. Ska ni lägga till CADJPY?
+Inte direkt.
+CADJPY är intressant, men den är inte lika stark som originalmarknaderna. Dessutom verkar edgen främst komma från shorts. Om ni lägger till
+CADJPY direkt efter att ha sett att shorts är bäst, då börjar ni optimera efter Fas 3A-resultatet. Rätt process är:
+CADJPY får bli en separat kandidatstrategi. Den måste gå igenom Fas 2A–2D separat innan inclusion. Jag skulle alltså inte lägga till CADJPY 
+i live-portföljen nu.
+
+Slutdom Fas 3A
+Fas 3A: EJ GODKÄND som bred extern validering
+Men:
+- CADJPY ger en positiv extern signal
+- AUDJPY ger en svag extern signal
+- NOKJPY/SEKJPY har otillräcklig data
+- CHFJPY/NZDJPY bör exkluderas
+- originalstrategin står fortfarande stark
+Det här är egentligen ett bra resultat ur forskningsperspektiv, även om det inte blev “grönt”. Det hindrar er från att överexpandera 
+portföljen med marknader som inte bär edge. 
+
+Rekommenderat nästa steg
+Jag skulle göra Fas 3B — Candidate Isolation, men endast för:
+CADJPY
+AUDJPY
+Syftet ska inte vara att optimera fram nya perfekta regler, utan att testa två enkla hypoteser:
+CADJPY:
+Fungerar locked-regeln robust, eller är det bara shorts som bär allt?
+AUDJPY:
+Är long-sidan robust nog, eller är totalresultatet för svagt?
+För Fas 3B hade jag kört:
+1. CADJPY both directions locked
+2. CADJPY short-only diagnostic
+3. CADJPY long-only diagnostic
+4. AUDJPY both directions locked
+5. AUDJPY long-only diagnostic
+6. AUDJPY short-only diagnostic
+7. Walk-forward per variant
+8. Cost stress per variant
+9. Best-trade/year removal
+10. Monte Carlo light
+Men huvudregeln bör vara:
+Ingen ny marknad läggs till originalportföljen utan att först klara sin egen separata valideringskedja.
+==============================================================================================================
+PHASE 3B ANALYSIS PACKAGE - COPY EVERYTHING BELOW INTO CHATGPT
+==============================================================================================================
+
+==============================================================================================================
+1) DATA QUALITY / TIMEZONE SANITY
+==============================================================================================================
+Market Status                         CSV                           RawColumns   Rows               Start                 End  DuplicateTimestamps  ModeGapHours  GapsGT1h  GapsGT6h  GapsGT24h  WeekendBars  HourBucketsPresent  MinBarsPerHourBucket  MaxBarsPerHourBucket
+CADJPY     OK CADJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume 143790 2004-10-25 02:00:00 2025-12-31 22:00:00                    0           1.0       983       898        879        12347                  24                  5951                  6187
+AUDJPY     OK AUDJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume 148002 2003-11-30 22:00:00 2025-12-31 22:00:00                    0           1.0      1066       993        970        10716                  24                  6108                  6431
+
+==============================================================================================================
+2) FULL-SAMPLE VARIANT SUMMARY - OBS EJ OOS-BESLUT
+==============================================================================================================
+                     Variant Market          VariantType AllowedDirections       Scope  Trades  TotalPnL_points     PF  Expectancy_points  Winrate  MaxDD_points  MaxLosingStreak  TradeSharpe
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT Full_Sample     215           -4.629 0.9310            -0.0215   0.4698        17.994               13      -0.3281
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG Full_Sample     112            6.752 1.2858             0.0603   0.5893         4.571                5       0.8633
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT Full_Sample     111          -10.886 0.7545            -0.0981   0.3514        15.411               11      -0.9261
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT Full_Sample     175            5.097 1.1162             0.0291   0.4914        14.860                7       0.4927
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG Full_Sample      84           -0.488 0.9757            -0.0058   0.4762         6.294                5      -0.0745
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT Full_Sample      98            6.155 1.2526             0.0628   0.5000        10.896                6       0.7629
+
+==============================================================================================================
+3) COMBINED OOS VARIANT SUMMARY
+==============================================================================================================
+                     Variant Market          VariantType AllowedDirections        Scope  Trades  TotalPnL_points     PF  Expectancy_points  Winrate  MaxDD_points  MaxLosingStreak  TradeSharpe
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT Combined_OOS     168            3.740 1.0848             0.0223   0.4821        10.262                7       0.3391
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG Combined_OOS      93            5.934 1.2760             0.0638   0.5699         4.357                4       0.7724
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT Combined_OOS      82           -2.054 0.9124            -0.0250   0.3780        10.200                5      -0.2576
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT Combined_OOS     137            6.114 1.2125             0.0446   0.4891         5.479                7       0.7508
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG Combined_OOS      67           -1.360 0.9167            -0.0203   0.4478         5.903                5      -0.2267
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT Combined_OOS      76            7.471 1.5719             0.0983   0.5132         2.072                5       1.3500
+
+==============================================================================================================
+4) WALK-FORWARD VARIANT SUMMARY
+==============================================================================================================
+                     Variant Market          VariantType AllowedDirections  WF                IS Period               OOS Period  IS Trades  IS PF  IS Expectancy points  OOS Trades  OOS Total PnL points  OOS PF  OOS Expectancy points  OOS Winrate  OOS Max DD points  OOS Trade Sharpe  Pass PF > 1.05  Pass Exp > 0  Pass Trades >= 10  Segment Pass
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31         38 0.9325               -0.0268          39                 1.082  1.0875                 0.0277       0.5128              5.479            0.1939            True          True               True          True
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31         77 1.0024                0.0008          17                 3.679  2.1868                 0.2164       0.4706              1.598            0.9523            True          True               True          True
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31         94 1.1226                0.0398          26                 1.302  1.6107                 0.0501       0.4231              1.277            0.7613            True          True               True          True
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31        120 1.1544                0.0421          36                -2.356  0.7267                -0.0654       0.4722              3.351           -0.6500           False         False               True         False
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31        156 1.0651                0.0172          19                 2.407  1.9417                 0.1267       0.5789              1.412            1.0729            True          True               True          True
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31         17 1.2314                0.0513          16                -0.536  0.9307                -0.0335       0.5000              4.374           -0.1106           False         False               True         False
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31         33 1.0292                0.0102           9                -0.429  0.5559                -0.0477       0.4444              0.879           -0.6171           False         False              False         False
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31         42 0.9925               -0.0022          12                 0.441  1.4437                 0.0368       0.4167              0.654            0.4503            True          True               True          True
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31         54 1.0259                0.0064          16                -4.294  0.2614                -0.2684       0.3125              4.706           -1.5644           False         False               True         False
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31         70 0.7953               -0.0564          14                 3.458  5.1763                 0.2470       0.5714              0.352            1.9197            True          True               True          True
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31         22 0.8836               -0.0598          25                 1.622  1.3353                 0.0649       0.5200              2.072            0.5513            True          True               True          True
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31         47 1.0190                0.0065           9                 4.521  3.1186                 0.5023       0.5556              1.593            1.2158            True          True              False         False
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31         56 1.2641                0.0862          14                 0.861  1.7566                 0.0615       0.4286              0.860            0.5974            True          True               True          True
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31         70 1.2930                0.0813          22                 1.555  1.4878                 0.0707       0.5455              1.806            0.7023            True          True               True          True
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31         92 1.3204                0.0787           6                -1.088  0.3836                -0.1813       0.5000              1.383           -0.9884           False         False              False         False
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31         47 0.6363               -0.1781          47                 0.140  1.0082                 0.0030       0.4681              5.118            0.0193           False          True               True         False
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31         94 0.7950               -0.0875          26                10.362  4.1922                 0.3985       0.5769              1.402            1.9845            True          True               True          True
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31        120 1.0492                0.0178          30                 0.859  1.1848                 0.0286       0.4333              1.689            0.3575            True          True               True          True
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31        150 1.0623                0.0199          36                -3.913  0.6153                -0.1087       0.4444              6.120           -0.9819           False         False               True         False
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31        186 0.9842               -0.0050          29                -3.708  0.5837                -0.1279       0.5172              5.476           -0.8788           False         False               True         False
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31         19 1.3840                0.0431          24                 0.905  1.0868                 0.0377       0.5000              4.136            0.1460            True          True               True          True
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31         43 1.1372                0.0401          18                 2.623  2.3349                 0.1457       0.6111              0.798            1.4788            True          True               True          True
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31         61 1.2993                0.0712          16                 2.391  2.4181                 0.1494       0.5000              0.748            1.2860            True          True               True          True
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31         77 1.4157                0.0875          18                -2.335  0.6401                -0.1297       0.5000              4.255           -0.6419           False         False               True         False
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31         95 1.1940                0.0463          17                 2.350  3.5161                 0.1382       0.7647              0.604            1.6823            True          True               True          True
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31         29 0.5770               -0.3046          28                -0.863  0.8814                -0.0308       0.4286              2.487           -0.2195           False         False               True         False
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31         57 0.6557               -0.1701           9                 8.260  7.4481                 0.9178       0.5556              0.749            1.7554            True          True              False         False
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31         66 0.9513               -0.0217          14                -1.532  0.4828                -0.1094       0.3571              1.452           -1.0887           False         False               True         False
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31         80 0.9084               -0.0371          19                -1.861  0.5308                -0.0979       0.3684              2.486           -1.0520           False         False               True         False
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31         99 0.8672               -0.0488          12                -6.058  0.2403                -0.5048       0.1667              5.520           -1.6443           False         False               True         False
+
+==============================================================================================================
+5) CANDIDATE CLASSIFICATION
+==============================================================================================================
+                     Variant Market          VariantType AllowedDirections  Trades  TotalPnL_points     PF  Expectancy_points  MaxDD_points  Positive_WF_Segments  PF_GT_105_WF_Segments  Min_WF_PF  Worst_WF_PnL  Min_WF_Trades  WorstCost_PF  WorstCost_PnL  RemoveBest5_PnL  RemoveBestYear_PnL  IID_ProbTotalNegative  MonthBlock_ProbTotalNegative             Verdict                               InclusionNote
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT     168            3.740 1.0848             0.0223        10.262                     3                      2     0.5837        -3.913             26        0.9289        -3.4000          -10.407              -2.515                 0.3758                        0.3604                FAIL                              DO_NOT_INCLUDE
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG      93            5.934 1.2760             0.0638         4.357                     4                      4     0.6401        -2.335             16        1.0852         1.9815           -2.905               3.472                 0.2118                        0.2270 WEAK_CANDIDATE_PASS DIAGNOSTIC_ONLY_REQUIRES_FURTHER_VALIDATION
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT      82           -2.054 0.9124            -0.0250        10.200                     1                      1     0.2403        -6.058              9        0.7839        -5.5390          -15.353              -7.210                 0.6078                        0.6246                FAIL                              DO_NOT_INCLUDE
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT     137            6.114 1.2125             0.0446         5.479                     4                      4     0.7267        -2.356             17        0.9920        -0.2565           -3.151               1.749                 0.2204                        0.2000                FAIL                              DO_NOT_INCLUDE
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT      76            7.471 1.5719             0.0983         2.072                     4                      4     0.3836        -1.088              6        1.2650         3.9370           -0.516               2.672                 0.0838                        0.0818 WEAK_CANDIDATE_PASS DIAGNOSTIC_ONLY_REQUIRES_FURTHER_VALIDATION
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG      67           -1.360 0.9167            -0.0203         5.903                     2                      2     0.2614        -4.294              9        0.7527        -4.4755           -8.603              -3.814                 0.5754                        0.5842                FAIL                              DO_NOT_INCLUDE
+
+==============================================================================================================
+6) COST STRESS SUMMARY
+==============================================================================================================
+                     Variant Market          VariantType AllowedDirections                Scenario  Trades  TotalPnL_points     PF  Expectancy_points  MaxDD_points  PnL_Degradation_points  PF_Degradation  DD_Increase_points
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT                Baseline     137           6.1140 1.2125             0.0446         5.479                  0.0000          0.0000               0.000
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT               Spread x2     137           4.4700 1.1509             0.0326         5.551                 -1.6440         -0.0615               0.072
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT               Spread x3     137           2.8260 1.0927             0.0206         5.623                 -3.2880         -0.1198               0.144
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT             Slippage x2     137           4.7440 1.1609             0.0346         5.539                 -1.3700         -0.0515               0.060
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT             Slippage x3     137           3.3740 1.1117             0.0246         5.599                 -2.7400         -0.1007               0.120
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT Spread x2 + Slippage x2     137           3.1000 1.1022             0.0226         5.611                 -3.0140         -0.1103               0.132
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT       Worst retail cost     137          -0.2565 0.9920            -0.0019         5.832                 -6.3705         -0.2204               0.353
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG                Baseline      67          -1.3600 0.9167            -0.0203         5.903                  0.0000          0.0000               0.000
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG               Spread x2      67          -2.1640 0.8710            -0.0323         6.527                 -0.8040         -0.0457               0.624
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG               Spread x3      67          -2.9680 0.8278            -0.0443         7.151                 -1.6080         -0.0890               1.248
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG             Slippage x2      67          -2.0300 0.8785            -0.0303         6.423                 -0.6700         -0.0383               0.520
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG             Slippage x3      67          -2.7000 0.8419            -0.0403         6.943                 -1.3400         -0.0748               1.040
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG Spread x2 + Slippage x2      67          -2.8340 0.8348            -0.0423         7.047                 -1.4740         -0.0819               1.144
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG       Worst retail cost      67          -4.4755 0.7527            -0.0668         8.321                 -3.1155         -0.1640               2.418
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT                Baseline      76           7.4710 1.5719             0.0983         2.072                  0.0000          0.0000               0.000
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT               Spread x2      76           6.5590 1.4855             0.0863         2.315                 -0.9120         -0.0864               0.243
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT               Spread x3      76           5.6470 1.4044             0.0743         2.675                 -1.8240         -0.1676               0.603
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT             Slippage x2      76           6.7110 1.4996             0.0883         2.255                 -0.7600         -0.0723               0.183
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT             Slippage x3      76           5.9510 1.4308             0.0783         2.555                 -1.5200         -0.1411               0.483
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT Spread x2 + Slippage x2      76           5.7990 1.4175             0.0763         2.615                 -1.6720         -0.1544               0.543
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT       Worst retail cost      76           3.9370 1.2650             0.0518         3.350                 -3.5340         -0.3069               1.278
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT                Baseline     168           3.7400 1.0848             0.0223        10.262                  0.0000          0.0000               0.000
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT               Spread x2     168           1.8920 1.0420             0.0113        10.779                 -1.8480         -0.0428               0.517
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT               Spread x3     168           0.0440 1.0010             0.0003        11.296                 -3.6960         -0.0838               1.034
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT             Slippage x2     168           2.2280 1.0496             0.0133        10.685                 -1.5120         -0.0352               0.423
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT             Slippage x3     168           0.7160 1.0157             0.0043        11.108                 -3.0240         -0.0691               0.846
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT Spread x2 + Slippage x2     168           0.3800 1.0083             0.0023        11.202                 -3.3600         -0.0765               0.940
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT       Worst retail cost     168          -3.4000 0.9289            -0.0202        12.280                 -7.1400         -0.1559               2.018
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG                Baseline      93           5.9340 1.2760             0.0638         4.357                  0.0000          0.0000               0.000
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG               Spread x2      93           4.9110 1.2238             0.0528         4.511                 -1.0230         -0.0522               0.154
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG               Spread x3      93           3.8880 1.1736             0.0418         4.665                 -2.0460         -0.1024               0.308
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG             Slippage x2      93           5.0970 1.2332             0.0548         4.483                 -0.8370         -0.0429               0.126
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG             Slippage x3      93           4.2600 1.1917             0.0458         4.609                 -1.6740         -0.0844               0.252
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG Spread x2 + Slippage x2      93           4.0740 1.1826             0.0438         4.637                 -1.8600         -0.0934               0.280
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG       Worst retail cost      93           1.9815 1.0852             0.0213         4.952                 -3.9525         -0.1908               0.595
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT                Baseline      82          -2.0540 0.9124            -0.0250        10.200                  0.0000          0.0000               0.000
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT               Spread x2      82          -2.9560 0.8769            -0.0360        10.706                 -0.9020         -0.0355               0.506
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT               Spread x3      82          -3.8580 0.8431            -0.0470        11.212                 -1.8040         -0.0694               1.012
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT             Slippage x2      82          -2.7920 0.8833            -0.0340        10.614                 -0.7380         -0.0292               0.414
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT             Slippage x3      82          -3.5300 0.8552            -0.0430        11.028                 -1.4760         -0.0572               0.828
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT Spread x2 + Slippage x2      82          -3.6940 0.8491            -0.0450        11.120                 -1.6400         -0.0633               0.920
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT       Worst retail cost      82          -5.5390 0.7839            -0.0675        12.155                 -3.4850         -0.1286               1.955
+
+==============================================================================================================
+7) CONCENTRATION / BEST-TRADE AND BEST-YEAR REMOVAL
+==============================================================================================================
+                     Variant Market          VariantType AllowedDirections                             Test  Trades  TotalPnL_points     PF  Expectancy_points  MaxDD_points  Winrate
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT                       All trades     137            6.114 1.2125             0.0446         5.479   0.4891
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT             Remove best 1 trades     136            3.111 1.1081             0.0229         5.479   0.4853
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT             Remove best 3 trades     134           -0.377 0.9869            -0.0028         5.479   0.4776
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT             Remove best 5 trades     132           -3.151 0.8905            -0.0239         5.479   0.4697
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT            Remove best 10 trades     127           -9.116 0.6832            -0.0718         9.926   0.4488
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT          Remove best year (2014)     133            1.749 1.0612             0.0132         5.479   0.4812
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT Remove best 2 years (2014, 2023)     127           -1.000 0.9648            -0.0079         5.479   0.4646
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG                       All trades      67           -1.360 0.9167            -0.0203         5.903   0.4478
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG             Remove best 1 trades      66           -3.386 0.7927            -0.0513         7.929   0.4394
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG             Remove best 3 trades      64           -6.239 0.6180            -0.0975         9.391   0.4219
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG             Remove best 5 trades      62           -8.603 0.4732            -0.1388        10.410   0.4032
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG            Remove best 10 trades      57          -12.166 0.2551            -0.2134        11.906   0.3509
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG          Remove best year (2023)      62           -3.814 0.7637            -0.0615         6.175   0.4194
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG Remove best 2 years (2023, 2013)      58           -5.314 0.6483            -0.0916         7.675   0.3966
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT                       All trades      76            7.471 1.5719             0.0983         2.072   0.5132
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT             Remove best 1 trades      75            4.468 1.3420             0.0596         2.072   0.5067
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT             Remove best 3 trades      73            1.818 1.1392             0.0249         3.131   0.4932
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT             Remove best 5 trades      71           -0.516 0.9605            -0.0073         3.131   0.4789
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT            Remove best 10 trades      66           -5.215 0.6008            -0.0790         5.418   0.4394
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT          Remove best year (2014)      73            2.672 1.2045             0.0366         2.277   0.4932
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT Remove best 2 years (2014, 2011)      65            0.964 1.0822             0.0148         2.277   0.4923
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT                       All trades     168            3.740 1.0848             0.0223        10.262   0.4821
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT             Remove best 1 trades     167            0.265 1.0060             0.0016        10.262   0.4790
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT             Remove best 3 trades     165           -5.372 0.8782            -0.0326        10.262   0.4727
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT             Remove best 5 trades     163          -10.407 0.7640            -0.0638        12.456   0.4663
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT            Remove best 10 trades     158          -18.398 0.5828            -0.1164        20.094   0.4494
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT          Remove best year (2016)     158           -2.515 0.9416            -0.0159        10.262   0.4684
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT Remove best 2 years (2016, 2015)     151           -4.650 0.8911            -0.0308        10.262   0.4570
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG                       All trades      93            5.934 1.2760             0.0638         4.357   0.5699
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG             Remove best 1 trades      92            3.329 1.1549             0.0362         4.682   0.5652
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG             Remove best 3 trades      90           -0.264 0.9877            -0.0029         8.039   0.5556
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG             Remove best 5 trades      88           -2.905 0.8649            -0.0330         9.520   0.5455
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG            Remove best 10 trades      83           -7.568 0.6480            -0.0912         9.831   0.5181
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG          Remove best year (2023)      85            3.472 1.1623             0.0408         4.859   0.5412
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG Remove best 2 years (2023, 2015)      80            1.306 1.0613             0.0163         4.859   0.5250
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT                       All trades      82           -2.054 0.9124            -0.0250        10.200   0.3780
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT             Remove best 1 trades      81           -5.529 0.7643            -0.0683        10.200   0.3704
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT             Remove best 3 trades      79          -11.166 0.5240            -0.1413        11.455   0.3544
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT             Remove best 5 trades      77          -15.353 0.3456            -0.1994        15.642   0.3377
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT            Remove best 10 trades      72          -19.034 0.1887            -0.2644        18.585   0.2917
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT          Remove best year (2016)      79           -7.210 0.6825            -0.0913         9.451   0.3671
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT Remove best 2 years (2016, 2014)      76           -9.824 0.5622            -0.1293        11.448   0.3684
+
+==============================================================================================================
+8) LIGHT MONTE CARLO SUMMARY
+==============================================================================================================
+                     Variant Market          VariantType AllowedDirections                        Model  NSims  TradesPerSim  HistoricalTotalPnL  HistoricalMaxDD  MeanTotalPnL  P05TotalPnL  P01TotalPnL  MedianMaxDD  P95MaxDD  P99MaxDD  WorstMaxDD  MedianLongestLosingStreak  P95LongestLosingStreak  ProbTotalNegative  ProbDD_gt_HistoricalDD  ProbDD_gt_2xHistoricalDD
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT         iid_bootstrap_points   5000           137               6.114            5.479        6.0492      -7.2851     -13.4423       6.3630   13.3189   17.7071      29.697                        6.0                    10.0             0.2204                  0.6248                    0.1162
+          CADJPY_BOTH_LOCKED CADJPY          BOTH_LOCKED        LONG+SHORT month_block_bootstrap_points   5000           137               6.114            5.479        6.1036      -5.8208     -10.7963       5.6675   11.6051   14.6912      27.295                        6.0                    10.0             0.2000                  0.5278                    0.0642
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG         iid_bootstrap_points   5000            67              -1.360            5.903       -1.2967     -11.3082     -15.0892       6.3170   13.4433   16.6911      23.734                        6.0                    10.0             0.5754                  0.5492                    0.0944
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC              LONG month_block_bootstrap_points   5000            67              -1.360            5.903       -1.3098     -10.6962     -14.7790       5.9110   12.9770   16.4793      24.666                        5.0                     9.0             0.5842                  0.5012                    0.0796
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT         iid_bootstrap_points   5000            76               7.471            2.072        7.4031      -1.3004      -4.5497       3.1260    6.1701    7.9921      12.040                        5.0                     9.0             0.0838                  0.8472                    0.2538
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY DIRECTION_DIAGNOSTIC             SHORT month_block_bootstrap_points   5000            76               7.471            2.072        7.3526      -1.1880      -4.5652       3.1170    6.1973    8.2440      14.381                        5.0                     8.0             0.0818                  0.8414                    0.2452
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT         iid_bootstrap_points   5000           168               3.740           10.262        3.6881     -14.0895     -22.3526       9.9150   20.6451   26.8595      37.516                        7.0                    11.0             0.3758                  0.4686                    0.0518
+          AUDJPY_BOTH_LOCKED AUDJPY          BOTH_LOCKED        LONG+SHORT month_block_bootstrap_points   5000           168               3.740           10.262        3.8835     -12.8101     -19.9201       9.3350   19.2349   24.1698      40.111                        6.0                    10.0             0.3604                  0.4228                    0.0352
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG         iid_bootstrap_points   5000            93               5.934            4.357        6.0268      -6.5508     -11.6720       5.8925   12.3104   16.2800      27.494                        5.0                     8.0             0.2118                  0.7452                    0.1974
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC              LONG month_block_bootstrap_points   5000            93               5.934            4.357        5.8646      -6.7130     -11.7053       5.7635   12.3380   15.8241      24.184                        5.0                     8.0             0.2270                  0.7220                    0.1960
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT         iid_bootstrap_points   5000            82              -2.054           10.200       -2.0702     -14.7243     -20.0214       8.6470   17.3784   21.8090      30.945                        7.0                    13.0             0.6078                  0.3642                    0.0170
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY DIRECTION_DIAGNOSTIC             SHORT month_block_bootstrap_points   5000            82              -2.054           10.200       -2.0828     -13.7232     -18.8433       8.1225   16.1575   20.1810      31.179                        7.0                    11.0             0.6246                  0.3112                    0.0084
+
+==============================================================================================================
+9) DIRECTION ATTRIBUTION - COMBINED OOS POINTS
+==============================================================================================================
+                     Variant Market Direction  Trades    PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate  MaxDD  PnL_Share_%
+CADJPY_SHORT_ONLY_DIAGNOSTIC CADJPY     SHORT      76  7.471    0.0983       20.534    -13.063        1.5719   0.5132  2.072      37.6468
+          CADJPY_BOTH_LOCKED CADJPY     SHORT      72  7.198    0.1000       19.918    -12.720        1.5659   0.5139  2.072      36.2711
+ AUDJPY_LONG_ONLY_DIAGNOSTIC AUDJPY      LONG      93  5.934    0.0638       27.431    -21.497        1.2760   0.5699  4.357      29.9017
+          AUDJPY_BOTH_LOCKED AUDJPY      LONG      88  5.352    0.0608       26.437    -21.085        1.2538   0.5682  4.357      26.9690
+          CADJPY_BOTH_LOCKED CADJPY      LONG      65 -1.084   -0.0167       14.972    -16.056        0.9325   0.4615  5.664      -5.4623
+ CADJPY_LONG_ONLY_DIAGNOSTIC CADJPY      LONG      67 -1.360   -0.0203       14.972    -16.332        0.9167   0.4478  5.903      -6.8531
+          AUDJPY_BOTH_LOCKED AUDJPY     SHORT      80 -1.612   -0.0201       21.406    -23.018        0.9300   0.3875  9.917      -8.1230
+AUDJPY_SHORT_ONLY_DIAGNOSTIC AUDJPY     SHORT      82 -2.054   -0.0250       21.406    -23.460        0.9124   0.3780 10.200     -10.3502
+
+==============================================================================================================
+10) YEAR ATTRIBUTION - COMBINED OOS POINTS
+==============================================================================================================
+                     Variant  Exit Year  Trades    PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate  MaxDD  PnL_Share_%
+          AUDJPY_BOTH_LOCKED       2016      10  6.255    0.6255        7.317     -1.062        6.8898   0.7000  1.062      31.5193
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2016       3  5.156    1.7187        5.905     -0.749        7.8838   0.6667  0.749      25.9814
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2014       3  4.799    1.5997        4.799      0.000           inf   1.0000  0.000      24.1824
+          CADJPY_BOTH_LOCKED       2014       4  4.365    1.0913        4.540     -0.175       25.9429   0.7500  0.175      21.9955
+          CADJPY_BOTH_LOCKED       2023       6  2.749    0.4582        2.941     -0.192       15.3177   0.8333  0.192      13.8524
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2014       3  2.614    0.8713        2.885     -0.271       10.6458   0.3333  0.271      13.1721
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2023       8  2.462    0.3078        2.564     -0.102       25.1373   0.8750  0.000      12.4061
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2023       5  2.454    0.4908        2.646     -0.192       13.7813   0.8000  0.192      12.3658
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2015       5  2.166    0.4332        2.260     -0.094       24.0426   0.8000  0.094      10.9146
+          AUDJPY_BOTH_LOCKED       2015       7  2.135    0.3050        2.490     -0.355        7.0141   0.7143  0.094      10.7584
+          AUDJPY_BOTH_LOCKED       2014       9  1.972    0.2191        3.801     -1.829        2.0782   0.3333  1.402       9.9370
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2020       5  1.920    0.3840        2.019     -0.099       20.3939   0.8000  0.000       9.6750
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2011       8  1.708    0.2135        3.045     -1.337        2.2775   0.5000  1.304       8.6067
+          AUDJPY_BOTH_LOCKED       2020      11  1.700    0.1545        2.801     -1.101        2.5441   0.6364  0.507       8.5664
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2022       4  1.505    0.3763        2.401     -0.896        2.6797   0.7500  0.896       7.5838
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2013       4  1.500    0.3750        2.532     -1.032        2.4535   0.7500  1.032       7.5586
+          CADJPY_BOTH_LOCKED       2012      16  1.388    0.0868        5.141     -3.753        1.3698   0.5000  2.136       6.9942
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2018       8  1.378    0.1723        2.165     -0.787        2.7510   0.6250  0.418       6.9438
+          AUDJPY_BOTH_LOCKED       2023      12  1.334    0.1112        2.723     -1.389        1.9604   0.6667  0.494       6.7221
+          CADJPY_BOTH_LOCKED       2013      12  1.279    0.1066        4.383     -3.104        1.4120   0.6667  1.687       6.4449
+          AUDJPY_BOTH_LOCKED       2018      15  1.258    0.0839        3.357     -2.099        1.5993   0.6000  0.978       6.3391
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2012       7  1.253    0.1790        3.577     -2.324        1.5392   0.5714  1.649       6.3139
+          CADJPY_BOTH_LOCKED       2018      16  1.112    0.0695        2.439     -1.327        1.8380   0.4375  0.709       5.6034
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2016       7  1.099    0.1570        1.412     -0.313        4.5112   0.7143  0.313       5.5379
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2018       9  1.004    0.1116        1.872     -0.868        2.1567   0.4444  0.800       5.0592
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2013      10  0.909    0.0909        5.142     -4.233        1.2147   0.5000  3.308       4.5805
+          AUDJPY_BOTH_LOCKED       2013      19  0.793    0.0417        8.101     -7.308        1.1085   0.3684  4.533       3.9960
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2024       6  0.793    0.1322        1.077     -0.284        3.7923   0.5000  0.044       3.9960
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2017       3  0.780    0.2600        0.868     -0.088        9.8636   0.6667  0.000       3.9305
+          CADJPY_BOTH_LOCKED       2017       6  0.768    0.1280        0.954     -0.186        5.1290   0.5000  0.078       3.8700
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2021       7  0.608    0.0869        1.273     -0.665        1.9143   0.5714  0.557       3.0637
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2017       3  0.570    0.1900        0.721     -0.151        4.7748   0.3333  0.025       2.8723
+          CADJPY_BOTH_LOCKED       2016       8  0.549    0.0686        2.157     -1.608        1.3414   0.5000  1.598       2.7664
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2015       3  0.490    0.1633        0.751     -0.261        2.8774   0.6667  0.000       2.4691
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2019       5  0.443    0.0886        1.191     -0.748        1.5922   0.4000  0.748       2.2323
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2011       8  0.417    0.0521        4.802     -4.385        1.0951   0.5000  4.136       2.1013
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2020       3  0.412    0.1373        0.833     -0.421        1.9786   0.6667  0.421       2.0761
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2023       1  0.295    0.2950        0.295      0.000           inf   1.0000  0.000       1.4865
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2016       4  0.286    0.0715        0.301     -0.015       20.0667   0.5000  0.005       1.4412
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2016       4  0.263    0.0658        1.856     -1.593        1.1651   0.5000  1.593       1.3253
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2013      10  0.252    0.0252        3.327     -3.075        1.0820   0.3000  2.487       1.2698
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2025       3  0.211    0.0703        0.563     -0.352        1.5994   0.3333  0.352       1.0632
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2012       9  0.135    0.0150        1.564     -1.429        1.0945   0.4444  0.773       0.6803
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2018       7  0.108    0.0154        0.567     -0.459        1.2353   0.4286  0.207       0.5442
+          CADJPY_BOTH_LOCKED       2024       9  0.047    0.0052        1.459     -1.412        1.0333   0.5556  0.768       0.2368
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2025       3  0.024    0.0080        0.128     -0.104        1.2308   0.6667  0.000       0.1209
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2017       3 -0.012   -0.0040        0.086     -0.098        0.8776   0.3333  0.078      -0.0605
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2014       2 -0.021   -0.0105        0.154     -0.175        0.8800   0.5000  0.175      -0.1058
+          AUDJPY_BOTH_LOCKED       2011      14 -0.097   -0.0069        6.767     -6.864        0.9859   0.5000  5.118      -0.4888
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2018       7 -0.120   -0.0171        1.192     -1.312        0.9085   0.5714  0.609      -0.6047
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2019       2 -0.131   -0.0655        0.041     -0.172        0.2384   0.5000  0.000      -0.6601
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2024       6 -0.136   -0.0227        0.592     -0.728        0.8132   0.6667  0.124      -0.6853
+          AUDJPY_BOTH_LOCKED       2017       5 -0.139   -0.0278        0.721     -0.860        0.8384   0.2000  0.542      -0.7004
+          CADJPY_BOTH_LOCKED       2020      14 -0.146   -0.0104        1.902     -2.048        0.9287   0.5000  1.141      -0.7357
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2012      10 -0.200   -0.0200        1.122     -1.322        0.8487   0.6000  0.979      -1.0078
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2020       6 -0.220   -0.0367        0.782     -1.002        0.7804   0.5000  0.797      -1.1086
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2013       8 -0.221   -0.0276        1.851     -2.072        0.8933   0.6250  2.072      -1.1136
+          AUDJPY_BOTH_LOCKED       2019      10 -0.260   -0.0260        1.429     -1.689        0.8461   0.3000  1.689      -1.3102
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2022       5 -0.351   -0.0702        0.170     -0.521        0.3263   0.2000  0.226      -1.7687
+          CADJPY_BOTH_LOCKED       2025       4 -0.389   -0.0972        0.563     -0.952        0.5914   0.2500  0.352      -1.9602
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2012       6 -0.421   -0.0702        1.385     -1.806        0.7669   0.5000  1.515      -2.1214
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2019       2 -0.447   -0.2235        0.000     -0.447        0.0000   0.0000  0.006      -2.2525
+          CADJPY_BOTH_LOCKED       2021      10 -0.460   -0.0460        1.528     -1.988        0.7686   0.5000  1.880      -2.3180
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2015       2 -0.541   -0.2705        0.000     -0.541        0.0000   0.0000  0.214      -2.7261
+          AUDJPY_BOTH_LOCKED       2012      14 -0.556   -0.0397        2.402     -2.958        0.8120   0.5714  1.693      -2.8017
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2020      11 -0.558   -0.0507        1.069     -1.627        0.6570   0.4545  1.141      -2.8118
+          CADJPY_BOTH_LOCKED       2019       4 -0.578   -0.1445        0.041     -0.619        0.0662   0.2500  0.447      -2.9126
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2025       1 -0.600   -0.6000        0.000     -0.600        0.0000   0.0000  0.000      -3.0234
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2014       6 -0.642   -0.1070        0.916     -1.558        0.5879   0.3333  0.798      -3.2351
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2015       3 -0.694   -0.2313        0.082     -0.776        0.1057   0.3333  0.243      -3.4971
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2019       5 -0.703   -0.1406        0.238     -0.941        0.2529   0.2000  0.883      -3.5425
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2017       2 -0.709   -0.3545        0.000     -0.709        0.0000   0.0000  0.391      -3.5727
+CADJPY_SHORT_ONLY_DIAGNOSTIC       2024       4 -0.783   -0.1957        0.382     -1.165        0.3279   0.5000  0.521      -3.9456
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2011       8 -0.915   -0.1144        1.965     -2.880        0.6823   0.3750  1.430      -4.6107
+          AUDJPY_BOTH_LOCKED       2025       4 -1.032   -0.2580        0.128     -1.160        0.1103   0.5000  1.056      -5.2003
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2025       1 -1.056   -1.0560        0.000     -1.056        0.0000   0.0000  0.000      -5.3212
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2023       4 -1.128   -0.2820        0.159     -1.287        0.1235   0.2500  0.749      -5.6841
+          CADJPY_BOTH_LOCKED       2015       5 -1.235   -0.2470        0.082     -1.317        0.0623   0.2000  0.908      -6.2232
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2021       8 -1.290   -0.1612        1.153     -2.443        0.4720   0.3750  1.630      -6.5004
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2021       5 -1.451   -0.2902        0.255     -1.706        0.1495   0.2000  1.081      -7.3117
+          CADJPY_BOTH_LOCKED       2011      11 -1.585   -0.1441        3.927     -5.512        0.7124   0.3636  5.479      -7.9869
+          CADJPY_BOTH_LOCKED       2022      12 -1.750   -0.1458        2.833     -4.583        0.6182   0.4167  2.268      -8.8183
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2022      10 -1.939   -0.1939        1.550     -3.489        0.4443   0.4000  3.395      -9.7707
+          AUDJPY_BOTH_LOCKED       2022      15 -2.290   -0.1527        1.720     -4.010        0.4289   0.3333  3.550     -11.5394
+ AUDJPY_LONG_ONLY_DIAGNOSTIC       2021       3 -2.316   -0.7720        0.584     -2.900        0.2014   0.3333  1.971     -11.6704
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2022       8 -3.255   -0.4069        0.432     -3.687        0.1172   0.2500  3.219     -16.4021
+ CADJPY_LONG_ONLY_DIAGNOSTIC       2011       5 -3.289   -0.6578        1.085     -4.374        0.2481   0.2000  4.374     -16.5734
+          AUDJPY_BOTH_LOCKED       2021      10 -3.323   -0.3323        1.737     -5.060        0.3433   0.4000  4.247     -16.7448
+AUDJPY_SHORT_ONLY_DIAGNOSTIC       2024       7 -3.874   -0.5534        1.757     -5.631        0.3120   0.1429  4.783     -19.5213
+          AUDJPY_BOTH_LOCKED       2024      13 -4.010   -0.3085        2.349     -6.359        0.3694   0.3846  5.339     -20.2066
+
+==============================================================================================================
+11) QUICK PASS/FAIL DIAGNOSTICS
+==============================================================================================================
+                                     Check  Value  Pass
+              CADJPY both locked PF > 1.05 1.2125  True
+              AUDJPY both locked PF > 1.05 1.0848  True
+         CADJPY short diagnostic PF > 1.15 1.5719  True
+          AUDJPY long diagnostic PF > 1.15 1.2760  True
+               At least 1 strong candidate 0.0000 False
+        At least 2 weak-or-better variants 2.0000  True
+No automatic inclusion from direction-only 1.0000  True
+
+==============================================================================================================
+END PHASE 3B ANALYSIS PACKAGE
+==============================================================================================================
