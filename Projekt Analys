@@ -2584,3 +2584,541 @@ No automatic inclusion from direction-only 1.0000  True
 ==============================================================================================================
 END PHASE 3B ANALYSIS PACKAGE
 ==============================================================================================================
+Fas 3B-bedömning
+Fas 3B ger inga marknader som bör inkluderas direkt i originalportföljen.
+Men den hittar två svaga kandidater som kan följas vidare:
+1. CADJPY short-only — bästa kandidaten
+2. AUDJPY long-only — svag kandidat
+Min dom:
+Fas 3B: EJ godkänd för portfölj-inclusion
+CADJPY short-only: WEAK_CANDIDATE_PASS
+AUDJPY long-only: WEAK_CANDIDATE_PASS
+CADJPY both-directions: FAIL
+AUDJPY both-directions: FAIL
+CADJPY long-only: FAIL
+AUDJPY short-only: FAIL
+Det viktigaste: era egna quick diagnostics visar 0 strong candidates, men 2 weak-or-better variants. Det betyder: fortsätt forska, men lägg 
+inte till dem i liveportföljen ännu.
+
+1. CADJPY short-only är starkast
+CADJPY short-only OOS:
+Trades: 76
+Total PnL: +7.471 points
+PF: 1.5719
+Expectancy: +0.0983
+Max DD: 2.072 points
+Positive WF segments: 4/5
+PF > 1.05 WF segments: 4/5
+Worst retail cost PF: 1.2650
+Monte Carlo P(total negative): ca 8.2–8.4%
+Det här är klart bäst i Fas 3B. Den klarar även cost stress ganska bra: worst retail cost är fortfarande positiv med PF 1.265.
+Men det finns två problem:
+1. Bara 76 OOS-trades.
+2. Remove best 5 trades gör resultatet negativt: -0.516 points.
+Det betyder att CADJPY short-only har edge, men den är fortfarande koncentrerad och samplet är litet.
+Min bedömning:
+CADJPY short-only är en riktig kandidat,
+men inte färdig för inclusion.
+
+2. AUDJPY long-only är andra kandidaten
+AUDJPY long-only OOS:
+Trades: 93
+Total PnL: +5.934 points
+PF: 1.2760
+Expectancy: +0.0638
+Max DD: 4.357 points
+Positive WF segments: 4/5
+PF > 1.05 WF segments: 4/5
+Worst retail cost PF: 1.0852
+Monte Carlo P(total negative): ca 21–23%
+Den är positiv och ganska konsekvent i walk-forward, men svagare än CADJPY short-only. Särskilt Monte Carlo-sannolikheten för negativ 
+total är för hög för att jag ska kalla den robust. Även här finns koncentrationsproblem:
+Remove best 3 trades: -0.264 points
+Remove best 5 trades: -2.905 points
+Det betyder att AUDJPY long-only är en watchlist-kandidat, inte en inclusion-kandidat.
+
+3. Both-directions-varianterna ska inte läggas till
+CADJPY both locked:
+PF: 1.2125
+PnL: +6.114
+Worst retail cost PF: 0.9920
+Remove best 5 trades: -3.151
+Monte Carlo P(total negative): ca 20–22%
+Verdict: FAIL
+AUDJPY both locked:
+PF: 1.0848
+PnL: +3.740
+Worst retail cost PF: 0.9289
+Remove best 5 trades: -10.407
+Monte Carlo P(total negative): ca 36–38%
+Verdict: FAIL
+Det här är tydligt. Both-directions fungerar inte tillräckligt robust. CADJPY both är nära, men faller på cost stress och koncentration. 
+AUDJPY both är för svag.
+
+4. Riktningseffekten är väldigt tydlig
+Direction attribution visar exakt vad som händer:
+CADJPY short: +7.471, PF 1.5719
+CADJPY long: -1.360, PF 0.9167
+AUDJPY long: +5.934, PF 1.2760
+AUDJPY short: -2.054, PF 0.9124
+Det här är starkt diagnostiskt. Men det är också en overfitting-risk, eftersom vi nu börjar selektera riktning efter resultat. Därför är rätt
+slutsats:
+CADJPY short-only och AUDJPY long-only får bli separata kandidatmodeller.
+De ska inte automatiskt blandas in i originalstrategin.
+
+5. Slutdom
+Fas 3B: EJ GODKÄND för inclusion
+Men Fas 3B identifierar två kandidater för vidare forward/shadow-test:
+- CADJPY short-only
+- AUDJPY long-only
+Jag hade inte gått vidare med fler historiska optimeringar här. Nästa steg bör vara Fas 3C — shadow validation för kandidaterna, där ni låser 
+dessa två diagnostiska kandidater och följer dem separat.
+Rekommendation:
+Originalportfölj:
+Behåll USDJPY, EURJPY, GBPJPY
+Candidate watchlist:
+CADJPY short-only
+AUDJPY long-only
+Do not include:
+CADJPY long
+AUDJPY short
+CADJPY both
+AUDJPY both
+Nästa kodversion bör därför vara Fas 3C Candidate Shadow Portfolio, där vi skapar en separat paper/shadow-logg för CADJPY short-only och
+AUDJPY long-only utan att blanda in dem i originalportföljen.
+==============================================================================================================
+PHASE 3C ANALYSIS PACKAGE - COPY EVERYTHING BELOW INTO CHATGPT
+==============================================================================================================
+
+==============================================================================================================
+1) DATA QUALITY / TIMEZONE SANITY
+==============================================================================================================
+Market Status                         CSV                           RawColumns   Rows               Start                 End  DuplicateTimestamps  ModeGapHours  GapsGT1h  GapsGT6h  GapsGT24h  WeekendBars  HourBucketsPresent  MinBarsPerHourBucket  MaxBarsPerHourBucket
+CADJPY     OK CADJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume 143790 2004-10-25 02:00:00 2025-12-31 22:00:00                    0           1.0       983       898        879        12347                  24                  5951                  6187
+AUDJPY     OK AUDJPY_1H_2003(05)-2026.csv timestamp,open,high,low,close,volume 148002 2003-11-30 22:00:00 2025-12-31 22:00:00                    0           1.0      1066       993        970        10716                  24                  6108                  6431
+
+==============================================================================================================
+2) LOCKED SHADOW CANDIDATE SUMMARY - FULL SAMPLE OBS EJ BESLUT
+==============================================================================================================
+            Variant Market      VariantType AllowedDirections       Scope  Trades  TotalPnL_points     PF  Expectancy_points  Winrate  MaxDD_points  MaxLosingStreak  TradeSharpe
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG Full_Sample     112            6.752 1.2858             0.0603   0.5893         4.571                5       0.8633
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT Full_Sample      98            6.155 1.2526             0.0628   0.5000        10.896                6       0.7629
+
+==============================================================================================================
+3) LOCKED SHADOW CANDIDATE SUMMARY - COMBINED OOS
+==============================================================================================================
+            Variant Market      VariantType AllowedDirections        Scope  Trades  TotalPnL_points     PF  Expectancy_points  Winrate  MaxDD_points  MaxLosingStreak  TradeSharpe
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG Combined_OOS      93            5.934 1.2760             0.0638   0.5699         4.357                4       0.7724
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT Combined_OOS      76            7.471 1.5719             0.0983   0.5132         2.072                5       1.3500
+
+==============================================================================================================
+4) COMBINED SHADOW PORTFOLIO SUMMARY - POINTS
+==============================================================================================================
+                        Scope                              Candidates  Trades  TotalPnL_points     PF  Expectancy_points  Winrate  MaxDD_points  MaxLosingStreak  TradeSharpe
+Combined_Candidate_Shadow_OOS AUDJPY_LONG_SHADOW, CADJPY_SHORT_SHADOW     169           13.405 1.3879             0.0793   0.5444          5.44                7       1.4194
+
+==============================================================================================================
+5) OPTIONAL USD SHADOW PORTFOLIO SUMMARY
+==============================================================================================================
+PortfolioStatus  StartCapital  AllocationPerCandidate_USD  EndEquity  NetPnL_USD  Return_%  MaxDD_USD  MaxDD_%  MinEquity  TradesClosed  PF_USD  Expectancy_USD  Winrate
+             OK       50000.0                     25000.0 53862.4494   3862.4494    7.7249  1629.4613   2.9927 48893.5919           169  1.3926         22.8547   0.5444
+
+==============================================================================================================
+6) WALK-FORWARD SHADOW SUMMARY
+==============================================================================================================
+            Variant Market      VariantType AllowedDirections  WF                IS Period               OOS Period  IS Trades  IS PF  IS Expectancy points  OOS Trades  OOS Total PnL points  OOS PF  OOS Expectancy points  OOS Winrate  OOS Max DD points  OOS Trade Sharpe  Pass PF > 1.05  Pass Exp > 0  Pass Trades >= 10  Segment Pass
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31         22 0.8836               -0.0598          25                 1.622  1.3353                 0.0649       0.5200              2.072            0.5513            True          True               True          True
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31         47 1.0190                0.0065           9                 4.521  3.1186                 0.5023       0.5556              1.593            1.2158            True          True              False         False
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31         56 1.2641                0.0862          14                 0.861  1.7566                 0.0615       0.4286              0.860            0.5974            True          True               True          True
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31         70 1.2930                0.0813          22                 1.555  1.4878                 0.0707       0.5455              1.806            0.7023            True          True               True          True
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31         92 1.3204                0.0787           6                -1.088  0.3836                -0.1813       0.5000              1.383           -0.9884           False         False              False         False
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG WF1 2003-05-01 -> 2010-12-31 2011-01-01 -> 2013-12-31         19 1.3840                0.0431          24                 0.905  1.0868                 0.0377       0.5000              4.136            0.1460            True          True               True          True
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG WF2 2003-05-01 -> 2013-12-31 2014-01-01 -> 2016-12-31         43 1.1372                0.0401          18                 2.623  2.3349                 0.1457       0.6111              0.798            1.4788            True          True               True          True
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG WF3 2003-05-01 -> 2016-12-31 2017-01-01 -> 2019-12-31         61 1.2993                0.0712          16                 2.391  2.4181                 0.1494       0.5000              0.748            1.2860            True          True               True          True
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG WF4 2003-05-01 -> 2019-12-31 2020-01-01 -> 2022-12-31         77 1.4157                0.0875          18                -2.335  0.6401                -0.1297       0.5000              4.255           -0.6419           False         False               True         False
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG WF5 2003-05-01 -> 2022-12-31 2023-01-01 -> 2026-12-31         95 1.1940                0.0463          17                 2.350  3.5161                 0.1382       0.7647              0.604            1.6823            True          True               True          True
+
+==============================================================================================================
+7) COST STRESS SUMMARY
+==============================================================================================================
+            Variant Market      VariantType AllowedDirections                Scenario  Trades  TotalPnL_points     PF  Expectancy_points  MaxDD_points  PnL_Degradation_points  PF_Degradation  DD_Increase_points
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT                Baseline      76           7.4710 1.5719             0.0983         2.072                  0.0000          0.0000               0.000
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT               Spread x2      76           6.5590 1.4855             0.0863         2.315                 -0.9120         -0.0864               0.243
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT               Spread x3      76           5.6470 1.4044             0.0743         2.675                 -1.8240         -0.1676               0.603
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT             Slippage x2      76           6.7110 1.4996             0.0883         2.255                 -0.7600         -0.0723               0.183
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT             Slippage x3      76           5.9510 1.4308             0.0783         2.555                 -1.5200         -0.1411               0.483
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT Spread x2 + Slippage x2      76           5.7990 1.4175             0.0763         2.615                 -1.6720         -0.1544               0.543
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT       Worst retail cost      76           3.9370 1.2650             0.0518         3.350                 -3.5340         -0.3069               1.278
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG                Baseline      93           5.9340 1.2760             0.0638         4.357                  0.0000          0.0000               0.000
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG               Spread x2      93           4.9110 1.2238             0.0528         4.511                 -1.0230         -0.0522               0.154
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG               Spread x3      93           3.8880 1.1736             0.0418         4.665                 -2.0460         -0.1024               0.308
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG             Slippage x2      93           5.0970 1.2332             0.0548         4.483                 -0.8370         -0.0429               0.126
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG             Slippage x3      93           4.2600 1.1917             0.0458         4.609                 -1.6740         -0.0844               0.252
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG Spread x2 + Slippage x2      93           4.0740 1.1826             0.0438         4.637                 -1.8600         -0.0934               0.280
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG       Worst retail cost      93           1.9815 1.0852             0.0213         4.952                 -3.9525         -0.1908               0.595
+
+==============================================================================================================
+8) CONCENTRATION / BEST-TRADE AND BEST-YEAR REMOVAL
+==============================================================================================================
+            Variant Market      VariantType AllowedDirections                             Test  Trades  TotalPnL_points     PF  Expectancy_points  MaxDD_points  Winrate
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT                       All trades      76            7.471 1.5719             0.0983         2.072   0.5132
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT             Remove best 1 trades      75            4.468 1.3420             0.0596         2.072   0.5067
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT             Remove best 3 trades      73            1.818 1.1392             0.0249         3.131   0.4932
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT             Remove best 5 trades      71           -0.516 0.9605            -0.0073         3.131   0.4789
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT            Remove best 10 trades      66           -5.215 0.6008            -0.0790         5.418   0.4394
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT          Remove best year (2014)      73            2.672 1.2045             0.0366         2.277   0.4932
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT Remove best 2 years (2014, 2011)      65            0.964 1.0822             0.0148         2.277   0.4923
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG                       All trades      93            5.934 1.2760             0.0638         4.357   0.5699
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG             Remove best 1 trades      92            3.329 1.1549             0.0362         4.682   0.5652
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG             Remove best 3 trades      90           -0.264 0.9877            -0.0029         8.039   0.5556
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG             Remove best 5 trades      88           -2.905 0.8649            -0.0330         9.520   0.5455
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG            Remove best 10 trades      83           -7.568 0.6480            -0.0912         9.831   0.5181
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG          Remove best year (2023)      85            3.472 1.1623             0.0408         4.859   0.5412
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG Remove best 2 years (2023, 2015)      80            1.306 1.0613             0.0163         4.859   0.5250
+
+==============================================================================================================
+9) LIGHT MONTE CARLO SUMMARY
+==============================================================================================================
+            Variant Market      VariantType AllowedDirections                        Model  NSims  TradesPerSim  HistoricalTotalPnL  HistoricalMaxDD  MeanTotalPnL  P05TotalPnL  P01TotalPnL  MedianMaxDD  P95MaxDD  P99MaxDD  WorstMaxDD  MedianLongestLosingStreak  P95LongestLosingStreak  ProbTotalNegative  ProbDD_gt_HistoricalDD  ProbDD_gt_2xHistoricalDD
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT         iid_bootstrap_points   5000            76               7.471            2.072        7.5671      -1.3095      -4.4772        3.098    6.2240    8.0894      12.402                        5.0                     9.0             0.0796                  0.8444                    0.2420
+CADJPY_SHORT_SHADOW CADJPY SHADOW_CANDIDATE             SHORT month_block_bootstrap_points   5000            76               7.471            2.072        7.3494      -1.2900      -4.5633        3.090    6.3712    8.2093      11.669                        5.0                     8.0             0.0812                  0.8500                    0.2544
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG         iid_bootstrap_points   5000            93               5.934            4.357        6.1589      -6.4937     -12.0557        5.751   12.2257   16.4554      21.912                        5.0                     8.0             0.2172                  0.7288                    0.1962
+ AUDJPY_LONG_SHADOW AUDJPY SHADOW_CANDIDATE              LONG month_block_bootstrap_points   5000            93               5.934            4.357        6.0838      -6.3411     -11.2188        5.707   12.0694   16.0342      31.501                        5.0                     8.0             0.2038                  0.7248                    0.1824
+
+==============================================================================================================
+10) RECENT / PSEUDO-FORWARD DIAGNOSTICS
+==============================================================================================================
+            Variant Market AllowedDirections                        Period      Start        End  Trades  TotalPnL_points     PF  Expectancy_points  Winrate  MaxDD_points  MaxLosingStreak
+CADJPY_SHORT_SHADOW CADJPY             SHORT      Pseudo-forward 2023-2025 2023-01-01 2025-12-31       6           -1.088 0.3836            -0.1813   0.5000         1.383                2
+CADJPY_SHORT_SHADOW CADJPY             SHORT              Recent 2024-2025 2024-01-01 2025-12-31       5           -1.383 0.2164            -0.2766   0.4000         0.739                2
+CADJPY_SHORT_SHADOW CADJPY             SHORT              Latest year 2025 2025-01-01 2025-12-31       0            0.000    NaN                NaN      NaN         0.000                0
+CADJPY_SHORT_SHADOW CADJPY             SHORT Pre-recent baseline 2011-2022 2011-01-01 2022-12-31      70            8.559 1.7576             0.1223   0.5143         2.072                5
+ AUDJPY_LONG_SHADOW AUDJPY              LONG      Pseudo-forward 2023-2025 2023-01-01 2025-12-31      17            2.350 3.5161             0.1382   0.7647         0.604                1
+ AUDJPY_LONG_SHADOW AUDJPY              LONG              Recent 2024-2025 2024-01-01 2025-12-31       9           -0.112 0.8654            -0.0124   0.6667         0.124                1
+ AUDJPY_LONG_SHADOW AUDJPY              LONG              Latest year 2025 2025-01-01 2025-12-31       3            0.024 1.2308             0.0080   0.6667         0.000                1
+ AUDJPY_LONG_SHADOW AUDJPY              LONG Pre-recent baseline 2011-2022 2011-01-01 2022-12-31      76            3.584 1.1743             0.0472   0.5263         4.255                3
+
+==============================================================================================================
+11) ROLLING TRADE DIAGNOSTICS
+==============================================================================================================
+            Variant Market AllowedDirections  WindowTrades  NumWindows  MedianRollingPnL  P10RollingPnL  WorstRollingPnL  BestRollingPnL  MedianRollingPF  WorstRollingPF  WindowsNegativePct  WindowsPFlt1Pct
+CADJPY_SHORT_SHADOW CADJPY             SHORT            10          67            0.8800        -0.6944           -1.806           6.549           1.6252          0.1980             28.3582          28.3582
+CADJPY_SHORT_SHADOW CADJPY             SHORT            20          57            1.4510        -0.4648           -2.028           6.622           1.5716          0.3760             17.5439          17.5439
+CADJPY_SHORT_SHADOW CADJPY             SHORT            30          47            4.7530         0.1014           -1.955           7.749           1.9297          0.6108              6.3830           6.3830
+ AUDJPY_LONG_SHADOW AUDJPY              LONG            10          84            0.9450        -1.7544           -2.422           3.616           1.4692          0.3255             32.1429          32.1429
+ AUDJPY_LONG_SHADOW AUDJPY              LONG            20          74            1.2475        -2.0132           -3.072           5.651           1.2391          0.5600             33.7838          33.7838
+ AUDJPY_LONG_SHADOW AUDJPY              LONG            30          64            2.9370        -1.1567           -1.905           7.351           1.4646          0.7399             28.1250          28.1250
+
+==============================================================================================================
+12) DIRECTION ATTRIBUTION - COMBINED OOS POINTS
+==============================================================================================================
+            Variant Market Direction  Trades   PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate  MaxDD  PnL_Share_%
+CADJPY_SHORT_SHADOW CADJPY     SHORT      76 7.471    0.0983       20.534    -13.063        1.5719   0.5132  2.072      55.7329
+ AUDJPY_LONG_SHADOW AUDJPY      LONG      93 5.934    0.0638       27.431    -21.497        1.2760   0.5699  4.357      44.2671
+
+==============================================================================================================
+13) YEAR ATTRIBUTION - COMBINED OOS POINTS
+==============================================================================================================
+            Variant  Exit Year  Trades    PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate  MaxDD  PnL_Share_%
+CADJPY_SHORT_SHADOW       2014       3  4.799    1.5997        4.799      0.000           inf   1.0000  0.000      35.8001
+ AUDJPY_LONG_SHADOW       2023       8  2.462    0.3078        2.564     -0.102       25.1373   0.8750  0.000      18.3663
+ AUDJPY_LONG_SHADOW       2015       5  2.166    0.4332        2.260     -0.094       24.0426   0.8000  0.094      16.1581
+ AUDJPY_LONG_SHADOW       2020       5  1.920    0.3840        2.019     -0.099       20.3939   0.8000  0.000      14.3230
+CADJPY_SHORT_SHADOW       2011       8  1.708    0.2135        3.045     -1.337        2.2775   0.5000  1.304      12.7415
+CADJPY_SHORT_SHADOW       2022       4  1.505    0.3763        2.401     -0.896        2.6797   0.7500  0.896      11.2272
+ AUDJPY_LONG_SHADOW       2018       8  1.378    0.1723        2.165     -0.787        2.7510   0.6250  0.418      10.2797
+ AUDJPY_LONG_SHADOW       2016       7  1.099    0.1570        1.412     -0.313        4.5112   0.7143  0.313       8.1984
+CADJPY_SHORT_SHADOW       2018       9  1.004    0.1116        1.872     -0.868        2.1567   0.4444  0.800       7.4897
+ AUDJPY_LONG_SHADOW       2013      10  0.909    0.0909        5.142     -4.233        1.2147   0.5000  3.308       6.7811
+CADJPY_SHORT_SHADOW       2021       7  0.608    0.0869        1.273     -0.665        1.9143   0.5714  0.557       4.5356
+ AUDJPY_LONG_SHADOW       2017       3  0.570    0.1900        0.721     -0.151        4.7748   0.3333  0.025       4.2521
+ AUDJPY_LONG_SHADOW       2019       5  0.443    0.0886        1.191     -0.748        1.5922   0.4000  0.748       3.3047
+ AUDJPY_LONG_SHADOW       2011       8  0.417    0.0521        4.802     -4.385        1.0951   0.5000  4.136       3.1108
+CADJPY_SHORT_SHADOW       2023       1  0.295    0.2950        0.295      0.000           inf   1.0000  0.000       2.2007
+CADJPY_SHORT_SHADOW       2016       4  0.263    0.0658        1.856     -1.593        1.1651   0.5000  1.593       1.9620
+CADJPY_SHORT_SHADOW       2012       9  0.135    0.0150        1.564     -1.429        1.0945   0.4444  0.773       1.0071
+ AUDJPY_LONG_SHADOW       2025       3  0.024    0.0080        0.128     -0.104        1.2308   0.6667  0.000       0.1790
+CADJPY_SHORT_SHADOW       2017       3 -0.012   -0.0040        0.086     -0.098        0.8776   0.3333  0.078      -0.0895
+CADJPY_SHORT_SHADOW       2019       2 -0.131   -0.0655        0.041     -0.172        0.2384   0.5000  0.000      -0.9772
+ AUDJPY_LONG_SHADOW       2024       6 -0.136   -0.0227        0.592     -0.728        0.8132   0.6667  0.124      -1.0145
+CADJPY_SHORT_SHADOW       2013       8 -0.221   -0.0276        1.851     -2.072        0.8933   0.6250  2.072      -1.6486
+ AUDJPY_LONG_SHADOW       2012       6 -0.421   -0.0702        1.385     -1.806        0.7669   0.5000  1.515      -3.1406
+CADJPY_SHORT_SHADOW       2015       2 -0.541   -0.2705        0.000     -0.541        0.0000   0.0000  0.214      -4.0358
+CADJPY_SHORT_SHADOW       2020      11 -0.558   -0.0507        1.069     -1.627        0.6570   0.4545  1.141      -4.1626
+CADJPY_SHORT_SHADOW       2025       1 -0.600   -0.6000        0.000     -0.600        0.0000   0.0000  0.000      -4.4759
+ AUDJPY_LONG_SHADOW       2014       6 -0.642   -0.1070        0.916     -1.558        0.5879   0.3333  0.798      -4.7893
+CADJPY_SHORT_SHADOW       2024       4 -0.783   -0.1957        0.382     -1.165        0.3279   0.5000  0.521      -5.8411
+ AUDJPY_LONG_SHADOW       2022      10 -1.939   -0.1939        1.550     -3.489        0.4443   0.4000  3.395     -14.4648
+ AUDJPY_LONG_SHADOW       2021       3 -2.316   -0.7720        0.584     -2.900        0.2014   0.3333  1.971     -17.2771
+
+==============================================================================================================
+14) MONTH ATTRIBUTION - COMBINED OOS POINTS
+==============================================================================================================
+            Variant ExitMonth  Trades    PnL  AvgTrade  GrossProfit  GrossLoss  ProfitFactor  Winrate  MaxDD  PnL_Share_%
+ AUDJPY_LONG_SHADOW   2011-10       2  3.187    1.5935        3.187      0.000           inf   1.0000  0.000      23.7747
+CADJPY_SHORT_SHADOW   2014-12       1  3.003    3.0030        3.003      0.000           inf   1.0000  0.000      22.4021
+ AUDJPY_LONG_SHADOW   2013-09       2  2.362    1.1810        2.605     -0.243       10.7202   0.5000  0.243      17.6203
+ AUDJPY_LONG_SHADOW   2013-04       1  1.887    1.8870        1.887      0.000           inf   1.0000  0.000      14.0768
+CADJPY_SHORT_SHADOW   2013-02       2  1.416    0.7080        1.416      0.000           inf   1.0000  0.000      10.5632
+CADJPY_SHORT_SHADOW   2014-03       1  1.383    1.3830        1.383      0.000           inf   1.0000  0.000      10.3170
+ AUDJPY_LONG_SHADOW   2020-05       2  1.315    0.6575        1.315      0.000           inf   1.0000  0.000       9.8098
+CADJPY_SHORT_SHADOW   2016-01       1  1.267    1.2670        1.267      0.000           inf   1.0000  0.000       9.4517
+CADJPY_SHORT_SHADOW   2011-09       2  1.199    0.5995        1.232     -0.033       37.3333   0.5000  0.000       8.9444
+ AUDJPY_LONG_SHADOW   2019-01       1  1.160    1.1600        1.160      0.000           inf   1.0000  0.000       8.6535
+ AUDJPY_LONG_SHADOW   2011-05       1  1.121    1.1210        1.121      0.000           inf   1.0000  0.000       8.3626
+CADJPY_SHORT_SHADOW   2022-08       1  1.102    1.1020        1.102      0.000           inf   1.0000  0.000       8.2208
+ AUDJPY_LONG_SHADOW   2023-11       1  1.050    1.0500        1.050      0.000           inf   1.0000  0.000       7.8329
+CADJPY_SHORT_SHADOW   2022-04       1  1.030    1.0300        1.030      0.000           inf   1.0000  0.000       7.6837
+CADJPY_SHORT_SHADOW   2018-01       1  0.958    0.9580        0.958      0.000           inf   1.0000  0.000       7.1466
+CADJPY_SHORT_SHADOW   2011-11       1  0.907    0.9070        0.907      0.000           inf   1.0000  0.000       6.7661
+ AUDJPY_LONG_SHADOW   2022-07       2  0.881    0.4405        0.881      0.000           inf   1.0000  0.000       6.5722
+CADJPY_SHORT_SHADOW   2012-04       1  0.833    0.8330        0.833      0.000           inf   1.0000  0.000       6.2141
+CADJPY_SHORT_SHADOW   2018-05       1  0.802    0.8020        0.802      0.000           inf   1.0000  0.000       5.9828
+ AUDJPY_LONG_SHADOW   2016-03       2  0.797    0.3985        0.797      0.000           inf   1.0000  0.000       5.9455
+ AUDJPY_LONG_SHADOW   2015-06       1  0.760    0.7600        0.760      0.000           inf   1.0000  0.000       5.6695
+ AUDJPY_LONG_SHADOW   2012-06       1  0.751    0.7510        0.751      0.000           inf   1.0000  0.000       5.6024
+ AUDJPY_LONG_SHADOW   2017-09       1  0.721    0.7210        0.721      0.000           inf   1.0000  0.000       5.3786
+ AUDJPY_LONG_SHADOW   2018-04       1  0.658    0.6580        0.658      0.000           inf   1.0000  0.000       4.9086
+ AUDJPY_LONG_SHADOW   2018-05       1  0.630    0.6300        0.630      0.000           inf   1.0000  0.000       4.6997
+CADJPY_SHORT_SHADOW   2016-04       1  0.589    0.5890        0.589      0.000           inf   1.0000  0.000       4.3939
+ AUDJPY_LONG_SHADOW   2021-10       1  0.584    0.5840        0.584      0.000           inf   1.0000  0.000       4.3566
+CADJPY_SHORT_SHADOW   2021-10       1  0.553    0.5530        0.553      0.000           inf   1.0000  0.000       4.1253
+ AUDJPY_LONG_SHADOW   2018-09       1  0.541    0.5410        0.541      0.000           inf   1.0000  0.000       4.0358
+ AUDJPY_LONG_SHADOW   2015-01       1  0.521    0.5210        0.521      0.000           inf   1.0000  0.000       3.8866
+CADJPY_SHORT_SHADOW   2011-08       2  0.504    0.2520        0.703     -0.199        3.5327   0.5000  0.000       3.7598
+ AUDJPY_LONG_SHADOW   2011-04       1  0.494    0.4940        0.494      0.000           inf   1.0000  0.000       3.6852
+ AUDJPY_LONG_SHADOW   2015-03       1  0.493    0.4930        0.493      0.000           inf   1.0000  0.000       3.6777
+ AUDJPY_LONG_SHADOW   2014-11       2  0.489    0.2445        0.800     -0.311        2.5723   0.5000  0.311       3.6479
+ AUDJPY_LONG_SHADOW   2015-08       1  0.486    0.4860        0.486      0.000           inf   1.0000  0.000       3.6255
+ AUDJPY_LONG_SHADOW   2023-12       1  0.482    0.4820        0.482      0.000           inf   1.0000  0.000       3.5957
+ AUDJPY_LONG_SHADOW   2020-06       1  0.469    0.4690        0.469      0.000           inf   1.0000  0.000       3.4987
+CADJPY_SHORT_SHADOW   2014-11       1  0.413    0.4130        0.413      0.000           inf   1.0000  0.000       3.0809
+CADJPY_SHORT_SHADOW   2013-06       1  0.401    0.4010        0.401      0.000           inf   1.0000  0.000       2.9914
+ AUDJPY_LONG_SHADOW   2023-04       1  0.392    0.3920        0.392      0.000           inf   1.0000  0.000       2.9243
+ AUDJPY_LONG_SHADOW   2022-02       1  0.381    0.3810        0.381      0.000           inf   1.0000  0.000       2.8422
+ AUDJPY_LONG_SHADOW   2023-07       2  0.372    0.1860        0.372      0.000           inf   1.0000  0.000       2.7751
+CADJPY_SHORT_SHADOW   2021-08       1  0.353    0.3530        0.353      0.000           inf   1.0000  0.000       2.6333
+CADJPY_SHORT_SHADOW   2021-11       1  0.330    0.3300        0.330      0.000           inf   1.0000  0.000       2.4618
+CADJPY_SHORT_SHADOW   2023-12       1  0.295    0.2950        0.295      0.000           inf   1.0000  0.000       2.2007
+CADJPY_SHORT_SHADOW   2012-10       1  0.286    0.2860        0.286      0.000           inf   1.0000  0.000       2.1335
+CADJPY_SHORT_SHADOW   2022-09       1  0.269    0.2690        0.269      0.000           inf   1.0000  0.000       2.0067
+ AUDJPY_LONG_SHADOW   2024-09       1  0.263    0.2630        0.263      0.000           inf   1.0000  0.000       1.9620
+ AUDJPY_LONG_SHADOW   2023-09       1  0.261    0.2610        0.261      0.000           inf   1.0000  0.000       1.9470
+CADJPY_SHORT_SHADOW   2020-02       3  0.257    0.0857        0.297     -0.040        7.4250   0.6667  0.000       1.9172
+ AUDJPY_LONG_SHADOW   2016-04       1  0.249    0.2490        0.249      0.000           inf   1.0000  0.000       1.8575
+ AUDJPY_LONG_SHADOW   2020-04       1  0.235    0.2350        0.235      0.000           inf   1.0000  0.000       1.7531
+CADJPY_SHORT_SHADOW   2024-09       1  0.213    0.2130        0.213      0.000           inf   1.0000  0.000       1.5890
+CADJPY_SHORT_SHADOW   2011-04       1  0.203    0.2030        0.203      0.000           inf   1.0000  0.000       1.5144
+ AUDJPY_LONG_SHADOW   2016-12       1  0.202    0.2020        0.202      0.000           inf   1.0000  0.000       1.5069
+CADJPY_SHORT_SHADOW   2012-06       1  0.182    0.1820        0.182      0.000           inf   1.0000  0.000       1.3577
+ AUDJPY_LONG_SHADOW   2013-06       1  0.177    0.1770        0.177      0.000           inf   1.0000  0.000       1.3204
+ AUDJPY_LONG_SHADOW   2024-04       2  0.172    0.0860        0.172      0.000           inf   1.0000  0.000       1.2831
+CADJPY_SHORT_SHADOW   2024-06       1  0.169    0.1690        0.169      0.000           inf   1.0000  0.000       1.2607
+ AUDJPY_LONG_SHADOW   2016-01       1  0.164    0.1640        0.164      0.000           inf   1.0000  0.000       1.2234
+ AUDJPY_LONG_SHADOW   2024-12       1  0.157    0.1570        0.157      0.000           inf   1.0000  0.000       1.1712
+CADJPY_SHORT_SHADOW   2020-06       1  0.152    0.1520        0.152      0.000           inf   1.0000  0.000       1.1339
+ AUDJPY_LONG_SHADOW   2014-07       1  0.116    0.1160        0.116      0.000           inf   1.0000  0.000       0.8653
+ AUDJPY_LONG_SHADOW   2013-03       1  0.105    0.1050        0.105      0.000           inf   1.0000  0.000       0.7833
+ AUDJPY_LONG_SHADOW   2012-04       1  0.105    0.1050        0.105      0.000           inf   1.0000  0.000       0.7833
+ AUDJPY_LONG_SHADOW   2025-11       1  0.081    0.0810        0.081      0.000           inf   1.0000  0.000       0.6043
+CADJPY_SHORT_SHADOW   2018-12       1  0.051    0.0510        0.051      0.000           inf   1.0000  0.000       0.3805
+ AUDJPY_LONG_SHADOW   2025-05       1  0.047    0.0470        0.047      0.000           inf   1.0000  0.000       0.3506
+CADJPY_SHORT_SHADOW   2019-03       1  0.041    0.0410        0.041      0.000           inf   1.0000  0.000       0.3059
+ AUDJPY_LONG_SHADOW   2018-03       1  0.039    0.0390        0.039      0.000           inf   1.0000  0.000       0.2909
+CADJPY_SHORT_SHADOW   2021-09       1  0.037    0.0370        0.037      0.000           inf   1.0000  0.000       0.2760
+ AUDJPY_LONG_SHADOW   2019-11       1  0.031    0.0310        0.031      0.000           inf   1.0000  0.000       0.2313
+ AUDJPY_LONG_SHADOW   2018-07       2  0.031    0.0155        0.297     -0.266        1.1165   0.5000  0.000       0.2313
+CADJPY_SHORT_SHADOW   2013-05       1  0.024    0.0240        0.024      0.000           inf   1.0000  0.000       0.1790
+CADJPY_SHORT_SHADOW   2020-07       2  0.022    0.0110        0.294     -0.272        1.0809   0.5000  0.000       0.1641
+CADJPY_SHORT_SHADOW   2013-10       1  0.010    0.0100        0.010      0.000           inf   1.0000  0.000       0.0746
+CADJPY_SHORT_SHADOW   2017-09       2  0.008    0.0040        0.086     -0.078        1.1026   0.5000  0.000       0.0597
+ AUDJPY_LONG_SHADOW   2023-06       1  0.007    0.0070        0.007      0.000           inf   1.0000  0.000       0.0522
+ AUDJPY_LONG_SHADOW   2011-12       1 -0.007   -0.0070        0.000     -0.007        0.0000   0.0000  0.000      -0.0522
+CADJPY_SHORT_SHADOW   2017-05       1 -0.020   -0.0200        0.000     -0.020        0.0000   0.0000  0.000      -0.1492
+
+==============================================================================================================
+15) SHADOW READINESS CLASSIFICATION
+==============================================================================================================
+            Variant Market AllowedDirections  Trades     PF  Expectancy_points  WorstCost_PF  WorstCost_PnL  RemoveBest5_PnL  MonthBlock_ProbTotalNegative  PseudoForward_2023_2025_PF  PseudoForward_2023_2025_PnL  LatestYear_2025_PnL  HistOK  CostOK  ConcentrationOK  MonteCarloOK  RecencyOK    ShadowVerdict
+ AUDJPY_LONG_SHADOW AUDJPY              LONG      93 1.2760             0.0638        1.0852         1.9815           -2.905                        0.2038                      3.5161                        2.350                0.024    True    True            False         False       True SHADOW_ONLY_WEAK
+CADJPY_SHORT_SHADOW CADJPY             SHORT      76 1.5719             0.0983        1.2650         3.9370           -0.516                        0.0812                      0.3836                       -1.088                0.000    True    True            False          True      False   WATCHLIST_ONLY
+
+==============================================================================================================
+16) SHADOW GRADUATION RULES
+==============================================================================================================
+                                       Rule                                           Threshold Severity
+Minimum live/shadow signals before decision   >= 50 combined signals, helst >= 25 per candidate     HARD
+                  Actual execution slippage      Average actual slippage <= 2x modeled slippage     HARD
+                             Rule adherence                >= 95% trades with no rule deviation     HARD
+                         Combined shadow PF                                  > 1.10 after costs     HARD
+                 Combined shadow expectancy                                     > 0 after costs     HARD
+                            CADJPY short PF                > 1.15 if candidate still considered     SOFT
+                             AUDJPY long PF                > 1.05 if candidate still considered     SOFT
+                       Rolling 20-trade PnL   Should not breach historical P10 by more than 50%    WATCH
+                                Max live DD Should stay below 2x historical candidate shadow DD    WATCH
+                     No immediate inclusion Pass shadow first; then rerun Fas 2C/2D-style tests     HARD
+
+==============================================================================================================
+17) LIVE SHADOW TRADE LOG TEMPLATE
+==============================================================================================================
+          Candidate Market AllowedDirection  SignalDate  SignalBarTime  AsiaHigh  AsiaLow  AsiaRange  AsiaPercentile  ATR14  ATR_MA75  BreakoutDirection EntrySignalValid  IntendedEntryTime  IntendedEntryPrice  ActualEntryTime  ActualEntryPrice  EntrySlippagePips  SpreadAtEntryPips  ExitSignalTime  IntendedExitTime  IntendedExitPrice  ActualExitTime  ActualExitPrice  ExitSlippagePips  SpreadAtExitPips  GrossPnL_Pips  NetPnL_Pips  NetPnL_USD  HeldOverWeekend  HoldingHours RuleDeviation  DeviationReason  ScreenshotOrBrokerRef  Notes
+CADJPY_SHORT_SHADOW CADJPY            SHORT         NaN            NaN       NaN      NaN        NaN             NaN    NaN       NaN                NaN                                 NaN                 NaN              NaN               NaN                NaN                NaN             NaN               NaN                NaN             NaN              NaN               NaN               NaN            NaN          NaN         NaN              NaN           NaN                            NaN                    NaN    NaN
+ AUDJPY_LONG_SHADOW AUDJPY             LONG         NaN            NaN       NaN      NaN        NaN             NaN    NaN       NaN                NaN                                 NaN                 NaN              NaN               NaN                NaN                NaN             NaN               NaN                NaN             NaN              NaN               NaN               NaN            NaN          NaN         NaN              NaN           NaN                            NaN                    NaN    NaN
+
+==============================================================================================================
+18) QUICK PASS/FAIL DIAGNOSTICS
+==============================================================================================================
+                                         Check    Value  Pass
+                     Combined shadow PF > 1.15   1.3879  True
+                Combined shadow expectancy > 0   0.0793  True
+                 Combined shadow trades >= 120 169.0000  True
+At least 1 candidate ready for extended shadow   0.0000 False
+   At least 2 candidates weak-or-better shadow   1.0000 False
+              No automatic portfolio inclusion   1.0000  True
+   Optional USD shadow return > 0 if available   7.7249  True
+
+==============================================================================================================
+END PHASE 3C ANALYSIS PACKAGE
+==============================================================================================================
+1. Kombinerad shadow-portfölj är positiv
+Combined candidate shadow OOS:
+Trades: 169
+Total PnL: +13.405 points
+PF: 1.3879
+Expectancy: +0.0793
+Winrate: 54.44%
+Max DD: 5.44 points
+Trade Sharpe: 1.4194
+Optional USD-simulering:
+Start: 50,000
+End equity: 53,862
+Net PnL: +3,862
+Return: +7.72%
+Max DD: 2.99%
+PF: 1.3926
+Detta är positivt. Som separat shadow basket är det inte dåligt.
+Men problemet är att detta fortfarande är resultat från kandidater som valdes efter Fas 3A/3B. Därför måste ribban vara högre än “det är 
+positivt”.
+
+2. CADJPY short är starkare men har dålig recency
+CADJPY short OOS:
+Trades: 76
+PF: 1.5719
+Expectancy: +0.0983
+Max DD: 2.072
+Worst retail cost PF: 1.2650
+Month-block probability negative: 8.12%
+Detta är objektivt den bästa kandidaten. Den klarar kostnadsstress bra och Monte Carlo är acceptabel.
+Men recency är svag:
+2023–2025:
+Trades: 6
+PnL: -1.088
+PF: 0.3836
+2024–2025:
+Trades: 5
+PnL: -1.383
+PF: 0.2164
+2025:
+0 trades
+Det är huvudproblemet. Kandidaten såg bäst ut historiskt, men den senaste perioden stödjer inte inclusion. Den får därför rätt verdict:
+CADJPY short: WATCHLIST_ONLY
+
+3. AUDJPY long har bättre recency men svagare robusthet
+AUDJPY long OOS:
+Trades: 93
+PF: 1.2760
+Expectancy: +0.0638
+Max DD: 4.357
+Worst retail cost PF: 1.0852
+Month-block probability negative: 20.38%
+Recency är bättre än CADJPY short:
+2023–2025:
+Trades: 17
+PnL: +2.350
+PF: 3.5161
+2024–2025:
+Trades: 9
+PnL: -0.112
+PF: 0.8654
+2025:
+Trades: 3
+PnL: +0.024
+PF: 1.2308
+Men den är känsligare för Monte Carlo och koncentration. Worst retail cost PF 1.0852 är bara precis över gränsen. Month-block probability of 
+negative total runt 20% är för högt för inclusion.
+Därför är verdict rimligt:
+AUDJPY long: SHADOW_ONLY_WEAK
+
+4. Concentration är största varningen
+Concentration-testet underkänner båda som live-kandidater.
+CADJPY short:
+All trades: +7.471
+Remove best 3: +1.818
+Remove best 5: -0.516
+Remove best 10: -5.215
+AUDJPY long:
+All trades: +5.934
+Remove best 1: +3.329
+Remove best 3: -0.264
+Remove best 5: -2.905
+Remove best 10: -7.568
+Detta är för skört. Originalportföljen klarade borttagning av bästa trades bättre. De här kandidaterna faller snabbare när top trades tasbort.
+Min slutsats:
+De har edge-signaler, men inte tillräcklig robusthet för capital allocation.
+
+5. Rolling diagnostics säger “shadow, inte live”
+CADJPY short rolling 20 trades:
+Median rolling PnL: +1.451
+Worst rolling PnL: -2.028
+Negative windows: 17.54%
+AUDJPY long rolling 20 trades:
+Median rolling PnL: +1.2475
+Worst rolling PnL: -3.072
+Negative windows: 33.78%
+CADJPY short är klart stabilare. AUDJPY long har ungefär en tredjedel negativa 20-trade-fönster, vilket är för mycket för att lägga till 
+kapital direkt.
+
+6. Quick pass/fail säger samma sak
+Quick diagnostics:
+Combined shadow PF > 1.15: True
+Combined shadow expectancy > 0: True
+Combined shadow trades >= 120: True
+At least 1 candidate ready for extended shadow: False
+At least 2 candidates weak-or-better shadow: False
+No automatic portfolio inclusion: True
+Optional USD shadow return > 0: True
+Det är exakt den korrekta slutsatsen: basketen ser positiv ut, men kandidaterna är inte redo.
+
+Slutdom Fas 3C
+Fas 3C: EJ GODKÄND för inclusion
+Men: godkänd som shadow/watchlist-beslut
+Rekommenderad status:
+Originalportfölj:
+USDJPY, EURJPY, GBPJPY
+Shadow-only:
+AUDJPY long
+Watchlist-only:
+CADJPY short
+Ej inkludera nu:
+CADJPY short med kapital
+AUDJPY long med kapital
+CADJPY/AUDJPY both-directions
+Vad ni ska göra nu
+Ni ska inte göra mer historisk optimering på CADJPY/AUDJPY just nu. Nästa steg är riktig shadow/paper tracking enligt reglerna som scriptet 
+själv printade:
+Minst 50 combined live/shadow signals
+Helst minst 25 per kandidat
+Actual slippage <= 2x modeled slippage
+>=95% trades utan regelavvikelse
+Combined shadow PF > 1.10 efter kostnader
+Combined shadow expectancy > 0 efter kostnader
+Min praktiska rekommendation:
+Kör Fas 3C shadow-logg i 3–6 månader.
+Ingen capital allocation.
+Ingen regeländring.
+Ingen direction-optimering.
+Efter att ni har minst 50 nya shadow-signaler kan vi göra en Fas 3D Live Shadow Review, där vi jämför live/paper mot historisk benchmark.
+
+Vi kommer inte paper tradea denna strategi, vi kommer ta bort den helt från den stora portföljen eftersom det är alldeles för få trades för
+att bära tillräcklig statistisk signifikans, dessutom är det faktum att majoriteten av profits kommer från väldigt få trades och att 2016 
+bär så mycket som det gör väldigt oattraktivt. 
